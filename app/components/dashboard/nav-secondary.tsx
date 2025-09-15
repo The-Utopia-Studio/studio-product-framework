@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { type Icon } from "@tabler/icons-react"
+import type { ComponentType } from "react"
 import { Link, useLocation } from "react-router"
 
 import {
@@ -19,7 +19,7 @@ export function NavSecondary({
   items: {
     title: string
     url: string
-    icon: Icon
+    icon: ComponentType<any>
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const location = useLocation();
