@@ -1,4 +1,8 @@
-.react-router
-build
 node_modules
-README.md
+.turbo
+.git
+apps/web/build
+apps/web/.react-router
+*.log
+.env
+.env.local

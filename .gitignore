@@ -1,8 +1,24 @@
 .DS_Store
-/node_modules/
+node_modules/
+.turbo/
+dist/
+build/
+.react-router/
 
-# React Router
-/.react-router/
-/build/
-
+.env
 .env.local
+.env.*.local
+
+# App-specific
+apps/web/build/
+apps/web/.react-router/
+apps/web/.vercel/
+
+# Package build output
+packages/*/dist/
+
+*.log
+.pnpm-store/
+
+# Cursor local state (keep rules)
+.cursor/hooks/state/

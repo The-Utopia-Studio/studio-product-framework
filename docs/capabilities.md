@@ -1,0 +1,50 @@
+# Capability catalog — lift and use
+
+Everything an AI-native company typically needs, mapped to Studio packages and external tools.
+
+Status key: **Shipped** (wired in reference app) · **Port** (package API ready, wire SDK in Convex) · **Process** (install external app / follow skill)
+
+## Product platform
+
+| Capability | Package / tool | Status |
+|------------|----------------|--------|
+| Auth & identity | Clerk + `@studio/auth` | **Shipped** (Clerk); auth package = contracts |
+| Realtime backend / DB | Convex | **Shipped** |
+| Subscriptions (Polar) | `@studio/billing` + app Polar wiring | **Shipped** (app); migrate callers into package adapters next |
+| Subscriptions (Stripe) | `@studio/billing` Stripe port | **Port** |
+| Credits (Autumn) | `@studio/billing` + Effect wallet | **Port** |
+| Runtime agents | `@studio/ai-runtime` | **Port** (sandbox required) |
+| Critical money/inference/delivery | `@studio/effect-critical` | **Port** (fence ready; deepen programs) |
+| Email | `@studio/email` | **Port** |
+| File storage | `@studio/storage` | **Port** |
+| Feature flags | `@studio/flags` (+ PostHog) | **Port** |
+| Rate limiting | `@studio/ratelimit` | **Port** |
+| Analytics | `@studio/observability` + PostHog | **Shipped** (browser; env optional) |
+| Errors | `@studio/observability` + Sentry | **Shipped** (browser; env optional) |
+| Deploy | Vercel | **Shipped** (preset) |
+
+## Builder / quality OS
+
+| Capability | Where | Status |
+|------------|--------|--------|
+| Agent instructions | `AGENTS.md`, `agents/` | **Shipped** |
+| Skills / loops | `agents/skills`, `agents/loops` | **Shipped** |
+| Design review | Rams GitHub App + `agents/skills/rams.md` | **Process** |
+| Code review | Greptile + `agents/skills/greploop.md` | **Process** |
+| Ship-ready loop | `agents/loops/ship-ready-pr.md` | **Shipped** (docs) |
+| CI | `.github/workflows/ci.yml` | **Shipped** |
+| Lint / types | ESLint + `pnpm typecheck` | **Shipped** (strict on packages) |
+
+## Recommended Convex components (add when needed)
+
+Workflow · Workpool · R2 · RAG · Autumn · `@convex-dev/ratelimiter`
+
+## What “lift and use” means today
+
+1. Clone monorepo  
+2. Fill env (Clerk, Convex, Polar, PostHog, Sentry)  
+3. Install Greptile + Rams on GitHub  
+4. `pnpm install` + Convex + `pnpm dev:web`  
+5. Build product in `apps/*` using packages — don’t fork mechanics  
+
+See [production-readiness.md](./production-readiness.md) for the honest scorecard.
