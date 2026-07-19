@@ -43,6 +43,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `agents/skills/add-capability.md` | New package |
 | `agents/skills/add-billing-provider.md` | Billing wiring |
 | `agents/skills/add-runtime-agent-tool.md` | Agent tools |
+| `agents/skills/add-convex-component.md` | Add Convex component |
 | `agents/loops/bootstrap-ai-product.md` | New product standup |
 | `agents/loops/scaffold-product-feature.md` | Feature vertical |
 | `agents/loops/ship-ready-pr.md` | Merge-ready PR |

@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { ensureUserWallet } from "./lib/walletHelpers";
 
 const userDoc = v.object({
   _id: v.id("users"),
@@ -43,7 +44,6 @@ export const upsertUser = mutation({
       .unique();
 
     if (existingUser) {
-      // Update if needed
       if (
         existingUser.name !== identity.name ||
         existingUser.email !== identity.email
@@ -53,16 +53,17 @@ export const upsertUser = mutation({
           email: identity.email,
         });
       }
+      await ensureUserWallet(ctx, identity.subject);
       return existingUser;
     }
 
-    // Create new user
     const userId = await ctx.db.insert("users", {
       name: identity.name,
       email: identity.email,
       tokenIdentifier: identity.subject,
     });
 
+    await ensureUserWallet(ctx, identity.subject);
     return await ctx.db.get(userId);
   },
 });

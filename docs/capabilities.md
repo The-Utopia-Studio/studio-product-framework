@@ -12,9 +12,12 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 | Realtime backend / DB | Convex | **Shipped** |
 | Subscriptions (Polar) | `@studio/billing` + app Polar wiring | **Shipped** (app); migrate callers into package adapters next |
 | Subscriptions (Stripe) | `@studio/billing` Stripe port | **Port** |
-| Credits (Autumn) | `@studio/billing` + Effect wallet | **Port** |
+| Credits (Autumn) | `@useautumn/convex` + Effect wallet | **Shipped** (component wired; needs `AUTUMN_SECRET_KEY`) |
+| Local credit ledger | `convex/wallet` + Effect | **Shipped** (starter credits on signup) |
+| Metered inference | `inference.runMeteredInference` | **Shipped** (rate limit → debit → OpenRouter) |
+| Rate limiting | `@convex-dev/rate-limiter` | **Shipped** |
 | Runtime agents | `@studio/ai-runtime` | **Port** (sandbox required) |
-| Critical money/inference/delivery | `@studio/effect-critical` | **Port** (fence ready; deepen programs) |
+| Critical money/inference/delivery | `@studio/effect-critical` | **Shipped** (`debitAndInfer` vertical) |
 | Email | `@studio/email` | **Port** |
 | File storage | `@studio/storage` | **Port** |
 | Feature flags | `@studio/flags` (+ PostHog) | **Port** |
@@ -47,4 +50,5 @@ Workflow · Workpool · R2 · RAG · Autumn · `@convex-dev/ratelimiter`
 4. `pnpm install` + Convex + `pnpm dev:web`  
 5. Build product in `apps/*` using packages — don’t fork mechanics  
 
-See [production-readiness.md](./production-readiness.md) for the honest scorecard.
+See [production-readiness.md](./production-readiness.md) for the honest scorecard.  
+Convex components guide: [convex-components.md](./convex-components.md) · catalog: https://www.convex.dev/components

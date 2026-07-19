@@ -16,3 +16,8 @@ export {
   type DeliveryMessage,
   type DeliveryTransport,
 } from "./delivery";
+export {
+  debitAndInfer,
+  type MeteredInferenceInput,
+  type MeteredInferenceResult,
+} from "./meteredInference";

@@ -13,7 +13,9 @@ Teams rebuilding auth, billing, agents, observability, and review workflows for 
 | Auth | Clerk + `@studio/auth` |
 | Backend | Convex |
 | Subscriptions | Polar **and/or** Stripe (`@studio/billing`) |
-| Credits | Autumn + `@studio/effect-critical` wallet |
+| Credits | Autumn component + Effect wallet ledger |
+| Rate limits | `@convex-dev/rate-limiter` component |
+| Components | https://www.convex.dev/components — see `docs/convex-components.md` |
 | Runtime agents | `@studio/ai-runtime` (sandbox + OpenRouter) |
 | Analytics | **PostHog** (`@studio/observability`) |
 | Errors | **Sentry** |

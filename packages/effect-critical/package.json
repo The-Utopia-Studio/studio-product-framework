@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@studio/core": "workspace:*",
-    "effect": "^3.16.12"
+    "effect": "^3.22.0"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

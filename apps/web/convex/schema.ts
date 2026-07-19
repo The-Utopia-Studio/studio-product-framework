@@ -8,6 +8,7 @@ export default defineSchema({
     image: v.optional(v.string()),
     tokenIdentifier: v.string(),
   }).index("by_token", ["tokenIdentifier"]),
+
   subscriptions: defineTable({
     userId: v.optional(v.string()),
     polarId: v.optional(v.string()),
@@ -31,6 +32,7 @@ export default defineSchema({
   })
     .index("userId", ["userId"])
     .index("polarId", ["polarId"]),
+
   webhookEvents: defineTable({
     type: v.string(),
     polarEventId: v.string(),
@@ -40,4 +42,40 @@ export default defineSchema({
   })
     .index("type", ["type"])
     .index("polarEventId", ["polarEventId"]),
+
+  /** Authoritative credit ledger (Effect fence). Reconcile with Autumn when enabled. */
+  wallets: defineTable({
+    userId: v.string(),
+    balance: v.number(),
+    updatedAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  walletTransactions: defineTable({
+    userId: v.string(),
+    amount: v.number(),
+    type: v.union(v.literal("debit"), v.literal("credit")),
+    reason: v.string(),
+    idempotencyKey: v.string(),
+    balanceAfter: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_idempotency", ["idempotencyKey"]),
+
+  inferenceRuns: defineTable({
+    userId: v.string(),
+    model: v.string(),
+    inputTokens: v.number(),
+    outputTokens: v.number(),
+    creditCost: v.number(),
+    transactionId: v.optional(v.string()),
+    providerRequestId: v.optional(v.string()),
+    status: v.union(
+      v.literal("succeeded"),
+      v.literal("failed"),
+      v.literal("streaming"),
+    ),
+    errorMessage: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
 });
