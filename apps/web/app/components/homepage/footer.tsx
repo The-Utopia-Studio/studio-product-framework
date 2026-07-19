@@ -13,7 +13,7 @@ export default function FooterSection() {
         </Link>
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
           <Link
-            to="https://github.com/karanmjpinto/studio-product-framework"
+            to="https://github.com/The-Utopia-Studio/studio-product-framework"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"

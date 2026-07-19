@@ -15,7 +15,7 @@ export function meta(_args: Route.MetaArgs) {
     "Composable, AI-native product framework for SaaS and credit-metered agents — Convex, Clerk, billing, Effect, and agent OS.";
   const keywords =
     "Studio Product Framework, Convex, Clerk, AI agents, SaaS, React Router";
-  const siteUrl = "https://github.com/karanmjpinto/studio-product-framework";
+  const siteUrl = "https://github.com/The-Utopia-Studio/studio-product-framework";
   const imageUrl = "/favicon.png";
 
   return [
