@@ -37,9 +37,10 @@ Still mounted in `root.tsx` for web vitals. PostHog owns product analytics; Sent
 ## Loop engineering (research + self-improve)
 
 - **Doctrine:** [loop-engineering.md](./loop-engineering.md)
+- **Venture commit:** `agents/skills/score-problem.md` → `agents/loops/commit-v1.md` → `agents/context/discovery/`
 - **Research skill:** `agents/skills/research.md` → `agents/context/research-queue.md`
 - **Improve loop:** `agents/loops/improve-framework.md` (bounded recursion; no auto-merge)
 - **Handover:** `agents/loops/operate-handover.md` — operators run loops after 1–2 Studio iterations
 - **Memory:** `agents/context/learnings.md` (git-audited; not a second database)
 
-Cadence: every PR → ship-ready; weekly/on-demand → research then one improve outer iter. Use Cursor `/loop` if you want a heartbeat — do not invent a parallel orchestration runtime.
+Cadence: before venture build → commit-v1; every PR → ship-ready; weekly/on-demand → research then one improve outer iter. Use Cursor `/loop` if you want a heartbeat — do not invent a parallel orchestration runtime.

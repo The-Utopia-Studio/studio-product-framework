@@ -30,7 +30,7 @@ Calibration: under 10× → walk; 20–100× → proceed; over 100× → hidden 
 
 ## Decision
 
-- [ ] Pass (≥32) — proceed to evidence ladder + commit-v1
+- [ ] Pass (≥32) — proceed to `commit-v1` (eval-first spec); evidence ladder should already be filled via `score-problem`
 - [ ] Redesign wedge (28–31)
 - [ ] Kill (<28)
 

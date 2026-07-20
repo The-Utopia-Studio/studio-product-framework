@@ -32,8 +32,8 @@ Playbook (read, don’t paste): https://the-utopia-studio.github.io/Icarus/
 
 ## Steps
 
-1. **Score the problem** — fill problem-scorecard. Stop if total < 32 unless human explicitly overrides with written reason in learnings.
-2. **Log evidence** — fill evidence-ladder. Strongest claim must be ≥ 0.5 or a dated path to paid terms.
+1. **Score the problem** — run `agents/skills/score-problem.md` (or verify existing scorecard). Stop if total < 32 unless human explicitly overrides with written reason in learnings.
+2. **Log evidence** — verify `evidence-ladder.md`. Strongest claim must be ≥ 0.5 or a dated path to paid terms.
 3. **Write eval-first spec** — job sentence, ≥5 golden cases, autonomy level, cost-per-outcome.
 4. **Human gate** — human signs invent/wedge and the commit checklist on the spec. Agents do not self-approve.
 5. **Build** — only after sign-off:

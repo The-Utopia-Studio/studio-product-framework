@@ -38,13 +38,19 @@ Do **not** add: unbounded “always-on” agents, silent auto-merge to `main`, o
 ## Self-recursion (allowed pattern)
 
 ```
+# Framework improve
 improve-framework
   └─ research (if evidence missing)
        └─ scaffold / capability skill
             └─ ship-ready-pr
                  └─ greploop + rams
-```
 
+# Venture product
+score-problem
+  └─ commit-v1
+       └─ bootstrap-ai-product / scaffold-product-feature
+            └─ ship-ready-pr
+```
 Rules:
 
 1. **Depth ≤ 3** (parent → child → grandchild). No infinite spawn.

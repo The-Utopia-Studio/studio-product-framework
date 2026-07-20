@@ -23,7 +23,7 @@ What it was *not* yet: a finished lift-and-use product. It was a strong manifest
 |-----------|------:|-------|
 | Structure | **8.5** | Layout is right; package count slightly ahead of deep adapters |
 | DX / docs | **7.5** | Clear AGENTS + capabilities; status now honest |
-| Agent OS | **8.5** | Skills + loops + research/improve/operate doctrine; still agent-run not cron-autonomous |
+| Agent OS | **8.5** | Skills + loops + research/improve/operate + Icarus commit gate artifacts; still agent-run not cron-autonomous |
 | Security | **6** | Chat auth + subscription IDOR + internal webhooks fixed; more validators/tests still needed |
 | Observability | **5.5** | Browser PostHog/Sentry wired; server capture still thin |
 | Completeness | **5** | Polar path real; Stripe/Autumn/sandbox are extension ports |

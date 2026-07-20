@@ -33,4 +33,5 @@ Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Disc
 - The monorepo is intentionally agent-native so web, packages, and agents stay in one context.
 - Client never talks to the database—Convex only; Effect fences money, inference, and delivery.
 - Builder agents live under `agents/`; runtime agents require sandboxes via `@studio/ai-runtime`.
-- Core agent loops include ship-ready-pr, bounded improve-framework + research queue, and operate-handover.
+- Core agent loops include commit-v1 (venture gate), ship-ready-pr, improve-framework + research queue, and operate-handover.
+- Discovery commit artifacts live under `agents/context/discovery/`; Icarus is the external playbook, not duplicated in-repo.

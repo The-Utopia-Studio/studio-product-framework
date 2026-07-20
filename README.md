@@ -23,6 +23,7 @@ Teams rebuilding auth, billing, agents, observability, and review workflows for 
 | Design review | **Rams** (GitHub App) + `agents/skills/rams.md` |
 | Code review | **Greptile** + **greploop** skill |
 | Auto-research / self-improve | `research` skill → `improve-framework` loop |
+| Venture commit gate | `score-problem` → `commit-v1` + `agents/context/discovery/` |
 | Operate / handover | `operate-handover` loop |
 | Deploy | Vercel |
 

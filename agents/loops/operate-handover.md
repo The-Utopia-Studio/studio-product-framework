@@ -29,12 +29,13 @@ Leave the operator (client or internal) able to **change the product themselves*
 - [ ] `pnpm typecheck` / `pnpm lint` / Convex dev path known
 - [ ] Capability map shared: `docs/capabilities.md`
 
-### 2. Teach the three loops they will use
+### 2. Teach the loops they will use
 
 | Need | Loop / skill |
 |------|----------------|
 | Change UI/feature | `scaffold-product-feature` → `ship-ready-pr` |
 | Clear review debt | `greploop` + `rams` |
+| New venture scope / job change | `score-problem` → `commit-v1` (do **not** re-score for polish tweaks) |
 | Improve foundation | `research` → `improve-framework` (optional; usually Studio-led) |
 
 Give them `agents/AGENTS.md` as the agent entrypoint. Prefer Cursor (or equivalent) with this repo open — agents read the same monorepo humans do.
