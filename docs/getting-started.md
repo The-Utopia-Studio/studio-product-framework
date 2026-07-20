@@ -60,9 +60,11 @@ pnpm dev:web
 
 ## First ship
 
-Use `agents/loops/bootstrap-ai-product.md`, then `agents/loops/ship-ready-pr.md` (Rams → CI → greploop).
+Use `agents/loops/commit-v1.md` before a venture bootstrap (scorecard → evidence → eval-first spec).  
+Then `agents/loops/bootstrap-ai-product.md`, then `agents/loops/ship-ready-pr.md` (Rams → CI → greploop).
 
 Ongoing improve: `agents/skills/research.md` → `agents/loops/improve-framework.md`.  
 Client handover: `agents/loops/operate-handover.md` (1–2 feedback iterations, then they operate).
 
-Read [architecture.md](./architecture.md), [capabilities.md](./capabilities.md), [loop-engineering.md](./loop-engineering.md).
+Read [architecture.md](./architecture.md), [capabilities.md](./capabilities.md), [loop-engineering.md](./loop-engineering.md).  
+Discovery playbook (external): [Icarus](https://the-utopia-studio.github.io/Icarus/).

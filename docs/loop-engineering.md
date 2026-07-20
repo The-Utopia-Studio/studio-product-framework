@@ -23,13 +23,17 @@ If it cannot state an exit condition, it is not a loop — it is busywork.
 
 | Kind | Owns | Example |
 |------|------|---------|
+| **Discover** | Problem evidence → scorecard | `score-problem` |
+| **Commit** | Scorable scope before big build | `commit-v1` |
 | **Ship** | One PR quality | `ship-ready-pr`, `greploop` |
 | **Build** | One feature / product standup | `scaffold-product-feature`, `bootstrap-ai-product` |
-| **Research** | Evidence → queue | `agents/skills/research.md` |
+| **Research** | Framework evidence → queue | `agents/skills/research.md` |
 | **Improve** | Framework score ↑ | `improve-framework` |
 | **Operate** | Handover / self-serve changes | `operate-handover` |
 
 Do **not** add: unbounded “always-on” agents, silent auto-merge to `main`, or loops that rewrite architecture without a scorecard gap.
+
+**Venture products:** run `commit-v1` before bootstrap. Discovery templates live in `agents/context/discovery/` (Icarus methodology → actionable gate). Framework plumbing may skip the commit gate.
 
 ## Self-recursion (allowed pattern)
 
@@ -73,6 +77,7 @@ This matches delivery: we hand over a **system they can operate**, not a retaine
 
 | Cadence | Loop |
 |---------|------|
+| Before venture build | `score-problem` → `commit-v1` |
 | Every PR | `ship-ready-pr` |
 | Weekly / when scorecard stale | `research` → `improve-framework` (1 gap max) |
 | At client handover | `operate-handover` |

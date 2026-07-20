@@ -70,6 +70,8 @@ Builder agents keep the framework improving via **bounded recursive loops** — 
 
 See [loop-engineering.md](./loop-engineering.md), `agents/skills/research.md`, `agents/loops/improve-framework.md`, `agents/loops/operate-handover.md`.
 
+**Icarus commit gate:** Venture products must pass `agents/loops/commit-v1.md` (scorecard, evidence, eval-first spec) before bootstrap. Studio Product Framework is the committed-build platform; [Icarus](https://the-utopia-studio.github.io/Icarus/) is the discovery playbook — do not duplicate it here.
+
 ## Monorepo (agent-native)
 
 One Turborepo so coding agents see web + packages + Convex + agent config in one context window. Structure is for humans **and** models.

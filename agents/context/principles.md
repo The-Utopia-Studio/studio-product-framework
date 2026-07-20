@@ -12,3 +12,4 @@
 10. Rams reviews design; Greptile + greploop reviews code — before merge.
 11. Loops are bounded and recursive; research writes a queue; improve consumes it; humans merge.
 12. After delivery: 1–2 feedback iterations, then operators run the loops themselves (`operate-handover`).
+13. Venture products: `commit-v1` (scorecard + evidence + eval-first spec) before bootstrap — Icarus thinking, SPF artifacts.

@@ -12,6 +12,8 @@ Quick context:
 
 Ship: [agents/loops/ship-ready-pr.md](./agents/loops/ship-ready-pr.md) · Improve: [agents/loops/improve-framework.md](./agents/loops/improve-framework.md) · Handover: [agents/loops/operate-handover.md](./agents/loops/operate-handover.md)
 
+Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Discovery templates: [agents/context/discovery/](./agents/context/discovery/)
+
 ## Learned User Preferences
 
 - Optimize for lift-and-use: production-grade, composable, and easy for both humans and coding agents.

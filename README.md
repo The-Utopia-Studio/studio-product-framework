@@ -41,7 +41,9 @@ pnpm dev:web                    # terminal 2
 
 Then on GitHub: install **Greptile** + **Rams** apps on the repo.
 
-Bootstrap: `agents/loops/bootstrap-ai-product.md` · Loop doctrine: `docs/loop-engineering.md` · Improve: `agents/loops/improve-framework.md`.
+Bootstrap: `agents/loops/bootstrap-ai-product.md` · Venture commit gate: `agents/loops/commit-v1.md` · Loop doctrine: `docs/loop-engineering.md` · Improve: `agents/loops/improve-framework.md`.
+
+Discovery playbook (Utopia): [Icarus](https://the-utopia-studio.github.io/Icarus/) — SPF holds the **commit artifacts**, not a second copy of the playbook.
 
 ## Repository layout
 

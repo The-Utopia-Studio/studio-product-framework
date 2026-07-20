@@ -19,5 +19,6 @@ alwaysApply: true
 - Observability: PostHog for product analytics/flags; Sentry for errors.
 - Before merging UI: Rams skill / Rams GitHub App. Before merging code: Greptile + greploop.
 - Framework improvement: `research` → queue → `improve-framework` (depth ≤3, no auto-merge). Handover via `operate-handover` — operators own tweaks after 1–2 Studio iterations.
+- Venture products: `score-problem` → `commit-v1` (discovery artifacts under `agents/context/discovery/`) before bootstrap. Platform plumbing may skip.
 - Public Convex functions: auth, args+returns validators, await promises, indexes over filter, paginate unbounded lists.
 - Prefer `docs/capabilities.md`, `docs/loop-engineering.md`, and `agents/AGENTS.md` over inventing new structure.

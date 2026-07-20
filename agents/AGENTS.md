@@ -17,9 +17,9 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `packages/storage` | Signed upload / public URL blocks |
 | `packages/flags` | Feature flag evaluation shape |
 | `packages/ratelimit` | Rate limit assertion shape |
-| `agents/skills` | Task playbooks (Rams, greploop, research) |
-| `agents/loops` | Engineered loops (ship, build, improve, operate) |
-| `agents/context/` | Principles, research queue, learnings |
+| `agents/skills` | Task playbooks (Rams, greploop, research, score-problem) |
+| `agents/loops` | Engineered loops (discover/commit, ship, build, improve, operate) |
+| `agents/context/` | Principles, research queue, learnings, discovery gate |
 | `docs/` | Architecture + capabilities + loop engineering |
 
 ## Hard rules
@@ -34,6 +34,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 8. **Observability:** PostHog for product events/flags; Sentry for exceptions.
 9. **Reviews:** Rams (design) + Greptile/greploop (code) before merge.
 10. **Loop engineering:** bounded recursion, research queue, no auto-merge — see `docs/loop-engineering.md`.
+11. **Venture commit gate:** `commit-v1` before bootstrap for customer products — `agents/context/discovery/`.
 
 ## Skills & loops (use these)
 
@@ -43,10 +44,12 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `agents/skills/greploop.md` | Clear Greptile to 5/5 |
 | `agents/skills/check-pr.md` | PR hygiene |
 | `agents/skills/research.md` | Auto-research → research queue |
+| `agents/skills/score-problem.md` | Problem scorecard + evidence ladder |
 | `agents/skills/add-capability.md` | New package |
 | `agents/skills/add-billing-provider.md` | Billing wiring |
 | `agents/skills/add-runtime-agent-tool.md` | Agent tools |
 | `agents/skills/add-convex-component.md` | Add Convex component |
+| `agents/loops/commit-v1.md` | Commit gate before venture build |
 | `agents/loops/bootstrap-ai-product.md` | New product standup |
 | `agents/loops/scaffold-product-feature.md` | Feature vertical |
 | `agents/loops/ship-ready-pr.md` | Merge-ready PR |

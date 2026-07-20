@@ -33,6 +33,8 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 | Agent instructions | `AGENTS.md`, `agents/` | **Shipped** |
 | Skills / loops | `agents/skills`, `agents/loops` | **Shipped** |
 | Loop engineering doctrine | `docs/loop-engineering.md` | **Shipped** |
+| Commit gate (Icarus → artifacts) | `agents/loops/commit-v1.md`, `agents/context/discovery/` | **Shipped** |
+| Problem score / evidence | `agents/skills/score-problem.md` | **Shipped** |
 | Auto-research → queue | `agents/skills/research.md`, `agents/context/research-queue.md` | **Shipped** |
 | Self-improve loop | `agents/loops/improve-framework.md` | **Shipped** (docs; agent-run) |
 | Operate / handover | `agents/loops/operate-handover.md` | **Shipped** |
