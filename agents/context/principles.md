@@ -10,3 +10,5 @@
 8. Actions orchestrate; packages expose composable capability blocks.
 9. PostHog for product truth; Sentry for failure truth.
 10. Rams reviews design; Greptile + greploop reviews code — before merge.
+11. Loops are bounded and recursive; research writes a queue; improve consumes it; humans merge.
+12. After delivery: 1–2 feedback iterations, then operators run the loops themselves (`operate-handover`).

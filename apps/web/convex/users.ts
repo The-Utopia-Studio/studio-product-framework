@@ -54,7 +54,7 @@ export const upsertUser = mutation({
         });
       }
       await ensureUserWallet(ctx, identity.subject);
-      return existingUser;
+      return (await ctx.db.get(existingUser._id)) ?? existingUser;
     }
 
     const userId = await ctx.db.insert("users", {

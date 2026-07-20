@@ -62,7 +62,13 @@ Everywhere else: Convex + TypeScript is enough. Ceremony is not free.
 | **Builder agent** | `agents/` | Writes product code; uses monorepo context, skills, loops |
 | **Runtime agent** | `@studio/ai-runtime` | Acts for end users in sandboxes; meters credits; calls models |
 
-Do not conflate them in docs or APIs.
+Do not conflate them in docs or APIs. Runtime agents must **not** self-modify builder skills.
+
+## Loop engineering (self-improve)
+
+Builder agents keep the framework improving via **bounded recursive loops** — research → improve → ship — with a file-based queue and learnings log. Humans set budgets and merge; agents iterate. Operators after handover run the same loops instead of depending on Studio for endless tweaks.
+
+See [loop-engineering.md](./loop-engineering.md), `agents/skills/research.md`, `agents/loops/improve-framework.md`, `agents/loops/operate-handover.md`.
 
 ## Monorepo (agent-native)
 
@@ -80,8 +86,8 @@ packages/email           Transactional email blocks
 packages/storage         Signed upload / public URL blocks
 packages/flags           Feature flag evaluation
 packages/ratelimit       Rate limit assertions
-agents/                  Builder-agent surface (Rams, greploop, loops)
-docs/                    Architecture + capabilities + tooling
+agents/                  Builder-agent surface (skills, loops, research queue)
+docs/                    Architecture + capabilities + loop engineering + tooling
 ```
 
 ## Observability & reviews
@@ -90,8 +96,9 @@ docs/                    Architecture + capabilities + tooling
 - **Sentry** — exceptions / performance
 - **Rams** — design review on PRs + `agents/skills/rams.md`
 - **Greptile + greploop** — code review loop to 5/5
+- **Research → improve** — auto-research queue + self-recursive framework loop
 
-See [capabilities.md](./capabilities.md) and [tooling.md](./tooling.md).
+See [capabilities.md](./capabilities.md), [tooling.md](./tooling.md), [loop-engineering.md](./loop-engineering.md).
 
 ## Adding a capability
 

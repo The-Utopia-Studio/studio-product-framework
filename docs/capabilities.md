@@ -32,6 +32,10 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 |------------|--------|--------|
 | Agent instructions | `AGENTS.md`, `agents/` | **Shipped** |
 | Skills / loops | `agents/skills`, `agents/loops` | **Shipped** |
+| Loop engineering doctrine | `docs/loop-engineering.md` | **Shipped** |
+| Auto-research → queue | `agents/skills/research.md`, `agents/context/research-queue.md` | **Shipped** |
+| Self-improve loop | `agents/loops/improve-framework.md` | **Shipped** (docs; agent-run) |
+| Operate / handover | `agents/loops/operate-handover.md` | **Shipped** |
 | Design review | Rams GitHub App + `agents/skills/rams.md` | **Process** |
 | Code review | Greptile + `agents/skills/greploop.md` | **Process** |
 | Ship-ready loop | `agents/loops/ship-ready-pr.md` | **Shipped** (docs) |

@@ -214,10 +214,17 @@ export const checkUserSubscriptionStatusByClerkId = query({
     if (!identity) {
       throw new Error("Not authenticated");
     }
+    // Exact self-match only — never suffix/endsWith (substring IDOR).
+    const clerkUserId = args.clerkUserId;
+    if (!clerkUserId) {
+      throw new Error("Unauthorized");
+    }
+    const subject = identity.subject;
     const allowed =
-      identity.subject === args.clerkUserId ||
-      identity.subject === `user_${args.clerkUserId}` ||
-      identity.subject.endsWith(args.clerkUserId);
+      subject === clerkUserId ||
+      subject === `user_${clerkUserId}` ||
+      (subject.startsWith("user_") &&
+        subject.slice("user_".length) === clerkUserId);
     if (!allowed) {
       throw new Error("Unauthorized");
     }

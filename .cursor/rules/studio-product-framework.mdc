@@ -18,5 +18,6 @@ alwaysApply: true
 - Billing: Polar + Stripe (subscriptions) and Autumn (credits) are all first-class.
 - Observability: PostHog for product analytics/flags; Sentry for errors.
 - Before merging UI: Rams skill / Rams GitHub App. Before merging code: Greptile + greploop.
+- Framework improvement: `research` → queue → `improve-framework` (depth ≤3, no auto-merge). Handover via `operate-handover` — operators own tweaks after 1–2 Studio iterations.
 - Public Convex functions: auth, args+returns validators, await promises, indexes over filter, paginate unbounded lists.
-- Prefer `docs/capabilities.md` and `agents/AGENTS.md` over inventing new structure.
+- Prefer `docs/capabilities.md`, `docs/loop-engineering.md`, and `agents/AGENTS.md` over inventing new structure.

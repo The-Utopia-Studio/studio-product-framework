@@ -1,10 +1,10 @@
 # Studio Product Framework
 
-Lift-and-use foundation for **AI-native companies** — composable capabilities, Convex control plane, Effect fence for money/inference, and an agent OS (skills, loops, Rams + Greptile).
+Lift-and-use foundation for **AI-native companies** — composable capabilities, Convex control plane, Effect fence for money/inference, and an agent OS (skills, bounded self-improve loops, Rams + Greptile).
 
 ## Why this exists
 
-Teams rebuilding auth, billing, agents, observability, and review workflows for every product waste the advantage of AI-native shipping. This monorepo is the shared system: compose packages, build the product in `apps/*`, let agents use the same structure humans do.
+Teams rebuilding auth, billing, agents, observability, and review workflows for every product waste the advantage of AI-native shipping. This monorepo is the shared system: compose packages, build the product in `apps/*`, let agents use the same structure humans do — and **keep improving via research → improve → ship** without a human owning continuous maintenance. After delivery, operators run the same loops (we do not sell endless minor tweaks).
 
 ## Capability stack
 
@@ -22,6 +22,8 @@ Teams rebuilding auth, billing, agents, observability, and review workflows for 
 | Email / files / flags / rate limits | `@studio/email`, `storage`, `flags`, `ratelimit` |
 | Design review | **Rams** (GitHub App) + `agents/skills/rams.md` |
 | Code review | **Greptile** + **greploop** skill |
+| Auto-research / self-improve | `research` skill → `improve-framework` loop |
+| Operate / handover | `operate-handover` loop |
 | Deploy | Vercel |
 
 Full map: [docs/capabilities.md](./docs/capabilities.md) · Tooling: [docs/tooling.md](./docs/tooling.md)
@@ -39,7 +41,7 @@ pnpm dev:web                    # terminal 2
 
 Then on GitHub: install **Greptile** + **Rams** apps on the repo.
 
-Bootstrap loop for agents: `agents/loops/bootstrap-ai-product.md`.
+Bootstrap: `agents/loops/bootstrap-ai-product.md` · Loop doctrine: `docs/loop-engineering.md` · Improve: `agents/loops/improve-framework.md`.
 
 ## Repository layout
 

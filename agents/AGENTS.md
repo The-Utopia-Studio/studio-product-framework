@@ -17,9 +17,10 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `packages/storage` | Signed upload / public URL blocks |
 | `packages/flags` | Feature flag evaluation shape |
 | `packages/ratelimit` | Rate limit assertion shape |
-| `agents/skills` | Task playbooks (incl. Rams, greploop) |
-| `agents/loops` | Multi-step engineered workflows |
-| `docs/` | Architecture + capability catalog + tooling |
+| `agents/skills` | Task playbooks (Rams, greploop, research) |
+| `agents/loops` | Engineered loops (ship, build, improve, operate) |
+| `agents/context/` | Principles, research queue, learnings |
+| `docs/` | Architecture + capabilities + loop engineering |
 
 ## Hard rules
 
@@ -32,6 +33,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 7. Prefer indexes over `.filter()`; paginate unbounded lists.
 8. **Observability:** PostHog for product events/flags; Sentry for exceptions.
 9. **Reviews:** Rams (design) + Greptile/greploop (code) before merge.
+10. **Loop engineering:** bounded recursion, research queue, no auto-merge — see `docs/loop-engineering.md`.
 
 ## Skills & loops (use these)
 
@@ -40,6 +42,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `agents/skills/rams.md` | UI / design review |
 | `agents/skills/greploop.md` | Clear Greptile to 5/5 |
 | `agents/skills/check-pr.md` | PR hygiene |
+| `agents/skills/research.md` | Auto-research → research queue |
 | `agents/skills/add-capability.md` | New package |
 | `agents/skills/add-billing-provider.md` | Billing wiring |
 | `agents/skills/add-runtime-agent-tool.md` | Agent tools |
@@ -47,6 +50,8 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `agents/loops/bootstrap-ai-product.md` | New product standup |
 | `agents/loops/scaffold-product-feature.md` | Feature vertical |
 | `agents/loops/ship-ready-pr.md` | Merge-ready PR |
+| `agents/loops/improve-framework.md` | Self-recursive framework improve |
+| `agents/loops/operate-handover.md` | Client/operator handover (self-serve) |
 
 ## External apps to install on the GitHub repo
 

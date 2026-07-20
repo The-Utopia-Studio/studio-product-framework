@@ -62,4 +62,7 @@ pnpm dev:web
 
 Use `agents/loops/bootstrap-ai-product.md`, then `agents/loops/ship-ready-pr.md` (Rams → CI → greploop).
 
-Read [architecture.md](./architecture.md) and [capabilities.md](./capabilities.md).
+Ongoing improve: `agents/skills/research.md` → `agents/loops/improve-framework.md`.  
+Client handover: `agents/loops/operate-handover.md` (1–2 feedback iterations, then they operate).
+
+Read [architecture.md](./architecture.md), [capabilities.md](./capabilities.md), [loop-engineering.md](./loop-engineering.md).
