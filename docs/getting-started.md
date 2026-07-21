@@ -66,5 +66,6 @@ Then `agents/loops/bootstrap-ai-product.md`, then `agents/loops/ship-ready-pr.md
 Ongoing improve: `agents/skills/research.md` → `agents/loops/improve-framework.md`.  
 Client handover: `agents/loops/operate-handover.md` (1–2 feedback iterations, then they operate).
 
-Read [architecture.md](./architecture.md), [capabilities.md](./capabilities.md), [loop-engineering.md](./loop-engineering.md).  
+See [architecture.md](./architecture.md), [capabilities.md](./capabilities.md), [loop-engineering.md](./loop-engineering.md).  
+Visual overview: [diagrams/spf-architecture.html](./diagrams/spf-architecture.html)  
 Discovery playbook (external): [Icarus](https://the-utopia-studio.github.io/Icarus/).
