@@ -4,14 +4,19 @@ node_modules/
 dist/
 build/
 .react-router/
+.next/
 
 .env
 .env.local
 .env.*.local
 
+# Hivemind personal overrides (committed routing: .hivemind)
+.hivemind.local
+
 # App-specific
 apps/web/build/
 apps/web/.react-router/
+apps/web/.next/
 apps/web/.vercel/
 
 # Package build output

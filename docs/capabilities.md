@@ -40,6 +40,7 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 | Operate / handover | `agents/loops/operate-handover.md` | **Shipped** |
 | Design review | Rams GitHub App + `agents/skills/rams.md` | **Process** |
 | Code review | Greptile + `agents/skills/greploop.md` | **Process** |
+| Shared agent memory | Hivemind + `docs/hivemind.md` + `agents/skills/hivemind.md` | **Process** (team install) |
 | Ship-ready loop | `agents/loops/ship-ready-pr.md` | **Shipped** (docs) |
 | CI | `.github/workflows/ci.yml` | **Shipped** |
 | Lint / types | ESLint + `pnpm typecheck` | **Shipped** (strict on packages) |
@@ -53,8 +54,9 @@ Workflow · Workpool · R2 · RAG · Autumn · `@convex-dev/ratelimiter`
 1. Clone monorepo  
 2. Fill env (Clerk, Convex, Polar, PostHog, Sentry)  
 3. Install Greptile + Rams on GitHub  
-4. `pnpm install` + Convex + `pnpm dev:web`  
-5. Build product in `apps/*` using packages — don’t fork mechanics  
+4. Install Hivemind and join the team workspace ([hivemind.md](./hivemind.md))  
+5. `pnpm install` + Convex + `pnpm dev:web`  
+6. Build product in `apps/*` using packages — don’t fork mechanics  
 
 See [production-readiness.md](./production-readiness.md) for the honest scorecard.  
 Convex components guide: [convex-components.md](./convex-components.md) · catalog: https://www.convex.dev/components

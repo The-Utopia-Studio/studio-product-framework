@@ -3,7 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**", ".react-router/**"]
+      "outputs": ["dist/**", "build/**", ".next/**"]
     },
     "dev": {
       "cache": false,

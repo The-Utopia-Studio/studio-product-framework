@@ -17,6 +17,7 @@ alwaysApply: true
 - Runtime agents require sandboxes (`@studio/ai-runtime`). Builder agents use `agents/`.
 - Billing: Polar + Stripe (subscriptions) and Autumn (credits) are all first-class.
 - Observability: PostHog for product analytics/flags; Sentry for errors.
+- Shared agent memory: Hivemind (Deeplake) — capture on by default via `.hivemind`; git (`agents/`, `docs/`) remains durable truth. See `docs/hivemind.md`.
 - Before merging UI: Rams skill / Rams GitHub App. Before merging code: Greptile + greploop.
 - Framework improvement: `research` → queue → `improve-framework` (depth ≤3, no auto-merge). Handover via `operate-handover` — operators own tweaks after 1–2 Studio iterations.
 - Venture products: `score-problem` → `commit-v1` (discovery artifacts under `agents/context/discovery/`) before bootstrap. Platform plumbing may skip.

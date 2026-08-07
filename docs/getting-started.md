@@ -10,11 +10,19 @@
 - OpenRouter (or OpenAI) for inference
 - Optional: sandbox provider credentials for runtime agents
 - GitHub: install **Greptile** + **Rams** apps on the repo
+- **Hivemind** (required for team agents): follow [hivemind.md](./hivemind.md) — install CLI, login to Utopia org / `studio-product-framework` workspace, restart Cursor
 
 ## Install
 
 ```bash
 pnpm install
+```
+
+Shared agent memory (each engineer, after org exists):
+
+```bash
+curl -fsSL https://deeplake.ai/hivemind.sh | sh
+# restart Cursor; trust hooks; confirm with: hivemind status
 ```
 
 ## Configure the reference app
@@ -23,7 +31,7 @@ pnpm install
 cp apps/web/.env.example apps/web/.env.local
 ```
 
-Fill in Convex, Clerk, billing, `VITE_POSTHOG_KEY`, `VITE_SENTRY_DSN`, and model keys.
+Fill in Convex, Clerk, billing, `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_SENTRY_DSN`, and model keys.
 
 ## Develop
 

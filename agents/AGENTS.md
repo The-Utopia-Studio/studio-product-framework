@@ -6,7 +6,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 
 | Path | Purpose |
 |------|---------|
-| `apps/web` | Reference product (React Router 7 + Convex + Clerk) |
+| `apps/web` | Reference product (Next.js App Router + Convex + Clerk) |
 | `packages/core` | `Result`, `StudioError` |
 | `packages/auth` | Identity types + `requireIdentity` |
 | `packages/billing` | Polar / Stripe / Autumn blocks |
@@ -17,10 +17,10 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `packages/storage` | Signed upload / public URL blocks |
 | `packages/flags` | Feature flag evaluation shape |
 | `packages/ratelimit` | Rate limit assertion shape |
-| `agents/skills` | Task playbooks (Rams, greploop, research, score-problem) |
+| `agents/skills` | Task playbooks (Rams, greploop, research, score-problem, hivemind) |
 | `agents/loops` | Engineered loops (discover/commit, ship, build, improve, operate) |
 | `agents/context/` | Principles, research queue, learnings, discovery gate |
-| `docs/` | Architecture + capabilities + loop engineering |
+| `docs/` | Architecture + capabilities + loop engineering + Hivemind |
 
 ## Hard rules
 
@@ -35,6 +35,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 9. **Reviews:** Rams (design) + Greptile/greploop (code) before merge.
 10. **Loop engineering:** bounded recursion, research queue, no auto-merge — see `docs/loop-engineering.md`.
 11. **Venture commit gate:** `commit-v1` before bootstrap for customer products — `agents/context/discovery/`.
+12. **Shared agent memory:** Hivemind on by default (`.hivemind` → `studio-product-framework`); git remains durable truth — see `docs/hivemind.md`.
 
 ## Skills & loops (use these)
 
@@ -43,6 +44,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `agents/skills/rams.md` | UI / design review |
 | `agents/skills/greploop.md` | Clear Greptile to 5/5 |
 | `agents/skills/check-pr.md` | PR hygiene |
+| `agents/skills/hivemind.md` | Shared memory setup / doctrine / promote-to-git |
 | `agents/skills/research.md` | Auto-research → research queue |
 | `agents/skills/score-problem.md` | Problem scorecard + evidence ladder |
 | `agents/skills/add-capability.md` | New package |
@@ -60,6 +62,11 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 
 1. [Greptile](https://www.greptile.com) — code review  
 2. [Rams](https://www.rams.ai) — design review  
+
+## Shared agent memory (every engineer)
+
+1. Follow [docs/hivemind.md](../docs/hivemind.md) — install, login, restart, smoke test  
+2. Keep capture on for SPF work; venture isolation via separate Deeplake workspaces
 
 ## Commands
 

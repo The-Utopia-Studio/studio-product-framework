@@ -14,6 +14,7 @@ The **shape is best-in-class** for an AI-native company framework on Convex:
 - Builder agents (`agents/`) vs runtime agents (`@studio/ai-runtime`)
 - Rams + Greptile/greploop as the design/code review OS
 - PostHog + Sentry as observability defaults
+- Hivemind as shared agent memory across the team (see [hivemind.md](./hivemind.md))
 
 What it was *not* yet: a finished lift-and-use product. It was a strong manifesto sitting on a Polar/Clerk starter. This push closes the worst security/branding blockers and documents remaining gaps honestly.
 
@@ -54,7 +55,8 @@ Caveats: architecture ≠ complete adapters. Treat Polar as the reference billin
 4. `authedQuery` / `authedMutation` helpers + `returns` on all public Convex functions  
 5. `@convex-dev/eslint-plugin` + package unit tests + Convex authz tests  
 6. Install Greptile + Rams GitHub Apps on the repo  
-7. Tighten Effect programs (compose debit+inference, idempotency, retries)
+7. Stand up Hivemind org/workspace and have every engineer install ([hivemind.md](./hivemind.md))  
+8. Tighten Effect programs (compose debit+inference, idempotency, retries)
 
 ## Naming
 

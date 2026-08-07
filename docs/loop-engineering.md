@@ -89,7 +89,7 @@ This matches delivery: we hand over a **system they can operate**, not a retaine
 | At client handover | `operate-handover` |
 | Never unattended | Merge to `main`, `convex deploy`, billing/wallet changes without human gate |
 
-Prefer Cursor `/loop` or a scheduled agent session over inventing a second orchestration runtime. File-based artifacts in `agents/context/` are the memory — git is the audit log.
+Prefer Cursor `/loop` or a scheduled agent session over inventing a second orchestration runtime. File-based artifacts in `agents/context/` are the **git-audited** memory — git is the audit log. **Hivemind** is the **session/team** memory layer (traces, wiki summaries, emergent skills across Cursor/Claude/Codex). Keep capture on during loop work; promote durable patterns into `agents/` via PR. See [hivemind.md](./hivemind.md).
 
 ## Anti-patterns (reject these)
 
@@ -99,10 +99,13 @@ Prefer Cursor `/loop` or a scheduled agent session over inventing a second orche
 - New packages/skills that do not map to a capability or scorecard gap
 - Humans as the default fix path after handover (use operate loop instead)
 - Runtime agents self-modifying builder skills (wrong agent kind)
+- Treating Hivemind as a replacement for committed `agents/` skills (promote keepers; don’t dual-source hard rules)
+- Capturing client/venture secrets into the shared `studio-product-framework` workspace
 
 ## Related
 
 - Loops: `agents/loops/`
 - Research skill: `agents/skills/research.md`
+- Shared agent memory: `docs/hivemind.md`, `agents/skills/hivemind.md`
 - Scorecard: `docs/production-readiness.md`
 - Capability truth: `docs/capabilities.md`

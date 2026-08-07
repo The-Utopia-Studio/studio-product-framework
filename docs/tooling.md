@@ -1,4 +1,16 @@
-# Tooling — reviews, analytics, errors
+# Tooling — reviews, analytics, errors, shared agent memory
+
+## Hivemind (shared agent memory) — required for the team
+
+- **Product:** https://deeplake.ai/hivemind — cloud-backed capture/recall across Cursor, Claude Code, Codex, and other agents  
+- **Team runbook (share with engineers):** [hivemind.md](./hivemind.md)  
+- **Agent skill:** `agents/skills/hivemind.md`  
+- **Repo pin:** committed `.hivemind` → workspace `studio-product-framework` (see `.hivemind.example`)  
+- **When:** always on for normal SPF work; opt out only for sensitive trees/sessions  
+
+**Doctrine:** Hivemind compounds session memory and emergent skills across the team. Git (`agents/`, `docs/`) stays the source of truth for hard rules and durable playbooks — promote keepers from Hivemind into PRs.
+
+Install (each engineer): `curl -fsSL https://deeplake.ai/hivemind.sh | sh` → login → restart assistants → trust hooks. Admin creates the org/workspace and fills `orgId` in `.hivemind` — details in [hivemind.md](./hivemind.md).
 
 ## Rams (design review)
 
@@ -19,20 +31,20 @@ Install: Greptile GitHub App → enable repo → PRs auto-reviewed. Agents run `
 
 ## PostHog (product analytics + flags)
 
-- Env: `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`  
+- Env: `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`  
 - Wired in `ObservabilityProvider`  
 - Event names: `@studio/observability` → `StudioEvents`  
 - Feature flags: evaluate server-side for billing/agent gates (`@studio/flags`)
 
 ## Sentry (errors)
 
-- Env: `VITE_SENTRY_DSN` (browser); add server DSN in Convex when wiring Node actions  
+- Env: `NEXT_PUBLIC_SENTRY_DSN` (browser); add server DSN in Convex when wiring Node actions  
 - Error boundary reports via `captureAppException`  
 - Use for production failures; pair with PostHog for product funnels
 
 ## Vercel Analytics
 
-Still mounted in `root.tsx` for web vitals. PostHog owns product analytics; Sentry owns exceptions.
+Mounted in `app/layout.tsx` for web vitals. PostHog owns product analytics; Sentry owns exceptions.
 
 ## Loop engineering (research + self-improve)
 
@@ -41,6 +53,7 @@ Still mounted in `root.tsx` for web vitals. PostHog owns product analytics; Sent
 - **Research skill:** `agents/skills/research.md` → `agents/context/research-queue.md`
 - **Improve loop:** `agents/loops/improve-framework.md` (bounded recursion; no auto-merge)
 - **Handover:** `agents/loops/operate-handover.md` — operators run loops after 1–2 Studio iterations
-- **Memory:** `agents/context/learnings.md` (git-audited; not a second database)
+- **Memory (git-audited):** `agents/context/learnings.md` — blocked notes, scorecard evidence; not a second database  
+- **Memory (session/team):** Hivemind — traces + summaries across agents; see [hivemind.md](./hivemind.md)
 
-Cadence: before venture build → commit-v1; every PR → ship-ready; weekly/on-demand → research then one improve outer iter. Use Cursor `/loop` if you want a heartbeat — do not invent a parallel orchestration runtime.
+Cadence: before venture build → commit-v1; every PR → ship-ready; weekly/on-demand → research then one improve outer iter. Use Cursor `/loop` if you want a heartbeat — do not invent a parallel orchestration runtime. Keep Hivemind capture on so ship/improve sessions compound for the next engineer.

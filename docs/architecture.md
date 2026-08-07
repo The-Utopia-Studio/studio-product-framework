@@ -77,7 +77,7 @@ See [loop-engineering.md](./loop-engineering.md), `agents/skills/research.md`, `
 One Turborepo so coding agents see web + packages + Convex + agent config in one context window. Structure is for humans **and** models.
 
 ```
-apps/web                 Reference product (React Router + Convex)
+apps/web                 Reference product (Next.js App Router + Convex)
 packages/core            Result / error primitives
 packages/auth            Identity contracts + guards
 packages/billing         Polar / Stripe / Autumn capability blocks
@@ -92,15 +92,16 @@ agents/                  Builder-agent surface (skills, loops, research queue)
 docs/                    Architecture + capabilities + loop engineering + tooling
 ```
 
-## Observability & reviews
+## Observability, reviews & agent memory
 
 - **PostHog** — product analytics + feature flags (`@studio/observability`, `@studio/flags`)
 - **Sentry** — exceptions / performance
 - **Rams** — design review on PRs + `agents/skills/rams.md`
 - **Greptile + greploop** — code review loop to 5/5
 - **Research → improve** — auto-research queue + self-recursive framework loop
+- **Hivemind** — shared session memory + skill mining across coding agents; git remains durable truth (`agents/`, `docs/`)
 
-See [capabilities.md](./capabilities.md), [tooling.md](./tooling.md), [loop-engineering.md](./loop-engineering.md).
+See [capabilities.md](./capabilities.md), [tooling.md](./tooling.md), [hivemind.md](./hivemind.md), [loop-engineering.md](./loop-engineering.md).
 
 ## Adding a capability
 

@@ -13,3 +13,4 @@
 11. Loops are bounded and recursive; research writes a queue; improve consumes it; humans merge.
 12. After delivery: 1–2 feedback iterations, then operators run the loops themselves (`operate-handover`).
 13. Venture products: `commit-v1` (scorecard + evidence + eval-first spec) before bootstrap — Icarus thinking, SPF artifacts.
+14. Hivemind is the team’s shared agent memory (capture on by default); git (`agents/`, `docs/`) remains durable truth — promote keepers; isolate venture workspaces.

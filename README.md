@@ -34,7 +34,7 @@ Full map: [docs/capabilities.md](./docs/capabilities.md) · Tooling: [docs/tooli
 ```bash
 pnpm install
 cp apps/web/.env.example apps/web/.env.local
-# fill Clerk, Convex, billing, VITE_POSTHOG_KEY, VITE_SENTRY_DSN, model keys
+# fill Clerk, Convex, billing, NEXT_PUBLIC_POSTHOG_KEY, NEXT_PUBLIC_SENTRY_DSN, model keys
 
 cd apps/web && npx convex dev   # terminal 1
 pnpm dev:web                    # terminal 2

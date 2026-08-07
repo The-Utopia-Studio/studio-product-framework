@@ -1,19 +1,18 @@
 {
   "name": "@studio/web",
   "private": true,
-  "type": "module",
   "scripts": {
-    "build": "react-router build",
-    "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
-    "lint": "eslint . --max-warnings 50",
-    "clean": "rm -rf build .react-router"
+    "dev": "next dev --turbopack --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "next lint",
+    "clean": "rm -rf .next"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.3.22",
     "@ai-sdk/react": "^1.2.12",
-    "@clerk/react-router": "^1.4.8",
+    "@clerk/nextjs": "^6.20.0",
     "@convex-dev/polar": "^0.4.5",
     "@convex-dev/rate-limiter": "^0.3.2",
     "@polar-sh/sdk": "^0.32.16",
@@ -29,8 +28,6 @@
     "@radix-ui/react-toggle": "^1.1.9",
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
-    "@react-router/node": "^7.5.3",
-    "@react-router/serve": "^7.5.3",
     "@sentry/react": "^9.30.0",
     "@studio/ai-runtime": "workspace:*",
     "@studio/auth": "workspace:*",
@@ -46,22 +43,20 @@
     "@tanstack/react-table": "^8.21.3",
     "@useautumn/convex": "^0.0.23",
     "@vercel/analytics": "^1.5.0",
-    "@vercel/react-router": "^1.1.2",
     "ai": "^4.3.16",
     "autumn-js": "^0.1.85",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.42.3",
     "effect": "^3.22.0",
-    "isbot": "^5.1.27",
     "lucide-react": "^0.511.0",
     "motion": "^12.23.12",
+    "next": "15.3.8",
     "next-themes": "^0.4.6",
     "posthog-js": "^1.255.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
-    "react-router": "^7.5.3",
     "recharts": "^2.15.3",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.3.0",
@@ -69,15 +64,12 @@
     "zod": "^3.25.39"
   },
   "devDependencies": {
-    "@react-router/dev": "^7.5.3",
-    "@tailwindcss/vite": "^4.1.4",
+    "@tailwindcss/postcss": "^4.1.4",
     "@types/node": "^20",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "tailwindcss": "^4.1.4",
     "tw-animate-css": "^1.3.2",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.3",
-    "vite-tsconfig-paths": "^5.1.4"
+    "typescript": "^5.8.3"
   }
 }
