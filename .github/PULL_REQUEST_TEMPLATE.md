@@ -8,7 +8,7 @@
 - [ ] Billing (Polar / Stripe / Autumn)
 - [ ] Runtime agent / inference
 - [ ] Effect-critical (money / inference / delivery)
-- [ ] Observability (PostHog / Sentry)
+- [ ] Observability (PostHog / Sentry / Langfuse)
 - [ ] Email / storage / flags / rate limit
 - [ ] UI only
 
@@ -16,6 +16,7 @@
 
 - [ ] Rams design review addressed (UI)
 - [ ] Greptile / greploop clean (or notes below)
+- [ ] Aikido critical/high cleared (or risk notes)
 - [ ] `pnpm typecheck` + `pnpm lint` locally
 
 ## Test plan

@@ -7,7 +7,7 @@ Quick context:
 - [docs/architecture.md](./docs/architecture.md)
 - [docs/capabilities.md](./docs/capabilities.md)
 - [docs/loop-engineering.md](./docs/loop-engineering.md) — bounded self-improve + research + handover
-- [docs/tooling.md](./docs/tooling.md) — Rams, Greptile/greploop, PostHog, Sentry, Hivemind
+- [docs/tooling.md](./docs/tooling.md) — Rams, Greptile, Aikido, Langfuse, Ponytail, Superpowers, Firecrawl/Parallel/Browserbase, Hivemind
 - [docs/hivemind.md](./docs/hivemind.md) — team shared agent memory (install + keep active)
 - [docs/production-readiness.md](./docs/production-readiness.md) — architecture verdict + scorecard
 
@@ -22,7 +22,7 @@ Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Disc
 - Treat Polar, Stripe, and Autumn as first-class billing paths (subscriptions + credits).
 - Keep Effect and runtime agents in scope now; do not defer them.
 - Prefer a cleaner shell when it clarifies the framework; evolving the existing tree is also fine.
-- Use Rams for design review, Greptile + greploop for code review, PostHog + Sentry for observability, and Hivemind for shared agent memory across the team.
+- Use Rams for design review, Greptile + greploop for code review, Aikido for security/pentest, Langfuse for LLM traces, Ponytail for token-efficient codegen, Superpowers for plan/TDD harness, Parallel/Firecrawl/Browserbase for web jobs, compound-engineering for features, PostHog + Sentry for product/error observability, and Hivemind for shared agent memory across the team.
 - Prefer Convex components when they make adding capabilities easier.
 - Be critical of framework additions—only keep loop or self-improve pieces that clearly belong.
 - Continuous improvement via loop engineering should not depend on a human owning the research/improve cycle.

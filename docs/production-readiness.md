@@ -12,8 +12,9 @@ The **shape is best-in-class** for an AI-native company framework on Convex:
 - Apps orchestrate; packages are composable capability ports
 - Effect only for money / inference / delivery
 - Builder agents (`agents/`) vs runtime agents (`@studio/ai-runtime`)
-- Rams + Greptile/greploop as the design/code review OS
-- PostHog + Sentry as observability defaults
+- Rams + Greptile/greploop as the design/code review OS; Aikido for security/pentest
+- PostHog + Sentry as product/error observability; Langfuse for LLM traces
+- Ponytail for token-efficient builder codegen
 - Hivemind as shared agent memory across the team (see [hivemind.md](./hivemind.md))
 
 What it was *not* yet: a finished lift-and-use product. It was a strong manifesto sitting on a Polar/Clerk starter. This push closes the worst security/branding blockers and documents remaining gaps honestly.

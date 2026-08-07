@@ -18,3 +18,11 @@ export {
   type ServerAnalytics,
   type ServerErrorReporter,
 } from "./server";
+
+export {
+  isLangfuseConfigured,
+  langfuseConfigFromEnv,
+  traceGeneration,
+  type LangfuseConfig,
+  type LangfuseGenerationInput,
+} from "./langfuse";

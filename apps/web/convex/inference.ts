@@ -8,6 +8,10 @@ import {
   type WalletError,
 } from "@studio/effect-critical";
 import { createOpenRouterGateway } from "@studio/ai-runtime";
+import {
+  langfuseConfigFromEnv,
+  traceGeneration,
+} from "@studio/observability/langfuse";
 import { isAutumnConfigured, autumn } from "./autumn";
 
 const DEFAULT_CREDIT_COST = 1;
@@ -174,6 +178,21 @@ export const runMeteredInference = action({
         status: "succeeded",
       });
 
+      void traceGeneration(langfuseConfigFromEnv(), {
+        name: "metered_inference",
+        userId,
+        model: result.inference.model,
+        input: args.messages,
+        output: result.inference.text,
+        inputTokens: result.inference.inputTokens,
+        outputTokens: result.inference.outputTokens,
+        metadata: {
+          transactionId: result.transactionId,
+          creditCost,
+          providerRequestId: result.inference.providerRequestId,
+        },
+      });
+
       if (isAutumnConfigured()) {
         try {
           await autumn.track(ctx, {
@@ -206,6 +225,17 @@ export const runMeteredInference = action({
         creditCost: 0,
         status: "failed",
         errorMessage: message,
+      });
+
+      void traceGeneration(langfuseConfigFromEnv(), {
+        name: "metered_inference",
+        userId,
+        model,
+        input: args.messages,
+        output: message,
+        level: "ERROR",
+        statusMessage: message,
+        metadata: { creditCost },
       });
 
       throw new Error(message);

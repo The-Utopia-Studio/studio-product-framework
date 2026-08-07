@@ -1,7 +1,7 @@
 ---
 name: check-pr
 description: >
-  Check a PR for unresolved review comments (incl. Greptile/Rams), failing
+  Check a PR for unresolved review comments (incl. Greptile/Rams/Aikido), failing
   checks, and incomplete description. Fix and resolve when asked.
 ---
 
@@ -17,6 +17,7 @@ Requires `gh` authenticated.
    - Failing CI checks
    - Greptile comments / score
    - Rams design-review comments (if present)
+   - Aikido security findings / checks (if present)
    - Human review threads
    - Description TODOs
 4. Categorize: actionable / informational / already addressed
@@ -26,5 +27,5 @@ Requires `gh` authenticated.
 ## Done when
 
 - CI green
-- No unresolved actionable Greptile/Rams/human comments (or explicitly deferred)
+- No unresolved actionable Greptile/Rams/Aikido/human comments (or explicitly deferred)
 - Description complete

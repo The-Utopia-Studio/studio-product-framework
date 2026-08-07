@@ -16,9 +16,11 @@ alwaysApply: true
 - Effect (`@studio/effect-critical`) only for money, inference, delivery.
 - Runtime agents require sandboxes (`@studio/ai-runtime`). Builder agents use `agents/`.
 - Billing: Polar + Stripe (subscriptions) and Autumn (credits) are all first-class.
-- Observability: PostHog for product analytics/flags; Sentry for errors.
+- Observability: PostHog for product analytics/flags; Sentry for errors; Langfuse for LLM traces/cost (wired on metered inference).
 - Shared agent memory: Hivemind (Deeplake) — capture on by default via `.hivemind`; git (`agents/`, `docs/`) remains durable truth. See `docs/hivemind.md`.
-- Before merging UI: Rams skill / Rams GitHub App. Before merging code: Greptile + greploop.
+- Before merging UI: Rams skill / Rams GitHub App. Before merging code: Greptile + greploop. Before merging security-sensitive work: Aikido.
+- Builder agents: Ponytail ladder (`full`); optional Superpowers harness; features via `compound-engineering` loop.
+- Web: Parallel (research) → Firecrawl (scrape) → Browserbase (act) — see `@studio/web-tools`.
 - Framework improvement: `research` → queue → `improve-framework` (depth ≤3, no auto-merge). Handover via `operate-handover` — operators own tweaks after 1–2 Studio iterations.
 - Venture products: `score-problem` → `commit-v1` (discovery artifacts under `agents/context/discovery/`) before bootstrap. Platform plumbing may skip.
 - Public Convex functions: auth, args+returns validators, await promises, indexes over filter, paginate unbounded lists.

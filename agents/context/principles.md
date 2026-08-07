@@ -8,9 +8,13 @@
 6. Effect only for money, inference, delivery.
 7. Runtime agents run in sandboxes; builder agents use `agents/`.
 8. Actions orchestrate; packages expose composable capability blocks.
-9. PostHog for product truth; Sentry for failure truth.
-10. Rams reviews design; Greptile + greploop reviews code — before merge.
-11. Loops are bounded and recursive; research writes a queue; improve consumes it; humans merge.
-12. After delivery: 1–2 feedback iterations, then operators run the loops themselves (`operate-handover`).
-13. Venture products: `commit-v1` (scorecard + evidence + eval-first spec) before bootstrap — Icarus thinking, SPF artifacts.
-14. Hivemind is the team’s shared agent memory (capture on by default); git (`agents/`, `docs/`) remains durable truth — promote keepers; isolate venture workspaces.
+9. PostHog for product truth; Sentry for failure truth; Langfuse for LLM trace/cost truth.
+10. Rams reviews design; Greptile + greploop reviews code; Aikido owns security/pentest — before merge.
+11. Ponytail ladder for builder agents — smallest correct diff; never cut validation or security.
+12. Loops are bounded and recursive; research writes a queue; improve consumes it; humans merge.
+13. After delivery: 1–2 feedback iterations, then operators run the loops themselves (`operate-handover`).
+14. Venture products: `commit-v1` (scorecard + evidence + eval-first spec) before bootstrap — Icarus thinking, SPF artifacts.
+15. Hivemind is the team’s shared agent memory (capture on by default); git (`agents/`, `docs/`) remains durable truth — promote keepers; isolate venture workspaces.
+16. Compound engineering: Plan → Work → Review → **Compound** (`agents/loops/compound-engineering.md`) — each change should make the next easier.
+17. Web tools: Parallel (cited research) → Firecrawl (page body) → Browserbase (act); do not overlap jobs.
+18. Superpowers is the optional day-to-day coding harness; SPF ship-ready + Convex rules still win.

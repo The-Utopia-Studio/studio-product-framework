@@ -69,11 +69,13 @@ pnpm dev:web
 ## First ship
 
 Use `agents/loops/commit-v1.md` before a venture bootstrap (scorecard → evidence → eval-first spec).  
-Then `agents/loops/bootstrap-ai-product.md`, then `agents/loops/ship-ready-pr.md` (Rams → CI → greploop).
+Then `agents/loops/bootstrap-ai-product.md`, then prefer `agents/loops/compound-engineering.md` for features, and `agents/loops/ship-ready-pr.md` before merge (Ponytail → Rams → CI → greploop → Aikido).
+
+Install tooling: Greptile + Rams + Aikido on GitHub; Langfuse keys; Ponytail + Superpowers; Firecrawl/Parallel/Browserbase as needed — see [tooling.md](./tooling.md).
 
 Ongoing improve: `agents/skills/research.md` → `agents/loops/improve-framework.md`.  
 Client handover: `agents/loops/operate-handover.md` (1–2 feedback iterations, then they operate).
 
 See [architecture.md](./architecture.md), [capabilities.md](./capabilities.md), [loop-engineering.md](./loop-engineering.md).  
-Visual overview: [diagrams/spf-architecture.html](./diagrams/spf-architecture.html)  
+Visual overview: [diagrams/spf-offering.html](./diagrams/spf-offering.html) · [framework stack](./diagrams/spf-framework-stack.html) · [solution architecture](./diagrams/spf-architecture.html)  
 Discovery playbook (external): [Icarus](https://the-utopia-studio.github.io/Icarus/).

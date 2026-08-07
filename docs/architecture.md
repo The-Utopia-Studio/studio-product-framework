@@ -88,6 +88,7 @@ packages/email           Transactional email blocks
 packages/storage         Signed upload / public URL blocks
 packages/flags           Feature flag evaluation
 packages/ratelimit       Rate limit assertions
+packages/web-tools       Firecrawl / Parallel / Browserbase ports
 agents/                  Builder-agent surface (skills, loops, research queue)
 docs/                    Architecture + capabilities + loop engineering + tooling
 ```
@@ -96,8 +97,14 @@ docs/                    Architecture + capabilities + loop engineering + toolin
 
 - **PostHog** — product analytics + feature flags (`@studio/observability`, `@studio/flags`)
 - **Sentry** — exceptions / performance
+- **Langfuse** — LLM traces on metered inference (`@studio/observability/langfuse`)
 - **Rams** — design review on PRs + `agents/skills/rams.md`
 - **Greptile + greploop** — code review loop to 5/5
+- **Aikido** — security scanning + AI pentest (`agents/skills/aikido.md`)
+- **Ponytail** — token-efficient builder codegen (`agents/skills/ponytail.md`)
+- **Superpowers** — brainstorm/plan/TDD harness (`agents/skills/superpowers.md`)
+- **Compound engineering** — Plan → Work → Review → Compound (`agents/loops/compound-engineering.md`)
+- **Parallel / Firecrawl / Browserbase** — web research vs scrape vs act (`@studio/web-tools`)
 - **Research → improve** — auto-research queue + self-recursive framework loop
 - **Hivemind** — shared session memory + skill mining across coding agents; git remains durable truth (`agents/`, `docs/`)
 

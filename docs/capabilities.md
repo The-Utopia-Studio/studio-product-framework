@@ -24,6 +24,10 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 | Rate limiting | `@studio/ratelimit` | **Port** |
 | Analytics | `@studio/observability` + PostHog | **Shipped** (browser; env optional) |
 | Errors | `@studio/observability` + Sentry | **Shipped** (browser; env optional) |
+| LLM traces / cost | Langfuse via `@studio/observability/langfuse` | **Shipped** (metered inference; keys optional) |
+| Web scrape (URL → md) | Firecrawl + `@studio/web-tools` + `webTools.scrape` | **Shipped** (needs `FIRECRAWL_API_KEY`) |
+| Cited web search / research | Parallel + `@studio/web-tools` + `webTools.search` | **Shipped** (needs `PARALLEL_API_KEY`) |
+| Browser-as-a-service | Browserbase + `@studio/web-tools` + `webTools.createSession` | **Shipped** (session create; drive in sandbox) |
 | Deploy | Vercel | **Shipped** (preset) |
 
 ## Builder / quality OS
@@ -33,13 +37,17 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 | Agent instructions | `AGENTS.md`, `agents/` | **Shipped** |
 | Skills / loops | `agents/skills`, `agents/loops` | **Shipped** |
 | Loop engineering doctrine | `docs/loop-engineering.md` | **Shipped** |
+| Compound engineering loop | `agents/loops/compound-engineering.md` | **Shipped** (docs; agent-run) |
+| Superpowers harness | `agents/skills/superpowers.md` + upstream plugin | **Process** (install per harness) |
 | Commit gate (Icarus → artifacts) | `agents/loops/commit-v1.md`, `agents/context/discovery/` | **Shipped** |
 | Problem score / evidence | `agents/skills/score-problem.md` | **Shipped** |
-| Auto-research → queue | `agents/skills/research.md`, `agents/context/research-queue.md` | **Shipped** |
+| Auto-research → queue | `agents/skills/research.md` (+ Parallel/Firecrawl) | **Shipped** |
 | Self-improve loop | `agents/loops/improve-framework.md` | **Shipped** (docs; agent-run) |
 | Operate / handover | `agents/loops/operate-handover.md` | **Shipped** |
 | Design review | Rams GitHub App + `agents/skills/rams.md` | **Process** |
 | Code review | Greptile + `agents/skills/greploop.md` | **Process** |
+| Security / pentest | Aikido + `agents/skills/aikido.md` | **Process** |
+| Token-efficient codegen | Ponytail + `agents/skills/ponytail.md` | **Process** (install skill; infused in ship-ready) |
 | Shared agent memory | Hivemind + `docs/hivemind.md` + `agents/skills/hivemind.md` | **Process** (team install) |
 | Ship-ready loop | `agents/loops/ship-ready-pr.md` | **Shipped** (docs) |
 | CI | `.github/workflows/ci.yml` | **Shipped** |
@@ -52,11 +60,13 @@ Workflow · Workpool · R2 · RAG · Autumn · `@convex-dev/ratelimiter`
 ## What “lift and use” means today
 
 1. Clone monorepo  
-2. Fill env (Clerk, Convex, Polar, PostHog, Sentry)  
-3. Install Greptile + Rams on GitHub  
+2. Fill env (Clerk, Convex, Polar, PostHog, Sentry, Langfuse, Firecrawl/Parallel/Browserbase as needed)  
+3. Install Greptile + Rams + Aikido on GitHub  
 4. Install Hivemind and join the team workspace ([hivemind.md](./hivemind.md))  
-5. `pnpm install` + Convex + `pnpm dev:web`  
-6. Build product in `apps/*` using packages — don’t fork mechanics  
+5. Install Ponytail + Superpowers for builder agents  
+6. `pnpm install` + Convex + `pnpm dev:web`  
+7. Build product in `apps/*` using packages — don’t fork mechanics  
+8. Features: prefer `agents/loops/compound-engineering.md` so each change compounds 
 
 See [production-readiness.md](./production-readiness.md) for the honest scorecard.  
 Convex components guide: [convex-components.md](./convex-components.md) · catalog: https://www.convex.dev/components

@@ -113,6 +113,9 @@ importers:
       '@studio/storage':
         specifier: workspace:*
         version: link:../../packages/storage
+      '@studio/web-tools':
+        specifier: workspace:*
+        version: link:../../packages/web-tools
       '@tabler/icons-react':
         specifier: ^3.33.0
         version: 3.45.0(react@19.2.7)
@@ -307,6 +310,16 @@ importers:
         version: 5.9.3
 
   packages/storage:
+    dependencies:
+      '@studio/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
+  packages/web-tools:
     dependencies:
       '@studio/core':
         specifier: workspace:*

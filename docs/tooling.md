@@ -29,6 +29,62 @@ Install: Rams GitHub App → select this repo → open a PR.
 
 Install: Greptile GitHub App → enable repo → PRs auto-reviewed. Agents run `/greploop` (or follow the skill) to clear comments.
 
+## Aikido (security + AI pentest)
+
+- **Product:** https://www.aikido.dev — code/cloud/runtime security + AI-assisted pentesting  
+- **Agent skill:** `agents/skills/aikido.md`  
+- **When:** continuous on PRs; Attack pentest before major launches / handover  
+
+Install: Aikido → connect GitHub org/repo → enable PR checks. Clear critical/high before merge; link pentest reports in release notes when used.
+
+## Langfuse (LLM observability)
+
+- **Product:** https://langfuse.com — traces, token/cost, prompts, evals for LLM apps  
+- **Agent skill:** `agents/skills/langfuse.md`  
+- **Env:** `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASE_URL` (server-side only)  
+- **Split:** PostHog = product; Sentry = errors; Langfuse = model traces  
+- **Shipped:** `runMeteredInference` traces via `@studio/observability/langfuse` when keys are set  
+
+Wire additional inference / runtime-agent entry points the same way.
+
+## Ponytail (token-efficient agent coding)
+
+- **Product:** https://ponytail.dev · https://github.com/dietrichgebert/ponytail  
+- **Agent skill:** `agents/skills/ponytail.md`  
+- **When:** default intensity `full` for builder agents; never drop security/validation  
+- **Infused:** required before large codegen; step 2 of `ship-ready-pr`; aligns with Superpowers YAGNI (smaller correct diff wins)
+
+Install upstream skill per engineer; keep the SPF skill as the repo reminder.
+
+## Superpowers (builder harness)
+
+- **Product:** https://github.com/obra/superpowers  
+- **Agent skill:** `agents/skills/superpowers.md`  
+- **When:** brainstorm → plan → TDD → subagents for day-to-day coding  
+- **Does not replace:** Greptile / Rams / Aikido / Convex hard rules  
+
+Install the plugin in your harness (`/add-plugin superpowers` in Cursor). Map finishes into `ship-ready-pr`.
+
+## Compound engineering (methodology loop)
+
+- **Doctrine:** https://every.to/guides/compound-engineering  
+- **SPF loop:** `agents/loops/compound-engineering.md` (Plan → Work → Review → **Compound**)  
+- **Compound ≠ Hivemind:** Hivemind = session memory; Compound = promote learnings into git skills/packages  
+
+## Web tools (Firecrawl · Parallel · Browserbase)
+
+Decision matrix — pick one primary tool per job:
+
+| Job | Use | Skill | Convex / package |
+|-----|-----|-------|------------------|
+| URL → clean markdown | **Firecrawl** | `firecrawl.md` | `api.webTools.scrape` / `scrapeUrl` |
+| Cited search / research / enrich | **Parallel** | `parallel.md` | `api.webTools.search` / `searchWeb` |
+| Act in a real browser | **Browserbase** | `browserbase.md` | `api.webTools.createSession` / `createBrowserSession` |
+
+Package: `@studio/web-tools`. Env: `FIRECRAWL_API_KEY`, `PARALLEL_API_KEY`, `BROWSERBASE_API_KEY` (+ optional `BROWSERBASE_PROJECT_ID`).
+
+**Overlap:** all three touch “the web.” Do not scrape with Browserbase or deep-research with Firecrawl when Parallel Search suffices. `research` skill prefers Parallel → Firecrawl.
+
 ## PostHog (product analytics + flags)
 
 - Env: `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`  

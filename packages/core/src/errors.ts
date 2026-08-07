@@ -7,6 +7,8 @@ export type StudioErrorCode =
   | "BILLING"
   | "INFERENCE"
   | "DELIVERY"
+  | "CONFIG"
+  | "EXTERNAL"
   | "INTERNAL";
 
 export type StudioError = {

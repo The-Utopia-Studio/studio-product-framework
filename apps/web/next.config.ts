@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     "@studio/storage",
     "@studio/flags",
     "@studio/ratelimit",
+    "@studio/web-tools",
   ],
 };
 

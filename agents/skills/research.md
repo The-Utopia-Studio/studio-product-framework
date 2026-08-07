@@ -14,7 +14,7 @@ Produce **actionable** queue items the improve loop can consume. Humans should n
 
 ## Inputs
 
-Optional focus: `scorecard` | `components` | `billing` | `security` | `observability` | `deps`. Default: scorecard gaps in `docs/production-readiness.md` + **Port** rows in `docs/capabilities.md`.
+Optional focus: `scorecard` | `components` | `billing` | `security` | `observability` | `deps` | `web`. Default: scorecard gaps in `docs/production-readiness.md` + **Port** rows in `docs/capabilities.md`.
 
 ## Forbidden
 
@@ -36,7 +36,10 @@ Optional focus: `scorecard` | `components` | `billing` | `security` | `observabi
 2. **Gather evidence** (only as needed for the focus):
    - Repo: grep/read for missing validators, TODOs, stub ports
    - Docs: Context7 / Convex component catalog for gaps we already named
-   - Web: only for versioned changelogs of deps we already use (Convex, Clerk, Polar, Autumn, Greptile)
+   - **Live web (when needed):**
+     1. **Parallel** (`agents/skills/parallel.md` / `api.webTools.search`) for cited search  
+     2. **Firecrawl** (`agents/skills/firecrawl.md` / `api.webTools.scrape`) for full page bodies of chosen URLs  
+     3. Dep changelogs only when Parallel is unavailable — Convex, Clerk, Polar, Autumn, Greptile, etc.
 
 3. **Score each candidate** (pick top ≤5):
 
@@ -46,7 +49,7 @@ Optional focus: `scorecard` | `components` | `billing` | `security` | `observabi
    | 2 | Moves a Port → Shipped with clear file path |
    | 1 | Nice DX; defer unless no 2–3 items |
 
-4. **Append to** `agents/context/research-queue.md` using the template there. Include: why, evidence path/URL, suggested loop/skill, estimate (S/M/L).
+4. **Append to** `agents/context/research-queue.md` using the template there. Include: why, evidence path/URL (cite Parallel hits), suggested loop/skill, estimate (S/M/L).
 
 5. **Report** to the operator:
 
@@ -56,6 +59,7 @@ Research complete.
   Added:     N items (ids …)
   Skipped:   duplicates / out of scope
   Next:      run agents/loops/improve-framework.md on top item
+           or agents/loops/compound-engineering.md if shipping a feature
 ```
 
 ## Done when
@@ -63,3 +67,4 @@ Research complete.
 - [ ] Queue updated (or explicitly “nothing actionable”)
 - [ ] No code changes except queue / optional learnings note
 - [ ] Each item has evidence + suggested next skill/loop
+- [ ] Web evidence (if any) cites Parallel/Firecrawl URLs
