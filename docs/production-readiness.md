@@ -19,13 +19,14 @@ The **shape is best-in-class** for an AI-native company framework on Convex:
 
 What it was *not* yet: a finished lift-and-use product. It was a strong manifesto sitting on a Polar/Clerk starter. This push closes the worst security/branding blockers and documents remaining gaps honestly.
 
-## Scorecard (post-hardening)
+## Scorecard (post-hardening + fellow-ready docs)
 
 | Dimension | Score | Notes |
 |-----------|------:|-------|
 | Structure | **8.5** | Layout is right; package count slightly ahead of deep adapters |
-| DX / docs | **7.5** | Clear AGENTS + capabilities; status now honest |
-| Agent OS | **8.5** | Skills + loops + research/improve/operate + Icarus commit gate artifacts; still agent-run not cron-autonomous |
+| DX / docs | **8** | Fellow Day-0 + blueprint + AI-in-workflow + DS loop; engineer path still strongest |
+| Agent OS | **8.5** | Skills + loops + research/improve/operate + Icarus commit gate + DS integrate; still agent-run not cron-autonomous |
+| Fellow lift-and-use | **6.5** | Process path clear; starter UI + Ports still require judgment |
 | Security | **6** | Chat auth + subscription IDOR + internal webhooks fixed; more validators/tests still needed |
 | Observability | **5.5** | Browser PostHog/Sentry wired; server capture still thin |
 | Completeness | **5** | Polar path real; Stripe/Autumn/sandbox are extension ports |
@@ -50,14 +51,16 @@ Caveats: architecture ≠ complete adapters. Treat Polar as the reference billin
 
 ## Still required for “best of the best”
 
-1. End-to-end vertical: entitlement → wallet debit → OpenRouter inference → persist  
+1. End-to-end vertical: entitlement → wallet debit → OpenRouter inference → persist *(partially shipped via `runMeteredInference`; chat path is parallel)*  
 2. Real Stripe + Autumn adapters (or clearly “extension” until then)  
 3. Sandbox provider for runtime agents  
 4. `authedQuery` / `authedMutation` helpers + `returns` on all public Convex functions  
 5. `@convex-dev/eslint-plugin` + package unit tests + Convex authz tests  
-6. Install Greptile + Rams GitHub Apps on the repo  
+6. Install Greptile + Rams + Aikido GitHub Apps on the repo  
 7. Stand up Hivemind org/workspace and have every engineer install ([hivemind.md](./hivemind.md))  
-8. Tighten Effect programs (compose debit+inference, idempotency, retries)
+8. Tighten Effect programs (compose debit+inference, idempotency, retries)  
+9. Worked venture example (filled discovery + blueprint + DS plug) for fellow shadowing  
+10. Optional: reference app golden-case vertical that is **not** chat-shaped ([ai-in-workflow.md](./ai-in-workflow.md))
 
 ## Naming
 

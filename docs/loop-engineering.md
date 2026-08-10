@@ -24,9 +24,9 @@ If it cannot state an exit condition, it is not a loop — it is busywork.
 | Kind | Owns | Example |
 |------|------|---------|
 | **Discover** | Problem evidence → scorecard | `score-problem` |
-| **Commit** | Scorable scope before big build | `commit-v1` |
+| **Commit** | Scorable scope before big build | `commit-v1` (+ engineering blueprint) |
 | **Ship** | One PR quality | `ship-ready-pr`, `greploop` |
-| **Build** | One feature / product standup | `scaffold-product-feature`, `bootstrap-ai-product` |
+| **Build** | Product standup / DS / feature | `bootstrap-ai-product`, `integrate-design-system`, `scaffold-product-feature` |
 | **Research** | Framework evidence → queue | `agents/skills/research.md` |
 | **Improve** | Framework score ↑ | `improve-framework` |
 | **Operate** | Handover / self-serve changes | `operate-handover` |
@@ -45,12 +45,17 @@ improve-framework
             └─ ship-ready-pr
                  └─ greploop + rams
 
-# Venture product
+# Venture product (fellow path — docs/fellow-day-0.md)
 score-problem
-  └─ commit-v1
-       └─ bootstrap-ai-product / scaffold-product-feature
-            └─ ship-ready-pr
+  └─ commit-v1 (+ engineering-blueprint)
+       └─ integrate-design-system
+            └─ bootstrap-ai-product / scaffold-product-feature
+                 └─ ship-ready-pr
+                      └─ operate-handover
 ```
+
+AI placement defaults to **workflow-embedded jobs** ([ai-in-workflow.md](./ai-in-workflow.md)), not chat-dashboard clones.
+
 Rules:
 
 1. **Depth ≤ 3** (parent → child → grandchild). No infinite spawn.
@@ -83,7 +88,7 @@ This matches delivery: we hand over a **system they can operate**, not a retaine
 
 | Cadence | Loop |
 |---------|------|
-| Before venture build | `score-problem` → `commit-v1` |
+| Before venture build | `score-problem` → `commit-v1` → blueprint → `integrate-design-system` |
 | Every PR | `ship-ready-pr` |
 | Weekly / when scorecard stale | `research` → `improve-framework` (1 gap max) |
 | At client handover | `operate-handover` |

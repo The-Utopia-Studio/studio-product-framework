@@ -16,17 +16,19 @@ If this feature is the **first committed slice** of a venture v1 (or changes the
 ## Steps
 
 1. **Clarify non-negotiable** — Does this touch money, inference, or delivery? If yes, plan Effect fence usage. Match eval-first autonomy + cost budget if present.
-2. **Locate home** — UI in `apps/web`, orchestration in `apps/web/convex`, shared mechanics in `packages/*`.
-3. **Implement thin vertical slice** in the app first (auth → action → UI). Prefer a golden case from the spec when one exists.
-4. **Extract** only if a second caller needs the same mechanic.
-5. **Wire billing** if gated (Polar/Stripe entitlement or Autumn + wallet).
-6. **Typecheck** — `pnpm typecheck`.
-7. **Update agent context** — if a new pattern emerged, add a short note under `docs/` or a skill.
+2. **AI placement** — Prefer workflow-embedded job UI ([docs/ai-in-workflow.md](../../docs/ai-in-workflow.md)). Do not add a chat surface unless the blueprint says placement B.
+3. **Locate home** — UI in `apps/web`, orchestration in `apps/web/convex`, shared mechanics in `packages/*`. Design tokens already from `integrate-design-system` when customer-facing.
+4. **Implement thin vertical slice** in the app first (auth → action → UI). Prefer a golden case from the spec when one exists.
+5. **Extract** only if a second caller needs the same mechanic.
+6. **Wire billing** if gated (Polar/Stripe entitlement or Autumn + wallet).
+7. **Typecheck** — `pnpm typecheck`.
+8. **Update agent context** — if a new pattern emerged, add a short note under `docs/` or a skill.
 
 ## Done when
 
 - [ ] Client does not touch DB/secrets
 - [ ] Critical paths use Effect where required
+- [ ] AI placement matches blueprint (workflow vs conversational)
 - [ ] No new god-service APIs
 - [ ] `pnpm typecheck` passes
 - [ ] Commit gate respected when applicable
