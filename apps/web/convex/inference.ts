@@ -32,8 +32,6 @@ export const runMeteredInference = action({
         content: v.string(),
       }),
     ),
-    model: v.optional(v.string()),
-    creditCost: v.optional(v.number()),
     idempotencyKey: v.optional(v.string()),
   },
   returns: v.object({
@@ -52,10 +50,12 @@ export const runMeteredInference = action({
     }
 
     const userId = identity.subject;
-    const creditCost = args.creditCost ?? DEFAULT_CREDIT_COST;
+    // Price and model are server-controlled — a client must never be able
+    // to name its own cost for a paid inference call.
+    const creditCost = DEFAULT_CREDIT_COST;
     const idempotencyKey =
       args.idempotencyKey ?? `infer:${userId}:${Date.now()}`;
-    const model = args.model ?? process.env.OPENROUTER_MODEL ?? DEFAULT_MODEL;
+    const model = process.env.OPENROUTER_MODEL ?? DEFAULT_MODEL;
 
     await ctx.runMutation(internal.rateLimitGuard.assertMeteredInferenceLimit, {
       userId,
@@ -110,6 +110,7 @@ export const runMeteredInference = action({
                 "X-Title": "Studio Product Framework",
               },
               body: JSON.stringify(body),
+              signal: AbortSignal.timeout(30_000),
             },
           );
 

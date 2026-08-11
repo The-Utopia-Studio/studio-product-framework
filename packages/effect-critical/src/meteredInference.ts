@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import { debitCredits, type WalletLedger } from "./wallet";
+import { debitCredits, creditWallet, type WalletLedger } from "./wallet";
 import {
   runInference,
   type InferenceGateway,
@@ -25,7 +25,9 @@ export type MeteredInferenceResult = {
 
 /**
  * Critical path: debit wallet then call the model gateway.
- * Failures are typed — orchestration decides refunds / user errors.
+ * If the gateway call fails after the debit succeeded, the debit is
+ * refunded before the error propagates — a paid-but-not-delivered
+ * inference must never leave the user permanently out of pocket.
  */
 export function debitAndInfer(
   ledger: WalletLedger,
@@ -44,7 +46,18 @@ export function debitAndInfer(
       ...input.inference,
       userId: input.userId,
       idempotencyKey: input.idempotencyKey,
-    });
+    }).pipe(
+      Effect.tapError(() =>
+        Effect.ignore(
+          creditWallet(ledger, {
+            userId: input.userId,
+            amount: input.creditCost,
+            reason: `refund:${input.reason}`,
+            idempotencyKey: `refund:${input.idempotencyKey}`,
+          }),
+        ),
+      ),
+    );
 
     return {
       balance: debit.balance,

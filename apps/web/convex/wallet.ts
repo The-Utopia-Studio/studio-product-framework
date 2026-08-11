@@ -5,7 +5,6 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { getAuthedUser } from "./lib/auth";
 import { ensureUserWallet } from "./lib/walletHelpers";
 
 export const getBalance = query({
@@ -187,9 +186,14 @@ export const creditInternal = internalMutation({
   },
 });
 
-/** Dev/admin helper — grant credits to the signed-in user. */
-export const grantCredits = mutation({
+/**
+ * Admin/support credit grant. Internal-only — never client-callable.
+ * Invoke from a trusted server context (billing webhook, support tool),
+ * not from the browser, so a signed-in user can't self-grant credits.
+ */
+export const grantCredits = internalMutation({
   args: {
+    userId: v.string(),
     amount: v.number(),
     reason: v.optional(v.string()),
   },
@@ -198,20 +202,19 @@ export const grantCredits = mutation({
     transactionId: v.string(),
   }),
   handler: async (ctx, args) => {
-    const user = await getAuthedUser(ctx);
     if (args.amount <= 0 || args.amount > 10_000) {
       throw new Error("Invalid credit amount");
     }
 
-    const idempotencyKey = `grant:${user.tokenIdentifier}:${Date.now()}`;
+    const idempotencyKey = `grant:${args.userId}:${Date.now()}`;
     let wallet = await ctx.db
       .query("wallets")
-      .withIndex("by_user", (q) => q.eq("userId", user.tokenIdentifier))
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .unique();
 
     if (!wallet) {
       const walletId = await ctx.db.insert("wallets", {
-        userId: user.tokenIdentifier,
+        userId: args.userId,
         balance: 0,
         updatedAt: Date.now(),
       });
@@ -226,7 +229,7 @@ export const grantCredits = mutation({
     const now = Date.now();
     await ctx.db.patch(wallet._id, { balance, updatedAt: now });
     const transactionId = await ctx.db.insert("walletTransactions", {
-      userId: user.tokenIdentifier,
+      userId: args.userId,
       amount: args.amount,
       type: "credit",
       reason: args.reason ?? "manual_grant",

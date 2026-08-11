@@ -43,7 +43,7 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 | Design system plug / generate | `agents/loops/integrate-design-system.md` + `agents/skills/plug-design-system.md` | **Shipped** (process; starter UI still Apple/shadcn until plugged) |
 | Compound engineering loop | `agents/loops/compound-engineering.md` | **Shipped** (docs; agent-run) |
 | Superpowers harness | `agents/skills/superpowers.md` + upstream plugin | **Process** (install per harness) |
-| Commit gate (Icarus → artifacts) | `agents/loops/commit-v1.md`, `agents/context/discovery/` | **Shipped** |
+| Commit gate (Icarus → artifacts) | `agents/loops/commit-v1.md`, `agents/context/discovery/` | **Shipped** (docs + human gate; no CI/hook enforces it — nothing technically blocks a commit that skips it) |
 | Problem score / evidence | `agents/skills/score-problem.md` | **Shipped** |
 | Auto-research → queue | `agents/skills/research.md` (+ Parallel/Firecrawl) | **Shipped** |
 | Self-improve loop | `agents/loops/improve-framework.md` | **Shipped** (docs; agent-run) |

@@ -26,3 +26,15 @@ export const assertMeteredInferenceLimit = internalMutation({
     return null;
   },
 });
+
+export const assertWebToolsLimit = internalMutation({
+  args: { userId: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    await rateLimiter.limit(ctx, "webTools", {
+      key: args.userId,
+      throws: true,
+    });
+    return null;
+  },
+});

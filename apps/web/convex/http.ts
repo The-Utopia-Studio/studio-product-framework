@@ -2,9 +2,12 @@ import { httpRouter } from "convex/server";
 import { paymentWebhook } from "./subscriptions";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { openai } from "@ai-sdk/openai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
+import {
+  langfuseConfigFromEnv,
+  traceGeneration,
+} from "@studio/observability/langfuse";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin":
@@ -47,6 +50,17 @@ export const chat = httpAction(async (ctx, req) => {
 
   await ctx.runMutation(internal.wallet.ensureWallet, { userId });
 
+  const openRouterKey = process.env.OPENROUTER_API_KEY;
+  if (!openRouterKey) {
+    return new Response(
+      JSON.stringify({ error: "OPENROUTER_API_KEY is not configured" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
+  }
+
   const idempotencyKey = `chat:${userId}:${Date.now()}`;
   try {
     await ctx.runMutation(internal.wallet.debitInternal, {
@@ -66,27 +80,68 @@ export const chat = httpAction(async (ctx, req) => {
   }
 
   const { messages } = await req.json();
+  const model = process.env.OPENROUTER_MODEL ?? "openai/gpt-4o-mini";
 
-  const openRouterKey = process.env.OPENROUTER_API_KEY;
-  const model = openRouterKey
-    ? createOpenAI({
-        apiKey: openRouterKey,
-        baseURL: "https://openrouter.ai/api/v1",
-      })(process.env.OPENROUTER_MODEL ?? "openai/gpt-4o-mini")
-    : openai("gpt-4o-mini");
+  // Debit already happened above — any failure past this point must refund
+  // it, since a paid-but-not-delivered stream can't leave the user charged.
+  const refund = () =>
+    ctx.runMutation(internal.wallet.creditInternal, {
+      userId,
+      amount: 1,
+      reason: "refund:streaming_chat",
+      idempotencyKey: `refund:${idempotencyKey}`,
+    });
 
   const result = streamText({
-    model,
+    model: createOpenAI({
+      apiKey: openRouterKey,
+      baseURL: "https://openrouter.ai/api/v1",
+    })(model),
     messages,
-    async onFinish({ usage }) {
+    async onFinish({ text, usage }) {
       await ctx.runMutation(internal.inferenceStore.recordRun, {
         userId,
-        model: process.env.OPENROUTER_MODEL ?? "gpt-4o-mini",
+        model,
         inputTokens: usage?.promptTokens ?? 0,
         outputTokens: usage?.completionTokens ?? 0,
         creditCost: 1,
         transactionId: idempotencyKey,
         status: "succeeded",
+      });
+
+      void traceGeneration(langfuseConfigFromEnv(), {
+        name: "streaming_chat",
+        userId,
+        model,
+        input: messages,
+        output: text,
+        inputTokens: usage?.promptTokens ?? 0,
+        outputTokens: usage?.completionTokens ?? 0,
+        metadata: { transactionId: idempotencyKey, creditCost: 1 },
+      });
+    },
+    async onError({ error }) {
+      const message = error instanceof Error ? error.message : "Stream failed";
+      await refund();
+      await ctx.runMutation(internal.inferenceStore.recordRun, {
+        userId,
+        model,
+        inputTokens: 0,
+        outputTokens: 0,
+        creditCost: 0,
+        status: "failed",
+        errorMessage: message,
+      });
+
+      void traceGeneration(langfuseConfigFromEnv(), {
+        name: "streaming_chat",
+        userId,
+        model,
+        input: messages,
+        output: message,
+        level: "ERROR",
+        statusMessage: message,
+        metadata: { creditCost: 0 },
       });
     },
   });

@@ -58,17 +58,32 @@ Also set **server** secrets in the Convex dashboard for actions (`OPENROUTER_*`,
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Next.js |
 | `FRONTEND_URL` | local (`http://localhost:3000`) |
 
+**Also required, not an env var:** in the Clerk dashboard, create a JWT
+template named exactly `convex` (JWT Templates → New template → Convex).
+`apps/web/lib/convex-server.ts` requests this template by name for SSR auth;
+without it, server-side auth calls silently get no token and the dashboard
+looks broken with no error pointing at the cause.
+
 Done when: sign-in works and dashboard loads.
 
 ### Tier B — money (pick from blueprint)
 
 | Shape | Vars |
 |-------|------|
-| Polar subscriptions (reference path — **Shipped**) | `POLAR_ACCESS_TOKEN`, `POLAR_ORGANIZATION_ID`, `POLAR_WEBHOOK_SECRET` |
+| Polar subscriptions (reference path — **Shipped**) | `POLAR_ACCESS_TOKEN`, `POLAR_ORGANIZATION_ID`, `POLAR_WEBHOOK_SECRET`, `POLAR_SERVER` (`sandbox`\|`production`, defaults to `sandbox`) |
 | Stripe subscriptions (**Port** — package only until wired) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` |
-| Autumn credits (component wired; needs keys) | `AUTUMN_SECRET_KEY` / `AUTUMN_API_KEY` |
+| Autumn credits (component wired; needs keys) | `AUTUMN_SECRET_KEY` |
 
 Wallet ledger works with starter credits without Autumn. Prefer **Polar** for 80/90 venture subscriptions until Stripe adapter is E2E.
+
+**Important — the dashboard requires an active subscription.** `apps/web/app/dashboard/layout.tsx`
+gates the entire dashboard (including chat/credits) behind
+`subscriptions.checkUserSubscriptionStatus`. To reach the metered-chat or
+pay-as-you-go credit vertical at all, you must first complete a real Polar
+sandbox checkout (org + product + price + webhook secret configured, and the
+`subscription.created` webhook delivered) — starter credits alone are not
+enough to unlock the UI. If you want to test the wallet/credits path without
+standing up Polar, that gate is the thing to change.
 
 ### Tier C — AI jobs (when golden cases need models)
 
@@ -78,7 +93,10 @@ Wallet ledger works with starter credits without Autumn. Prefer **Polar** for 80
 | `OPENROUTER_MODEL` | Default `openai/gpt-4o-mini` |
 | `LANGFUSE_*` | Recommended when metering inference |
 
-Shipped verticals today: streaming `/api/chat` and `inference.runMeteredInference`.  
+Shipped verticals today: `inference.runMeteredInference` (wired to the
+`/dashboard/chat` UI) and a second, parallel streaming implementation at
+`/api/chat` (`convex/http.ts`) that has no frontend caller yet — a reference
+pattern to build on, not a live product surface.
 **Do not** treat chat UI as the product — see [ai-in-workflow.md](./ai-in-workflow.md).
 
 ### Tier D — recommended product ops
