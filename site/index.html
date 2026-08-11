@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio Product Framework · The Utopia Studio</title>
+  <meta name="description" content="Lift-and-use foundation for AI-native companies — Next.js product surface, Convex control plane, Effect money fence, dual billing, and an agent OS that compounds.">
+  <meta property="og:title" content="Studio Product Framework">
+  <meta property="og:description" content="An agent-native monorepo you can lift into a venture. Compose capabilities, ship with quality OS, compound every release.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 0H5V16H3V0ZM11 0H13V16H11V0ZM16 3V5H0V3H16ZM0 13V11H16V13H0Z" fill="#CC5536"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <strong>The Utopia Studio</strong>
+          <span>Studio Product Framework</span>
+        </span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#why">Why</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#capabilities">Capabilities</a></li>
+        <li><a href="#agents">Agent OS</a></li>
+        <li><a href="#quality">Quality</a></li>
+        <li><a href="#start">Start</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="mobile-toggle btn btn-ghost" type="button" aria-label="Toggle menu">Menu</button>
+        <a class="btn btn-secondary" href="https://the-utopia-studio.github.io/Icarus/">Icarus</a>
+        <a class="btn btn-primary" href="https://github.com/The-Utopia-Studio/studio-product-framework">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow accent">AI-native product development framework</p>
+          <h1>The framework AI-native teams actually ship on.</h1>
+          <p class="lead">
+            A lift-and-use monorepo for ventures: Next.js product surface, Convex control plane,
+            Effect fence for money and inference, dual billing, web tools for agents, and a quality OS
+            that compounds every ship.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://github.com/The-Utopia-Studio/studio-product-framework">View on GitHub</a>
+            <a class="btn btn-secondary" href="#architecture">See architecture</a>
+            <a class="btn btn-ghost" href="diagrams/spf-offering.html">Open diagram</a>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-card accent">
+            <p class="label">One sentence</p>
+            <p class="value">Apps orchestrate; packages compose; Effect fences money, inference, and delivery; agents compound the framework.</p>
+          </div>
+          <div class="stat-card">
+            <p class="label">Built for</p>
+            <p class="value">Venture teams shipping subscription SaaS, credit-metered AI, and agent-native products without rebuilding plumbing.</p>
+          </div>
+          <div class="stat-card">
+            <p class="label">Pairs with</p>
+            <p class="value"><a href="https://the-utopia-studio.github.io/Icarus/">Icarus</a> for discovery and commit — SPF holds the build platform, not a second playbook.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Why this exists</p>
+          <h2>Stop rebuilding auth, billing, agents, and observability for every product.</h2>
+          <p class="lead">
+            Teams rebuilding the same infrastructure for every AI-native company waste the advantage of
+            agentic shipping. Studio Product Framework is the shared operating system: compose packages,
+            build in apps, let builder agents and humans use the same structure — and keep improving via
+            research, improve, and ship loops without a human owning continuous polish.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="card-header">
+              <span class="card-dot coral"></span>
+              <h3>Compose, don't fork</h3>
+            </div>
+            <ul>
+              <li>Apps orchestrate domain rules and policy</li>
+              <li>Packages expose capability blocks with explicit inputs</li>
+              <li>No god services, no package DB writes</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <span class="card-dot ink"></span>
+              <h3>Client never touches the database</h3>
+            </div>
+            <ul>
+              <li>Convex only — auth, validation, rate limits on server</li>
+              <li>Managed backends by default</li>
+              <li>Effect only where bugs cost money or trust</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <span class="card-dot muted"></span>
+              <h3>Compound every ship</h3>
+            </div>
+            <ul>
+              <li>Plan → Work → Review → Compound</li>
+              <li>Research queue → improve-framework loop</li>
+              <li>Handover to operators after 1–2 Studio iterations</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Architecture</p>
+          <h2>What we built</h2>
+          <p class="lead">
+            An agent-native stack with a clear control plane, a money fence, and provider layers for
+            quality, web, and observability. The diagram is the external-facing map of the offering.
+          </p>
+        </div>
+
+        <div class="diagram-tabs" role="tablist" aria-label="Architecture diagrams">
+          <button class="tab active" type="button" data-diagram-tab="diagrams/spf-offering.html">Offering</button>
+          <button class="tab" type="button" data-diagram-tab="diagrams/spf-framework-stack.html">Framework stack</button>
+          <button class="tab" type="button" data-diagram-tab="diagrams/spf-architecture.html">Architecture</button>
+          <button class="tab" type="button" data-diagram-tab="diagrams/spf-simple.html">Simple overview</button>
+        </div>
+
+        <div class="diagram-frame">
+          <iframe id="diagram-frame" title="Studio Product Framework diagram" src="diagrams/spf-offering.html"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section id="capabilities">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Capability stack</p>
+          <h2>Everything a venture needs — wired, not catalogued</h2>
+          <p class="lead">Pick the blocks you need. Policy stays in the app; mechanics live in packages.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Need</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Product surface</td><td>Next.js App Router · Clerk · Vercel</td></tr>
+              <tr><td>Control plane</td><td>Convex queries, mutations, actions, components</td></tr>
+              <tr><td>Subscriptions</td><td>Polar and/or Stripe via <code>@studio/billing</code></td></tr>
+              <tr><td>Credits</td><td>Autumn component + Effect wallet ledger</td></tr>
+              <tr><td>Inference</td><td>OpenRouter · Langfuse traces · metered chat vertical</td></tr>
+              <tr><td>Runtime agents</td><td><code>@studio/ai-runtime</code> — sandbox + gateway</td></tr>
+              <tr><td>Web for agents</td><td>Parallel (research) · Firecrawl (scrape) · Browserbase (act)</td></tr>
+              <tr><td>Observability</td><td>PostHog · Sentry · Langfuse</td></tr>
+              <tr><td>Email / storage / flags</td><td><code>@studio/email</code>, storage, flags, ratelimit</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="agents">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Agent OS</p>
+          <h2>Two kinds of agents — builder and runtime</h2>
+          <p class="lead">
+            Builder agents live in <code>agents/</code> and improve the framework. Runtime agents serve
+            end users in sandboxes via <code>@studio/ai-runtime</code>. They must not be conflated.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-header">
+              <span class="card-dot ink"></span>
+              <h3>Builder agents</h3>
+            </div>
+            <ul>
+              <li>Superpowers + Ponytail for token-efficient codegen</li>
+              <li>Compound engineering loop: Plan → Work → Review → Compound</li>
+              <li>Ship-ready PR, improve-framework, operate-handover loops</li>
+              <li>Hivemind for shared team memory; git remains durable truth</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <span class="card-dot coral"></span>
+              <h3>Runtime agents</h3>
+            </div>
+            <ul>
+              <li>Sandboxed execution for end-user tasks</li>
+              <li>Metered credits and inference brokerage</li>
+              <li>Langfuse on every inference run</li>
+              <li>Web tools: research, scrape, act — with explicit role separation</li>
+            </ul>
+          </article>
+        </div>
+
+        <div style="margin-top: 1.25rem;" class="loop-grid">
+          <div class="loop-step">
+            <p class="num">01 · Commit</p>
+            <p><strong>score-problem → commit-v1</strong> — venture gate with discovery artifacts before bootstrap.</p>
+          </div>
+          <div class="loop-step">
+            <p class="num">02 · Build</p>
+            <p><strong>compound-engineering</strong> — ship features with plan, work, review, compound habits.</p>
+          </div>
+          <div class="loop-step">
+            <p class="num">03 · Improve</p>
+            <p><strong>research → improve-framework</strong> — bounded self-improvement with a file-based queue.</p>
+          </div>
+          <div class="loop-step">
+            <p class="num">04 · Operate</p>
+            <p><strong>operate-handover</strong> — operators own tweaks after 1–2 Studio feedback iterations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quality">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Quality OS</p>
+          <h2>Quality stays engineered as you move fast</h2>
+          <p class="lead">Reviews and observability are first-class — not bolted on after the fact.</p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="card-header">
+              <span class="card-dot coral"></span>
+              <h3>Ship bar</h3>
+            </div>
+            <ul>
+              <li>Rams — design review on PRs</li>
+              <li>Greptile + greploop — code review loop</li>
+              <li>Aikido — security scanning and AI pentest</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <span class="card-dot ink"></span>
+              <h3>Observe</h3>
+            </div>
+            <ul>
+              <li>PostHog — product analytics and flags</li>
+              <li>Sentry — errors and performance</li>
+              <li>Langfuse — LLM traces and cost on metered inference</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <span class="card-dot muted"></span>
+              <h3>Web decision matrix</h3>
+            </div>
+            <ul>
+              <li>Parallel — cited research</li>
+              <li>Firecrawl — URL to markdown</li>
+              <li>Browserbase — act in the browser</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="start">
+      <div class="container">
+        <div class="cta-band">
+          <div>
+            <p class="eyebrow accent">Quick start</p>
+            <h2>Clone, configure, run.</h2>
+            <p class="lead" style="margin-top: 0.5rem; max-width: 52ch;">
+              Install deps, copy env, run Convex dev and the web app. Wire Langfuse and web keys as needed.
+              Install Greptile, Rams, and Aikido on GitHub before you ship.
+            </p>
+          </div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://github.com/The-Utopia-Studio/studio-product-framework">Open repository</a>
+            <a class="btn btn-secondary" href="https://github.com/The-Utopia-Studio/studio-product-framework/blob/main/docs/getting-started.md">Getting started</a>
+          </div>
+        </div>
+
+        <pre class="code-block" style="margin-top: 1.25rem;"><code>pnpm install
+cp apps/web/.env.example apps/web/.env.local
+# fill Clerk, Convex, billing, PostHog, Sentry, model keys
+
+cd apps/web && npx convex dev   # terminal 1
+pnpm dev:web                    # terminal 2  → http://localhost:3000</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="eyebrow">The Utopia Studio</p>
+        <h3 style="font-family: var(--font-serif); font-weight: 400; font-size: 1.35rem; margin-top: 0.35rem;">Studio Product Framework</h3>
+        <p class="muted" style="margin-top: 0.5rem; max-width: 42ch; font-size: 0.875rem;">
+          Owned once. Reused every build. Part of Utopia OS — the assets we build once and add to forever.
+        </p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://github.com/The-Utopia-Studio/studio-product-framework">GitHub</a></li>
+        <li><a href="https://the-utopia-studio.github.io/Icarus/">Icarus playbook</a></li>
+        <li><a href="diagrams/spf-offering.html">Offering diagram</a></li>
+        <li><a href="https://github.com/The-Utopia-Studio/studio-product-framework/blob/main/docs/architecture.md">Architecture docs</a></li>
+        <li><a href="https://github.com/The-Utopia-Studio/studio-product-framework/blob/main/docs/capabilities.md">Capabilities</a></li>
+      </ul>
+    </div>
+    <p class="container footer-meta">Studio Product Framework · Utopia skin from Icarus · Agent-native monorepo</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -37,3 +37,5 @@ Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Disc
 - Core agent loops include commit-v1 (venture gate), ship-ready-pr, improve-framework + research queue, and operate-handover.
 - Discovery commit artifacts live under `agents/context/discovery/`; Icarus is the external playbook, not duplicated in-repo.
 - Hivemind (Deeplake) is the session/team memory layer; `.hivemind` pins workspace `studio-product-framework`; durable rules stay in git.
+- `site/` is the self-contained static GitHub Pages showcase; deployed via `.github/workflows/pages.yml` on push to main/master.
+- `agents/loops/compound-engineering.md` is the preferred loop for features and framework-improve (Plan → Work → Review → Compound via Every).

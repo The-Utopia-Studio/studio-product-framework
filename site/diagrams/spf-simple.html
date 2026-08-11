@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio Product Framework · Simple overview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper: #F8F8F8;
+      --color-paper-2: #EEEEEE;
+      --color-ink: #3C3235;
+      --color-muted: #635B5E;
+      --color-soft: #8F898B;
+      --color-rule: rgba(60, 50, 53, 0.12);
+      --color-accent: #CC5536;
+      --color-accent-tint: rgba(204, 85, 54, 0.08);
+      --font-sans: 'Geist', 'Helvetica Neue', system-ui, sans-serif;
+      --font-serif: 'Instrument Serif', 'Times New Roman', serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      min-height: 100vh;
+      padding: 3rem 2rem;
+      color: var(--color-ink);
+    }
+    .container { max-width: 880px; margin: 0 auto; }
+    .header { margin-bottom: 2rem; }
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.75rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.75rem, 3vw + 1rem, 2.25rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--color-muted);
+      max-width: 48ch;
+    }
+    .diagram-container {
+      background: var(--color-paper-2);
+      border-radius: 8px;
+      border: 1px solid var(--color-rule);
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+    svg { width: 100%; min-width: 720px; display: block; }
+    .footer {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(60, 50, 53, 0.10);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--color-soft);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <p class="header-eyebrow">The Utopia Studio · Offering overview</p>
+      <h1>Studio Product Framework</h1>
+      <p class="subtitle">
+        One stack to ship AI-native products: discover, commit once, build on shared plumbing, then operate without us in every tweak.
+      </p>
+    </header>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t">
+        <title id="t">Studio Product Framework — simple layer overview</title>
+        <defs>
+          <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.9" fill="rgba(60,50,53,0.10)"/>
+          </pattern>
+        </defs>
+
+        <rect width="800" height="520" fill="#F8F8F8"/>
+        <rect width="800" height="520" fill="url(#dots)" opacity="0.5"/>
+
+        <!-- Direction -->
+        <text x="28" y="248" fill="#8F898B" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.12em" transform="rotate(-90 28 248)">YOU BUILD ↑</text>
+        <text x="28" y="400" fill="#8F898B" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.12em" transform="rotate(-90 28 400)">WE PROVIDE ↓</text>
+
+        <!-- Stack outer -->
+        <rect x="64" y="40" width="696" height="384" rx="8" fill="#ffffff" stroke="#3C3235" stroke-width="1"/>
+
+        <!-- L5 Product -->
+        <rect x="64" y="40" width="696" height="64" rx="0" fill="#F8F8F8"/>
+        <text x="88" y="68" fill="#8F898B" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.12em">L5</text>
+        <text x="128" y="72" fill="#3C3235" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Your product</text>
+        <text x="736" y="72" fill="#635B5E" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="end">apps/* · domain rules</text>
+        <line x1="64" y1="104" x2="760" y2="104" stroke="rgba(60,50,53,0.12)" stroke-width="1"/>
+
+        <!-- L4 Agent OS -->
+        <rect x="64" y="104" width="696" height="64" fill="#ffffff"/>
+        <text x="88" y="132" fill="#8F898B" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.12em">L4</text>
+        <text x="128" y="136" fill="#3C3235" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Agent OS</text>
+        <text x="736" y="136" fill="#635B5E" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="end">commit · ship · improve · handover</text>
+        <line x1="64" y1="168" x2="760" y2="168" stroke="rgba(60,50,53,0.12)" stroke-width="1"/>
+
+        <!-- L3 Capabilities -->
+        <rect x="64" y="168" width="696" height="64" fill="#F8F8F8"/>
+        <text x="88" y="196" fill="#8F898B" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.12em">L3</text>
+        <text x="128" y="200" fill="#3C3235" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Capabilities</text>
+        <text x="736" y="200" fill="#635B5E" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="end">auth · billing · runtime · obs</text>
+        <line x1="64" y1="232" x2="760" y2="232" stroke="rgba(60,50,53,0.12)" stroke-width="1"/>
+
+        <!-- L2 Effect — FOCAL -->
+        <rect x="64" y="232" width="696" height="72" fill="rgba(204,85,54,0.08)" stroke="#CC5536" stroke-width="1.2"/>
+        <text x="88" y="264" fill="#CC5536" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.12em">L2</text>
+        <text x="128" y="268" fill="#3C3235" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Effect fence</text>
+        <text x="736" y="268" fill="#635B5E" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="end">money · inference · delivery</text>
+        <line x1="64" y1="304" x2="760" y2="304" stroke="rgba(204,85,54,0.25)" stroke-width="1"/>
+
+        <!-- L1 Convex -->
+        <rect x="64" y="304" width="696" height="72" fill="#ffffff"/>
+        <text x="88" y="336" fill="#8F898B" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.12em">L1</text>
+        <text x="128" y="340" fill="#3C3235" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Convex control plane</text>
+        <text x="736" y="340" fill="#635B5E" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="end">DB · authz · components</text>
+        <line x1="64" y1="376" x2="760" y2="376" stroke="rgba(60,50,53,0.12)" stroke-width="1"/>
+
+        <!-- L0 Providers -->
+        <rect x="64" y="376" width="696" height="48" fill="#ffffff"/>
+        <text x="88" y="404" fill="#8F898B" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.12em">L0</text>
+        <text x="128" y="408" fill="#3C3235" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Providers</text>
+        <text x="736" y="408" fill="#635B5E" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="end">Clerk · Polar · Stripe · Autumn · OpenRouter</text>
+
+        <!-- Flow strip -->
+        <text x="64" y="456" fill="#8F898B" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.14em">HOW A VENTURE MOVES</text>
+
+        <!-- 5 step pills as simple boxes -->
+        <rect x="64" y="468" width="120" height="32" rx="6" fill="#ffffff" stroke="rgba(60,50,53,0.30)" stroke-width="1"/>
+        <text x="124" y="488" fill="#3C3235" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Discover</text>
+
+        <text x="196" y="488" fill="#8F898B" font-size="12" font-family="'Geist', sans-serif">→</text>
+
+        <rect x="216" y="468" width="120" height="32" rx="6" fill="rgba(204,85,54,0.08)" stroke="#CC5536" stroke-width="1.2"/>
+        <text x="276" y="488" fill="#3C3235" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Commit</text>
+
+        <text x="348" y="488" fill="#8F898B" font-size="12" font-family="'Geist', sans-serif">→</text>
+
+        <rect x="368" y="468" width="120" height="32" rx="6" fill="#ffffff" stroke="#3C3235" stroke-width="1"/>
+        <text x="428" y="488" fill="#3C3235" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Build</text>
+
+        <text x="500" y="488" fill="#8F898B" font-size="12" font-family="'Geist', sans-serif">→</text>
+
+        <rect x="520" y="468" width="100" height="32" rx="6" fill="#ffffff" stroke="#3C3235" stroke-width="1"/>
+        <text x="570" y="488" fill="#3C3235" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Ship</text>
+
+        <text x="632" y="488" fill="#8F898B" font-size="12" font-family="'Geist', sans-serif">→</text>
+
+        <rect x="652" y="468" width="108" height="32" rx="6" fill="#ffffff" stroke="rgba(60,50,53,0.30)" stroke-width="1"/>
+        <text x="706" y="488" fill="#3C3235" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Operate</text>
+      </svg>
+    </div>
+
+    <footer class="footer">
+      <span>Icarus finds the truth · SPF is the committed-build machine</span>
+      <span>docs/diagrams/spf-simple.html</span>
+    </footer>
+  </div>
+</body>
+</html>

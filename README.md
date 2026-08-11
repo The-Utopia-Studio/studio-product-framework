@@ -19,7 +19,9 @@ Teams rebuilding auth, billing, agents, observability, and review workflows for 
 | Quality OS | Rams · Greptile · Aikido · Ponytail · Superpowers |
 | Compound habit | Plan → Work → Review → Compound + Hivemind memory |
 
-Visual: [docs/diagrams/spf-offering.html](./docs/diagrams/spf-offering.html) · [framework stack](./docs/diagrams/spf-framework-stack.html)
+External site (GitHub Pages): [the-utopia-studio.github.io/studio-product-framework](https://the-utopia-studio.github.io/studio-product-framework/) — enable Pages in repo settings on first deploy.
+
+Visual: [docs/diagrams/spf-offering.html](./docs/diagrams/spf-offering.html) · [framework stack](./docs/diagrams/spf-framework-stack.html) · source in [`site/`](./site/)
 
 ## Capability stack
 
