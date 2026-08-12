@@ -61,6 +61,34 @@ export const chat = httpAction(async (ctx, req) => {
     );
   }
 
+  // Parse + validate before debit so malformed bodies never charge the wallet.
+  let messages: unknown;
+  try {
+    const body = await req.json();
+    messages = body?.messages;
+  } catch {
+    return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders,
+      },
+    });
+  }
+
+  if (!Array.isArray(messages)) {
+    return new Response(
+      JSON.stringify({ error: "messages must be an array" }),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+          ...corsHeaders,
+        },
+      },
+    );
+  }
+
   const idempotencyKey = `chat:${userId}:${Date.now()}`;
   try {
     await ctx.runMutation(internal.wallet.debitInternal, {
@@ -79,7 +107,6 @@ export const chat = httpAction(async (ctx, req) => {
     });
   }
 
-  const { messages } = await req.json();
   const model = process.env.OPENROUTER_MODEL ?? "openai/gpt-4o-mini";
 
   // Debit already happened above — any failure past this point must refund
@@ -92,63 +119,88 @@ export const chat = httpAction(async (ctx, req) => {
       idempotencyKey: `refund:${idempotencyKey}`,
     });
 
-  const result = streamText({
-    model: createOpenAI({
-      apiKey: openRouterKey,
-      baseURL: "https://openrouter.ai/api/v1",
-    })(model),
-    messages,
-    async onFinish({ text, usage }) {
-      await ctx.runMutation(internal.inferenceStore.recordRun, {
-        userId,
-        model,
-        inputTokens: usage?.promptTokens ?? 0,
-        outputTokens: usage?.completionTokens ?? 0,
-        creditCost: 1,
-        transactionId: idempotencyKey,
-        status: "succeeded",
-      });
+  try {
+    const result = streamText({
+      model: createOpenAI({
+        apiKey: openRouterKey,
+        baseURL: "https://openrouter.ai/api/v1",
+      })(model),
+      messages,
+      async onFinish({ text, usage }) {
+        await ctx.runMutation(internal.inferenceStore.recordRun, {
+          userId,
+          model,
+          inputTokens: usage?.promptTokens ?? 0,
+          outputTokens: usage?.completionTokens ?? 0,
+          creditCost: 1,
+          transactionId: idempotencyKey,
+          status: "succeeded",
+        });
 
-      void traceGeneration(langfuseConfigFromEnv(), {
-        name: "streaming_chat",
-        userId,
-        model,
-        input: messages,
-        output: text,
-        inputTokens: usage?.promptTokens ?? 0,
-        outputTokens: usage?.completionTokens ?? 0,
-        metadata: { transactionId: idempotencyKey, creditCost: 1 },
-      });
-    },
-    async onError({ error }) {
-      const message = error instanceof Error ? error.message : "Stream failed";
-      await refund();
-      await ctx.runMutation(internal.inferenceStore.recordRun, {
-        userId,
-        model,
-        inputTokens: 0,
-        outputTokens: 0,
-        creditCost: 0,
-        status: "failed",
-        errorMessage: message,
-      });
+        void traceGeneration(langfuseConfigFromEnv(), {
+          name: "streaming_chat",
+          userId,
+          model,
+          input: messages,
+          output: text,
+          inputTokens: usage?.promptTokens ?? 0,
+          outputTokens: usage?.completionTokens ?? 0,
+          metadata: { transactionId: idempotencyKey, creditCost: 1 },
+        });
+      },
+      async onError({ error }) {
+        const message =
+          error instanceof Error ? error.message : "Stream failed";
+        await refund();
+        await ctx.runMutation(internal.inferenceStore.recordRun, {
+          userId,
+          model,
+          inputTokens: 0,
+          outputTokens: 0,
+          creditCost: 0,
+          status: "failed",
+          errorMessage: message,
+        });
 
-      void traceGeneration(langfuseConfigFromEnv(), {
-        name: "streaming_chat",
-        userId,
-        model,
-        input: messages,
-        output: message,
-        level: "ERROR",
-        statusMessage: message,
-        metadata: { creditCost: 0 },
-      });
-    },
-  });
+        void traceGeneration(langfuseConfigFromEnv(), {
+          name: "streaming_chat",
+          userId,
+          model,
+          input: messages,
+          output: message,
+          level: "ERROR",
+          statusMessage: message,
+          metadata: { creditCost: 0 },
+        });
 
-  return result.toDataStreamResponse({
-    headers: corsHeaders,
-  });
+        await ctx.scheduler.runAfter(
+          0,
+          internal.observabilityNode.reportException,
+          { message, tags: { userId, path: "streaming_chat" } },
+        );
+      },
+    });
+
+    return result.toDataStreamResponse({
+      headers: corsHeaders,
+    });
+  } catch (error) {
+    // Cover sync failures after debit that never reach streamText onError.
+    await refund();
+    const message =
+      error instanceof Error ? error.message : "Failed to start stream";
+    await ctx.scheduler.runAfter(0, internal.observabilityNode.reportException, {
+      message,
+      tags: { userId, path: "streaming_chat" },
+    });
+    return new Response(JSON.stringify({ error: message }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders,
+      },
+    });
+  }
 });
 
 const http = httpRouter();

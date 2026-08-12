@@ -43,14 +43,14 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 | Design system plug / generate | `agents/loops/integrate-design-system.md` + `agents/skills/plug-design-system.md` | **Shipped** (process; starter UI still Apple/shadcn until plugged) |
 | Compound engineering loop | `agents/loops/compound-engineering.md` | **Shipped** (docs; agent-run) |
 | Superpowers harness | `agents/skills/superpowers.md` + upstream plugin | **Process** (install per harness) |
-| Commit gate (Icarus → artifacts) | `agents/loops/commit-v1.md`, `agents/context/discovery/` | **Shipped** (docs + human gate; no CI/hook enforces it — nothing technically blocks a commit that skips it) |
+| Commit gate (Icarus → artifacts) | `agents/loops/commit-v1.md`, `agents/context/discovery/`, `scripts/check-commit-gate.mjs`, CI `commit-gate` job | **Shipped** (CI blocks a PR that touches `agents/context/discovery/` unless score ≥32 and all three artifacts are human-signed; platform-only PRs never touch those files, so the gate never fires for framework plumbing, per its own documented exception) |
 | Problem score / evidence | `agents/skills/score-problem.md` | **Shipped** |
 | Auto-research → queue | `agents/skills/research.md` (+ Parallel/Firecrawl) | **Shipped** |
 | Self-improve loop | `agents/loops/improve-framework.md` | **Shipped** (docs; agent-run) |
 | Operate / handover | `agents/loops/operate-handover.md` | **Shipped** |
-| Design review | Rams GitHub App + `agents/skills/rams.md` | **Process** |
-| Code review | Greptile + `agents/skills/greploop.md` | **Process** |
-| Security / pentest | Aikido + `agents/skills/aikido.md` | **Process** |
+| Design review | Rams GitHub App + `agents/skills/rams.md` | **Process** (no GitHub App installed in this repo; CI's `ship-bar-checklist` job blocks merge until a human ticks the PR checkbox, but does not itself verify a design review happened) |
+| Code review | Greptile + `agents/skills/greploop.md` | **Process** (same caveat — checkbox enforced, tool not live) |
+| Security / pentest | Aikido + `agents/skills/aikido.md` | **Process** (same caveat — checkbox enforced, tool not live) |
 | Token-efficient codegen | Ponytail + `agents/skills/ponytail.md` | **Process** (install skill; infused in ship-ready) |
 | Shared agent memory | Hivemind + `docs/hivemind.md` + `agents/skills/hivemind.md` | **Process** (team install) |
 | Ship-ready loop | `agents/loops/ship-ready-pr.md` | **Shipped** (docs) |

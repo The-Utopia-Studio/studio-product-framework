@@ -504,6 +504,11 @@ export const paymentWebhook = httpAction(async (ctx, request) => {
       );
     }
 
+    await ctx.scheduler.runAfter(0, internal.observabilityNode.reportException, {
+      message: error instanceof Error ? error.message : "Webhook failed",
+      tags: { path: "paymentWebhook" },
+    });
+
     return new Response(JSON.stringify({ message: "Webhook failed" }), {
       status: 400,
       headers: {

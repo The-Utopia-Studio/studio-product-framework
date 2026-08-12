@@ -2,7 +2,6 @@ import { v } from "convex/values";
 import {
   internalMutation,
   internalQuery,
-  mutation,
   query,
 } from "./_generated/server";
 import { ensureUserWallet } from "./lib/walletHelpers";
@@ -60,6 +59,7 @@ export const debitInternal = internalMutation({
   returns: v.object({
     balance: v.number(),
     transactionId: v.string(),
+    created: v.boolean(),
   }),
   handler: async (ctx, args) => {
     if (args.amount <= 0) {
@@ -74,9 +74,13 @@ export const debitInternal = internalMutation({
       .unique();
 
     if (existingTx) {
+      if (existingTx.userId !== args.userId || existingTx.type !== "debit") {
+        throw new Error("Idempotency key conflict");
+      }
       return {
         balance: existingTx.balanceAfter,
         transactionId: existingTx._id,
+        created: false,
       };
     }
 
@@ -116,7 +120,7 @@ export const debitInternal = internalMutation({
       createdAt: now,
     });
 
-    return { balance, transactionId };
+    return { balance, transactionId, created: true };
   },
 });
 
@@ -130,6 +134,7 @@ export const creditInternal = internalMutation({
   returns: v.object({
     balance: v.number(),
     transactionId: v.string(),
+    created: v.boolean(),
   }),
   handler: async (ctx, args) => {
     if (args.amount <= 0) {
@@ -144,9 +149,13 @@ export const creditInternal = internalMutation({
       .unique();
 
     if (existingTx) {
+      if (existingTx.userId !== args.userId || existingTx.type !== "credit") {
+        throw new Error("Idempotency key conflict");
+      }
       return {
         balance: existingTx.balanceAfter,
         transactionId: existingTx._id,
+        created: false,
       };
     }
 
@@ -182,7 +191,7 @@ export const creditInternal = internalMutation({
       createdAt: now,
     });
 
-    return { balance, transactionId };
+    return { balance, transactionId, created: true };
   },
 });
 

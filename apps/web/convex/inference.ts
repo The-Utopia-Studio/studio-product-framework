@@ -32,7 +32,6 @@ export const runMeteredInference = action({
         content: v.string(),
       }),
     ),
-    idempotencyKey: v.optional(v.string()),
   },
   returns: v.object({
     text: v.string(),
@@ -50,11 +49,12 @@ export const runMeteredInference = action({
     }
 
     const userId = identity.subject;
-    // Price and model are server-controlled — a client must never be able
-    // to name its own cost for a paid inference call.
+    // Price, model, and debit idempotency keys are server-controlled.
+    // A client-supplied key would let debitInternal short-circuit while
+    // debitAndInfer still paid the provider (and could refund a charge
+    // this invocation never made).
     const creditCost = DEFAULT_CREDIT_COST;
-    const idempotencyKey =
-      args.idempotencyKey ?? `infer:${userId}:${Date.now()}`;
+    const idempotencyKey = `infer:${userId}:${crypto.randomUUID()}`;
     const model = process.env.OPENROUTER_MODEL ?? DEFAULT_MODEL;
 
     await ctx.runMutation(internal.rateLimitGuard.assertMeteredInferenceLimit, {
@@ -237,6 +237,11 @@ export const runMeteredInference = action({
         level: "ERROR",
         statusMessage: message,
         metadata: { creditCost },
+      });
+
+      await ctx.scheduler.runAfter(0, internal.observabilityNode.reportException, {
+        message,
+        tags: { userId, path: "runMeteredInference" },
       });
 
       throw new Error(message);

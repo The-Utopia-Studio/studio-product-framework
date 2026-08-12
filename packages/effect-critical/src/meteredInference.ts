@@ -6,8 +6,7 @@ import {
   type InferenceRequest,
   type InferenceResponse,
 } from "./inference";
-import type { WalletError } from "./errors";
-import type { InferenceError } from "./errors";
+import { WalletError, type InferenceError } from "./errors";
 
 export type MeteredInferenceInput = {
   readonly userId: string;
@@ -29,6 +28,10 @@ export type MeteredInferenceResult = {
  * refunded before the error propagates — a paid-but-not-delivered
  * inference must never leave the user permanently out of pocket.
  *
+ * Debit idempotency replays (`created: false`) fail closed: we must not
+ * call the paid provider or issue a refund for a charge this invocation
+ * did not make.
+ *
  * Refund success → original InferenceError propagates.
  * Refund failure → WalletError propagates (retryable credit) so callers
  * can retry/reconcile instead of silently leaving the user charged.
@@ -45,6 +48,16 @@ export function debitAndInfer(
       reason: input.reason,
       idempotencyKey: input.idempotencyKey,
     });
+
+    if (!debit.created) {
+      return yield* Effect.fail(
+        new WalletError({
+          operation: "debit",
+          message: "Idempotency key already used for a debit",
+          retryable: false,
+        }),
+      );
+    }
 
     const inference = yield* runInference(gateway, {
       ...input.inference,

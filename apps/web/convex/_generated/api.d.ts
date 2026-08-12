@@ -14,6 +14,7 @@ import type * as inference from "../inference.js";
 import type * as inferenceStore from "../inferenceStore.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_walletHelpers from "../lib/walletHelpers.js";
+import type * as observabilityNode from "../observabilityNode.js";
 import type * as rateLimitGuard from "../rateLimitGuard.js";
 import type * as rateLimits from "../rateLimits.js";
 import type * as subscriptions from "../subscriptions.js";
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   inferenceStore: typeof inferenceStore;
   "lib/auth": typeof lib_auth;
   "lib/walletHelpers": typeof lib_walletHelpers;
+  observabilityNode: typeof observabilityNode;
   rateLimitGuard: typeof rateLimitGuard;
   rateLimits: typeof rateLimits;
   subscriptions: typeof subscriptions;

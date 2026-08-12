@@ -25,6 +25,10 @@ export type AgentRunRequest = {
   readonly turns: ReadonlyArray<AgentTurn>;
   /** When true, work must execute inside a sandbox, not inline. */
   readonly requireSandbox: boolean;
+  /** Hard cap on total turns this run may reach. No default — must be set. */
+  readonly maxTurns: number;
+  /** Hard cap on wallet credits this run may spend. No default — must be set. */
+  readonly maxSpendCredits: number;
 };
 
 export type AgentRunStatus =
