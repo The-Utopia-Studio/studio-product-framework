@@ -28,6 +28,10 @@ export type MeteredInferenceResult = {
  * If the gateway call fails after the debit succeeded, the debit is
  * refunded before the error propagates — a paid-but-not-delivered
  * inference must never leave the user permanently out of pocket.
+ *
+ * Refund success → original InferenceError propagates.
+ * Refund failure → WalletError propagates (retryable credit) so callers
+ * can retry/reconcile instead of silently leaving the user charged.
  */
 export function debitAndInfer(
   ledger: WalletLedger,
@@ -47,15 +51,14 @@ export function debitAndInfer(
       userId: input.userId,
       idempotencyKey: input.idempotencyKey,
     }).pipe(
+      // tapError: succeed → keep InferenceError; fail → surface WalletError
       Effect.tapError(() =>
-        Effect.ignore(
-          creditWallet(ledger, {
-            userId: input.userId,
-            amount: input.creditCost,
-            reason: `refund:${input.reason}`,
-            idempotencyKey: `refund:${input.idempotencyKey}`,
-          }),
-        ),
+        creditWallet(ledger, {
+          userId: input.userId,
+          amount: input.creditCost,
+          reason: `refund:${input.reason}`,
+          idempotencyKey: `refund:${input.idempotencyKey}`,
+        }),
       ),
     );
 
