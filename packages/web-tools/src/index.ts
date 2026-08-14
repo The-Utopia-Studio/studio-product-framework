@@ -9,6 +9,13 @@ import { err, ok, studioError, type Result, type StudioError } from "@studio/cor
  * - Browserbase → real browser session (act, login walls, multi-step UI)
  */
 
+const REQUEST_TIMEOUT_MS = 15_000;
+
+/** 429 and 5xx are worth retrying with backoff; other 4xx are not. */
+function isRetryableStatus(status: number): boolean {
+  return status === 429 || status >= 500;
+}
+
 export type FirecrawlConfig = {
   readonly apiKey: string;
   readonly baseUrl?: string;
@@ -66,6 +73,7 @@ export async function scrapeUrl(
         url: input.url,
         formats: ["markdown"],
       }),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {
@@ -73,7 +81,7 @@ export async function scrapeUrl(
       return err(
         studioError("EXTERNAL", `Firecrawl scrape failed: ${response.status}`, {
           cause: body,
-          retryable: response.status >= 500,
+          retryable: isRetryableStatus(response.status),
         }),
       );
     }
@@ -129,6 +137,7 @@ export async function searchWeb(
         mode: "basic",
         max_results: input.maxResults ?? 5,
       }),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {
@@ -136,7 +145,7 @@ export async function searchWeb(
       return err(
         studioError("EXTERNAL", `Parallel search failed: ${response.status}`, {
           cause: body,
-          retryable: response.status >= 500,
+          retryable: isRetryableStatus(response.status),
         }),
       );
     }
@@ -183,6 +192,7 @@ export async function createBrowserSession(
       body: JSON.stringify(
         config.projectId ? { projectId: config.projectId } : {},
       ),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {
@@ -191,7 +201,7 @@ export async function createBrowserSession(
         studioError(
           "EXTERNAL",
           `Browserbase session failed: ${response.status}`,
-          { cause: body, retryable: response.status >= 500 },
+          { cause: body, retryable: isRetryableStatus(response.status) },
         ),
       );
     }

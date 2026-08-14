@@ -54,12 +54,30 @@ Visual: [docs/diagrams/spf-offering.html](./docs/diagrams/spf-offering.html) · 
 
 Full map: [docs/capabilities.md](./docs/capabilities.md) · Tooling: [docs/tooling.md](./docs/tooling.md)
 
-## Quick start
+## Fellow / venture path (0→1)
+
+Outsourced fellows and venture builders: start at **[docs/fellow-day-0.md](./docs/fellow-day-0.md)**.
+
+```
+commit-v1 → engineering blueprint → env tiers → design system → bootstrap → golden-case vertical → ship → handover
+```
+
+| Doc / loop | Role |
+|------------|------|
+| [docs/fellow-day-0.md](./docs/fellow-day-0.md) | Day-0 runbook + env tiers |
+| [docs/engineering-blueprint.md](./docs/engineering-blueprint.md) | 80/90 stack defaults (do not re-decide) |
+| [docs/ai-in-workflow.md](./docs/ai-in-workflow.md) | Embed AI in jobs vs chat/workflow UIs |
+| `agents/loops/integrate-design-system.md` | Plug Utopia DS / designer pack / generate tokens |
+| `agents/loops/bootstrap-ai-product.md` | Stand up product on SPF |
+
+Design system example: [Utopia Design System](https://utopia-design-system.vercel.app/).
+
+## Quick start (engineers)
 
 ```bash
 pnpm install
 cp apps/web/.env.example apps/web/.env.local
-# fill Clerk, Convex, billing, NEXT_PUBLIC_POSTHOG_KEY, NEXT_PUBLIC_SENTRY_DSN, model keys
+# fill by tier — see comments in .env.example + docs/fellow-day-0.md
 
 cd apps/web && npx convex dev   # terminal 1
 pnpm dev:web                    # terminal 2  → http://localhost:3000
@@ -67,7 +85,7 @@ pnpm dev:web                    # terminal 2  → http://localhost:3000
 
 Then on GitHub: install **Greptile** + **Rams** + **Aikido**. Per engineer: **Ponytail** + **Superpowers**. Wire **Langfuse** + web keys (**Firecrawl** / **Parallel** / **Browserbase**) as needed. Ship features with the `compound-engineering` loop.
 
-Bootstrap: `agents/loops/bootstrap-ai-product.md` · Venture commit gate: `agents/loops/commit-v1.md` · Loop doctrine: `docs/loop-engineering.md` · Improve: `agents/loops/improve-framework.md`.
+Venture commit gate: `agents/loops/commit-v1.md` · Loop doctrine: `docs/loop-engineering.md` · Improve: `agents/loops/improve-framework.md`.
 
 Discovery playbook (Utopia): [Icarus](https://the-utopia-studio.github.io/Icarus/) — SPF holds the **commit artifacts**, not a second copy of the playbook.
 

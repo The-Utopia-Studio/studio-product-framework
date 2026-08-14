@@ -37,16 +37,20 @@ Status key: **Shipped** (wired in reference app) · **Port** (package API ready,
 | Agent instructions | `AGENTS.md`, `agents/` | **Shipped** |
 | Skills / loops | `agents/skills`, `agents/loops` | **Shipped** |
 | Loop engineering doctrine | `docs/loop-engineering.md` | **Shipped** |
+| Fellow Day-0 / env tiers | `docs/fellow-day-0.md` | **Shipped** (docs) |
+| Engineering blueprint (80/90 stack) | `docs/engineering-blueprint.md` | **Shipped** (docs) |
+| AI-in-workflow doctrine | `docs/ai-in-workflow.md` | **Shipped** (docs) |
+| Design system plug / generate | `agents/loops/integrate-design-system.md` + `agents/skills/plug-design-system.md` | **Shipped** (process; starter UI still Apple/shadcn until plugged) |
 | Compound engineering loop | `agents/loops/compound-engineering.md` | **Shipped** (docs; agent-run) |
 | Superpowers harness | `agents/skills/superpowers.md` + upstream plugin | **Process** (install per harness) |
-| Commit gate (Icarus → artifacts) | `agents/loops/commit-v1.md`, `agents/context/discovery/` | **Shipped** |
+| Commit gate (Icarus → artifacts) | `agents/loops/commit-v1.md`, `agents/context/discovery/`, `scripts/check-commit-gate.mjs`, CI `commit-gate` job | **Shipped** (CI blocks a PR that touches `agents/context/discovery/` unless score ≥32 and all three artifacts are human-signed; platform-only PRs never touch those files, so the gate never fires for framework plumbing, per its own documented exception) |
 | Problem score / evidence | `agents/skills/score-problem.md` | **Shipped** |
 | Auto-research → queue | `agents/skills/research.md` (+ Parallel/Firecrawl) | **Shipped** |
 | Self-improve loop | `agents/loops/improve-framework.md` | **Shipped** (docs; agent-run) |
 | Operate / handover | `agents/loops/operate-handover.md` | **Shipped** |
-| Design review | Rams GitHub App + `agents/skills/rams.md` | **Process** |
-| Code review | Greptile + `agents/skills/greploop.md` | **Process** |
-| Security / pentest | Aikido + `agents/skills/aikido.md` | **Process** |
+| Design review | Rams GitHub App + `agents/skills/rams.md` | **Process** (no GitHub App installed in this repo; CI's `ship-bar-checklist` job blocks merge until a human ticks the PR checkbox, but does not itself verify a design review happened) |
+| Code review | Greptile + `agents/skills/greploop.md` | **Process** (same caveat — checkbox enforced, tool not live) |
+| Security / pentest | Aikido + `agents/skills/aikido.md` | **Process** (same caveat — checkbox enforced, tool not live) |
 | Token-efficient codegen | Ponytail + `agents/skills/ponytail.md` | **Process** (install skill; infused in ship-ready) |
 | Shared agent memory | Hivemind + `docs/hivemind.md` + `agents/skills/hivemind.md` | **Process** (team install) |
 | Ship-ready loop | `agents/loops/ship-ready-pr.md` | **Shipped** (docs) |
@@ -59,14 +63,17 @@ Workflow · Workpool · R2 · RAG · Autumn · `@convex-dev/ratelimiter`
 
 ## What “lift and use” means today
 
-1. Clone monorepo  
-2. Fill env (Clerk, Convex, Polar, PostHog, Sentry, Langfuse, Firecrawl/Parallel/Browserbase as needed)  
-3. Install Greptile + Rams + Aikido on GitHub  
-4. Install Hivemind and join the team workspace ([hivemind.md](./hivemind.md))  
-5. Install Ponytail + Superpowers for builder agents  
-6. `pnpm install` + Convex + `pnpm dev:web`  
-7. Build product in `apps/*` using packages — don’t fork mechanics  
-8. Features: prefer `agents/loops/compound-engineering.md` so each change compounds 
+**Fellows:** follow [fellow-day-0.md](./fellow-day-0.md) end-to-end.
+
+1. `commit-v1` + fill [engineering-blueprint.md](./engineering-blueprint.md) (80/90 defaults)  
+2. Clone / fork monorepo; fill env **by tier** (see `.env.example` + fellow Day-0)  
+3. `integrate-design-system` — Utopia DS / designer pack / generate ([utopia-design-system.vercel.app](https://utopia-design-system.vercel.app/))  
+4. Install Greptile + Rams + Aikido on GitHub  
+5. Install Hivemind and join the correct workspace ([hivemind.md](./hivemind.md))  
+6. Install Ponytail + Superpowers for builder agents  
+7. `pnpm install` + Convex + `pnpm dev:web`  
+8. First vertical = golden-case **job** ([ai-in-workflow.md](./ai-in-workflow.md)) — chat is a mechanic demo, not the default product  
+9. Features: prefer `agents/loops/compound-engineering.md` so each change compounds  
 
 See [production-readiness.md](./production-readiness.md) for the honest scorecard.  
 Convex components guide: [convex-components.md](./convex-components.md) · catalog: https://www.convex.dev/components

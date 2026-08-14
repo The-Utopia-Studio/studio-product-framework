@@ -70,7 +70,9 @@ Builder agents keep the framework improving via **bounded recursive loops** — 
 
 See [loop-engineering.md](./loop-engineering.md), `agents/skills/research.md`, `agents/loops/improve-framework.md`, `agents/loops/operate-handover.md`.
 
-**Icarus commit gate:** Venture products must pass `agents/loops/commit-v1.md` (scorecard, evidence, eval-first spec) before bootstrap. Studio Product Framework is the committed-build platform; [Icarus](https://the-utopia-studio.github.io/Icarus/) is the discovery playbook — do not duplicate it here.
+**Icarus commit gate:** Venture products must pass `agents/loops/commit-v1.md` (scorecard, evidence, eval-first spec + engineering blueprint) before bootstrap. Fellows follow [fellow-day-0.md](./fellow-day-0.md). Studio Product Framework is the committed-build platform; [Icarus](https://the-utopia-studio.github.io/Icarus/) is the discovery playbook — do not duplicate it here.
+
+**AI placement:** Embed models into domain workflows by default; chat/agent consoles only when the job is conversational — [ai-in-workflow.md](./ai-in-workflow.md). **Design system:** plug Utopia/designer pack or generate tokens via `integrate-design-system` before UI polish.
 
 ## Monorepo (agent-native)
 

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { isOk } from "@studio/core";
 import {
   createBrowserSession,
@@ -22,6 +23,9 @@ export const scrape = action({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
+    await ctx.runMutation(internal.rateLimitGuard.assertWebToolsLimit, {
+      userId: identity.subject,
+    });
 
     const result = await scrapeUrl(
       { apiKey: process.env.FIRECRAWL_API_KEY ?? "" },
@@ -51,6 +55,9 @@ export const search = action({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
+    await ctx.runMutation(internal.rateLimitGuard.assertWebToolsLimit, {
+      userId: identity.subject,
+    });
 
     const result = await searchWeb(
       { apiKey: process.env.PARALLEL_API_KEY ?? "" },
@@ -72,6 +79,9 @@ export const createSession = action({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
+    await ctx.runMutation(internal.rateLimitGuard.assertWebToolsLimit, {
+      userId: identity.subject,
+    });
 
     const result = await createBrowserSession({
       apiKey: process.env.BROWSERBASE_API_KEY ?? "",

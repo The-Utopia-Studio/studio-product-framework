@@ -4,6 +4,7 @@ export {
   creditWallet,
   reconcileBalances,
   type WalletLedger,
+  type WalletLedgerResult,
 } from "./wallet";
 export {
   runInference,

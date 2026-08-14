@@ -105,11 +105,16 @@ Mounted in `app/layout.tsx` for web vitals. PostHog owns product analytics; Sent
 ## Loop engineering (research + self-improve)
 
 - **Doctrine:** [loop-engineering.md](./loop-engineering.md)
-- **Venture commit:** `agents/skills/score-problem.md` → `agents/loops/commit-v1.md` → `agents/context/discovery/`
+- **Fellow Day-0:** [fellow-day-0.md](./fellow-day-0.md)
+- **Venture commit:** `score-problem` → `commit-v1` → [engineering-blueprint.md](./engineering-blueprint.md) → `integrate-design-system` → `bootstrap-ai-product`
+- **AI placement:** [ai-in-workflow.md](./ai-in-workflow.md) (workflow-embedded default)
+- **Design system:** `agents/loops/integrate-design-system.md` + `agents/skills/plug-design-system.md` — e.g. [Utopia DS](https://utopia-design-system.vercel.app/)
 - **Research skill:** `agents/skills/research.md` → `agents/context/research-queue.md`
 - **Improve loop:** `agents/loops/improve-framework.md` (bounded recursion; no auto-merge)
 - **Handover:** `agents/loops/operate-handover.md` — operators run loops after 1–2 Studio iterations
 - **Memory (git-audited):** `agents/context/learnings.md` — blocked notes, scorecard evidence; not a second database  
 - **Memory (session/team):** Hivemind — traces + summaries across agents; see [hivemind.md](./hivemind.md)
 
-Cadence: before venture build → commit-v1; every PR → ship-ready; weekly/on-demand → research then one improve outer iter. Use Cursor `/loop` if you want a heartbeat — do not invent a parallel orchestration runtime. Keep Hivemind capture on so ship/improve sessions compound for the next engineer.
+Cadence: before venture build → commit-v1 + blueprint + DS; every PR → ship-ready; weekly/on-demand → research then one improve outer iter. Use Cursor `/loop` if you want a heartbeat — do not invent a parallel orchestration runtime. Keep Hivemind capture on so ship/improve sessions compound for the next engineer.
+
+Builder AI is **defacto in the loops** (Ponytail, Superpowers, greploop, research/improve) — not a separate Studio “workflow UI.” Product AI belongs in customer jobs ([ai-in-workflow.md](./ai-in-workflow.md)).

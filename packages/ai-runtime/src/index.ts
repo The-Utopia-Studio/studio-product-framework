@@ -13,7 +13,14 @@ export {
   execInSandbox,
   type SandboxSession,
   type SandboxProvider,
+  type SandboxIsolation,
 } from "./sandbox";
+
+export {
+  assertWithinBudget,
+  type AgentBudget,
+  type AgentBudgetUsage,
+} from "./budget";
 
 export {
   createOpenRouterGateway,
