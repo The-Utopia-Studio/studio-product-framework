@@ -19,6 +19,7 @@ import type * as rateLimits from "../rateLimits.js";
 import type * as subscriptions from "../subscriptions.js";
 import type * as users from "../users.js";
 import type * as wallet from "../wallet.js";
+import type * as webTools from "../webTools.js";
 
 import type {
   ApiFromModules,
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   subscriptions: typeof subscriptions;
   users: typeof users;
   wallet: typeof wallet;
+  webTools: typeof webTools;
 }>;
 
 /**

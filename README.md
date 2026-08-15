@@ -56,6 +56,8 @@ Full map: [docs/capabilities.md](./docs/capabilities.md) · Tooling: [docs/tooli
 
 ## Quick start
 
+**Fastest path:** `npx github:The-Utopia-Studio/studio_product_framework_setter` — a separate, guided setup wizard that clones this template into a new repo for your product and walks you through Clerk, Convex, and the rest (~10 min, no manual env-var copying). Manual steps below.
+
 ```bash
 pnpm install
 cp apps/web/.env.example apps/web/.env.local

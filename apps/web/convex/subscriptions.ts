@@ -69,69 +69,92 @@ const createCheckout = async ({
   return result;
 };
 
+const emptyPlans = { items: [], pagination: { maxPage: 1, totalCount: 0 } };
+
 export const getAvailablePlansQuery = query({
   handler: async (ctx) => {
-    const polar = new Polar({
-      server: "sandbox",
-      accessToken: process.env.POLAR_ACCESS_TOKEN,
-    });
+    if (!process.env.POLAR_ACCESS_TOKEN || !process.env.POLAR_ORGANIZATION_ID) {
+      return emptyPlans;
+    }
 
-    const { result } = await polar.products.list({
-      organizationId: process.env.POLAR_ORGANIZATION_ID,
-      isArchived: false,
-    });
+    // Billing plans are homepage decoration, not a critical path — any Polar
+    // failure (bad/expired token, wrong sandbox-vs-production server, Polar
+    // outage) should degrade to "no plans shown", never crash the page.
+    try {
+      const polar = new Polar({
+        server: (process.env.POLAR_SERVER as "sandbox" | "production") || "sandbox",
+        accessToken: process.env.POLAR_ACCESS_TOKEN,
+      });
 
-    // Transform the data to remove Date objects and keep only needed fields
-    const cleanedItems = result.items.map((item) => ({
-      id: item.id,
-      name: item.name,
-      description: item.description,
-      isRecurring: item.isRecurring,
-      prices: item.prices.map((price: any) => ({
-        id: price.id,
-        amount: price.priceAmount,
-        currency: price.priceCurrency,
-        interval: price.recurringInterval,
-      })),
-    }));
+      const { result } = await polar.products.list({
+        organizationId: process.env.POLAR_ORGANIZATION_ID,
+        isArchived: false,
+      });
 
-    return {
-      items: cleanedItems,
-      pagination: result.pagination,
-    };
+      // Transform the data to remove Date objects and keep only needed fields
+      const cleanedItems = result.items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        isRecurring: item.isRecurring,
+        prices: item.prices.map((price: any) => ({
+          id: price.id,
+          amount: price.priceAmount,
+          currency: price.priceCurrency,
+          interval: price.recurringInterval,
+        })),
+      }));
+
+      return {
+        items: cleanedItems,
+        pagination: result.pagination,
+      };
+    } catch (err) {
+      console.error("getAvailablePlansQuery: Polar lookup failed", err);
+      return emptyPlans;
+    }
   },
 });
 
 export const getAvailablePlans = action({
   handler: async (ctx) => {
-    const polar = new Polar({
-      server: "sandbox",
-      accessToken: process.env.POLAR_ACCESS_TOKEN,
-    });
+    if (!process.env.POLAR_ACCESS_TOKEN || !process.env.POLAR_ORGANIZATION_ID) {
+      return emptyPlans;
+    }
 
-    const { result } = await polar.products.list({
-      organizationId: process.env.POLAR_ORGANIZATION_ID,
-      isArchived: false,
-    });
+    try {
+      const polar = new Polar({
+        server: (process.env.POLAR_SERVER as "sandbox" | "production") || "sandbox",
+        accessToken: process.env.POLAR_ACCESS_TOKEN,
+      });
 
-    // Transform the data to remove Date objects and keep only needed fields
-    const cleanedItems = result.items.map((item) => ({
-      id: item.id,
-      name: item.name,
-      description: item.description,
-      isRecurring: item.isRecurring,
-      prices: item.prices.map((price: any) => ({
-        id: price.id,
-        amount: price.priceAmount,
-        currency: price.priceCurrency,
-        interval: price.recurringInterval,
-      })),
-    }));
+      const { result } = await polar.products.list({
+        organizationId: process.env.POLAR_ORGANIZATION_ID,
+        isArchived: false,
+      });
 
-    return {
-      items: cleanedItems,
-      pagination: result.pagination,
-    };
+      // Transform the data to remove Date objects and keep only needed fields
+      const cleanedItems = result.items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        isRecurring: item.isRecurring,
+        prices: item.prices.map((price: any) => ({
+          id: price.id,
+          amount: price.priceAmount,
+          currency: price.priceCurrency,
+          interval: price.recurringInterval,
+        })),
+      }));
+
+      return {
+        items: cleanedItems,
+        pagination: result.pagination,
+      };
+    } catch (err) {
+      console.error("getAvailablePlans: Polar lookup failed", err);
+      return emptyPlans;
+    }
   },
 });
 
@@ -501,7 +524,7 @@ export const paymentWebhook = httpAction(async (ctx, request) => {
 export const createCustomerPortalUrl = action({
   handler: async (ctx, args: { customerId: string }) => {
     const polar = new Polar({
-      server: "sandbox",
+      server: (process.env.POLAR_SERVER as "sandbox" | "production") || "sandbox",
       accessToken: process.env.POLAR_ACCESS_TOKEN,
     });
 
