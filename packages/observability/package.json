@@ -19,6 +19,10 @@
     "./langfuse": {
       "types": "./src/langfuse.ts",
       "default": "./src/langfuse.ts"
+    },
+    "./server-node": {
+      "types": "./src/server-node.ts",
+      "default": "./src/server-node.ts"
     }
   },
   "scripts": {
@@ -29,11 +33,15 @@
     "@studio/core": "workspace:*"
   },
   "peerDependencies": {
+    "@sentry/node": ">=8",
     "@sentry/react": ">=8",
     "posthog-js": ">=1",
     "react": ">=18"
   },
   "peerDependenciesMeta": {
+    "@sentry/node": {
+      "optional": true
+    },
     "@sentry/react": {
       "optional": true
     },

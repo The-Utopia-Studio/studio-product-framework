@@ -20,7 +20,11 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `agents/skills` | Task playbooks (Rams, greploop, aikido, langfuse, ponytail, superpowers, firecrawl, parallel, browserbase, research, …) |
 | `agents/loops` | Engineered loops (discover/commit, ship, build, improve, operate) |
 | `agents/context/` | Principles, research queue, learnings, discovery gate |
-| `docs/` | Architecture + capabilities + loop engineering + Hivemind |
+| `docs/` | Architecture + capabilities + fellow Day-0 + blueprint + AI-in-workflow + Hivemind |
+
+## Fellow / venture entry
+
+For 0→1 product builds (especially outsourced fellows): **[docs/fellow-day-0.md](../docs/fellow-day-0.md)** → blueprint → design system → bootstrap. Do not start from the chat dashboard as the product shape — see [docs/ai-in-workflow.md](../docs/ai-in-workflow.md).
 
 ## Hard rules
 
@@ -53,6 +57,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `agents/skills/browserbase.md` | Real browser sessions for agents |
 | `agents/skills/check-pr.md` | PR hygiene |
 | `agents/skills/hivemind.md` | Shared memory setup / doctrine / promote-to-git |
+| `agents/skills/plug-design-system.md` | Map Utopia DS / designer pack / generated tokens into the app |
 | `agents/skills/research.md` | Auto-research → research queue |
 | `agents/skills/score-problem.md` | Problem scorecard + evidence ladder |
 | `agents/skills/add-capability.md` | New package |
@@ -60,6 +65,7 @@ You are working in a **pnpm + Turborepo** monorepo for **AI-native companies**. 
 | `agents/skills/add-runtime-agent-tool.md` | Agent tools |
 | `agents/skills/add-convex-component.md` | Add Convex component |
 | `agents/loops/commit-v1.md` | Commit gate before venture build |
+| `agents/loops/integrate-design-system.md` | Plug or generate design system before UI polish |
 | `agents/loops/bootstrap-ai-product.md` | New product standup |
 | `agents/loops/scaffold-product-feature.md` | Feature vertical |
 | `agents/loops/compound-engineering.md` | Plan → Work → Review → Compound |

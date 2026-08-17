@@ -55,13 +55,20 @@ Ship when: golden suite passes **and** cost is in budget.
 
 ## 5. Platform mapping (Studio Product Framework)
 
+Defaults — do not re-pick unless a hard constraint is listed on `docs/engineering-blueprint.md`:
+
 | Concern | Use |
 |---------|-----|
 | Money / credits / inference | `@studio/effect-critical` + wallet / Autumn |
-| Runtime agent work | `@studio/ai-runtime` + sandbox |
+| Runtime agent work | `@studio/ai-runtime` + sandbox (**Port** until provider wired) |
 | Auth / control plane | Clerk + Convex |
-| Subscriptions | Polar and/or Stripe |
+| Subscriptions | **Polar** (Shipped) and/or Stripe (Port) |
 | Product / error truth | PostHog + Sentry |
+| LLM traces | Langfuse |
+| Design system | Utopia DS / designer pack / generate — `integrate-design-system` |
+| AI placement | Workflow-embedded job (default) vs conversational UI — `docs/ai-in-workflow.md` |
+
+Fill the full stack choices on **[docs/engineering-blueprint.md](../../../docs/engineering-blueprint.md)** before bootstrap.
 
 ## Commit checklist
 
@@ -69,6 +76,8 @@ Ship when: golden suite passes **and** cost is in budget.
 - [ ] ≥5 golden cases with artefacts
 - [ ] Autonomy level declared
 - [ ] Cost-per-outcome budget set
+- [ ] AI placement declared (workflow-embedded default)
+- [ ] Engineering blueprint started / linked
 - [ ] Problem scorecard ≥32 and evidence ladder signed
 - [ ] Human confirmed: invent/wedge is human-owned (agents do not invent the wedge)
 

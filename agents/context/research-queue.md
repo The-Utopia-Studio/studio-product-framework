@@ -8,6 +8,14 @@ Status: `open` | `done` | `blocked`
 
 <!-- Newest actionable items at top. Max ~15 open; archive done below. -->
 
+### RQ-004 · fellow · worked example
+- **Score:** 2
+- **Why:** Fellow Day-0 + blueprint + DS loop shipped as docs; still no filled venture example to shadow
+- **Evidence:** `docs/fellow-day-0.md`, `docs/production-readiness.md` “Still required” #9–10
+- **Next:** `improve-framework` → add one anonymized filled blueprint + eval-first + DS token map under `agents/context/discovery/examples/` (or link a real venture)
+- **Estimate:** M
+- **Status:** open
+
 ### RQ-001 · scorecard · completeness
 - **Score:** 3
 - **Why:** Production readiness completeness still mid; Stripe/Autumn/sandbox ports unfinished

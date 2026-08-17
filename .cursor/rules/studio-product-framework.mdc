@@ -22,6 +22,8 @@ alwaysApply: true
 - Builder agents: Ponytail ladder (`full`); optional Superpowers harness; features via `compound-engineering` loop.
 - Web: Parallel (research) → Firecrawl (scrape) → Browserbase (act) — see `@studio/web-tools`.
 - Framework improvement: `research` → queue → `improve-framework` (depth ≤3, no auto-merge). Handover via `operate-handover` — operators own tweaks after 1–2 Studio iterations.
-- Venture products: `score-problem` → `commit-v1` (discovery artifacts under `agents/context/discovery/`) before bootstrap. Platform plumbing may skip.
+- Venture products: `score-problem` → `commit-v1` + engineering blueprint → `integrate-design-system` → bootstrap. Fellows: `docs/fellow-day-0.md`. Platform plumbing may skip commit gate.
+- AI defaults to workflow-embedded jobs (`docs/ai-in-workflow.md`); reference chat is a metered demo, not the product template.
+- Stack 80/90 defaults live in `docs/engineering-blueprint.md` — do not re-decide Convex/Clerk/Polar/Vercel/PostHog/Sentry/Langfuse without a hard constraint.
 - Public Convex functions: auth, args+returns validators, await promises, indexes over filter, paginate unbounded lists.
-- Prefer `docs/capabilities.md`, `docs/loop-engineering.md`, and `agents/AGENTS.md` over inventing new structure.
+- Prefer `docs/capabilities.md`, `docs/loop-engineering.md`, `docs/fellow-day-0.md`, and `agents/AGENTS.md` over inventing new structure.

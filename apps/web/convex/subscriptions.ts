@@ -9,6 +9,10 @@ import {
   query,
 } from "./_generated/server";
 
+function polarServer(): "sandbox" | "production" {
+  return (process.env.POLAR_SERVER as "sandbox" | "production") || "sandbox";
+}
+
 const createCheckout = async ({
   customerEmail,
   productPriceId,
@@ -25,7 +29,7 @@ const createCheckout = async ({
   }
 
   const polar = new Polar({
-    server: (process.env.POLAR_SERVER as "sandbox" | "production") || "sandbox",
+    server: polarServer(),
     accessToken: process.env.POLAR_ACCESS_TOKEN,
   });
 
@@ -82,7 +86,7 @@ export const getAvailablePlansQuery = query({
     // outage) should degrade to "no plans shown", never crash the page.
     try {
       const polar = new Polar({
-        server: (process.env.POLAR_SERVER as "sandbox" | "production") || "sandbox",
+        server: polarServer(),
         accessToken: process.env.POLAR_ACCESS_TOKEN,
       });
 
@@ -124,7 +128,7 @@ export const getAvailablePlans = action({
 
     try {
       const polar = new Polar({
-        server: (process.env.POLAR_SERVER as "sandbox" | "production") || "sandbox",
+        server: polarServer(),
         accessToken: process.env.POLAR_ACCESS_TOKEN,
       });
 
@@ -314,8 +318,18 @@ export const handleWebhookEvent = internalMutation({
     });
 
     switch (eventType) {
-      case "subscription.created":
-        // Insert new subscription
+      case "subscription.created": {
+        // Webhook providers retry on timeout/non-2xx; a redelivered
+        // subscription.created must not insert a second row for the
+        // same Polar subscription.
+        const priorSub = await ctx.db
+          .query("subscriptions")
+          .withIndex("polarId", (q) => q.eq("polarId", args.body.data.id))
+          .first();
+        if (priorSub) {
+          break;
+        }
+
         await ctx.db.insert("subscriptions", {
           polarId: args.body.data.id,
           polarPriceId: args.body.data.price_id,
@@ -347,6 +361,7 @@ export const handleWebhookEvent = internalMutation({
           customerId: args.body.data.customer_id,
         });
         break;
+      }
 
       case "subscription.updated":
         // Find existing subscription
@@ -512,6 +527,11 @@ export const paymentWebhook = httpAction(async (ctx, request) => {
       );
     }
 
+    await ctx.scheduler.runAfter(0, internal.observabilityNode.reportException, {
+      message: error instanceof Error ? error.message : "Webhook failed",
+      tags: { path: "paymentWebhook" },
+    });
+
     return new Response(JSON.stringify({ message: "Webhook failed" }), {
       status: 400,
       headers: {
@@ -524,7 +544,7 @@ export const paymentWebhook = httpAction(async (ctx, request) => {
 export const createCustomerPortalUrl = action({
   handler: async (ctx, args: { customerId: string }) => {
     const polar = new Polar({
-      server: (process.env.POLAR_SERVER as "sandbox" | "production") || "sandbox",
+      server: polarServer(),
       accessToken: process.env.POLAR_ACCESS_TOKEN,
     });
 

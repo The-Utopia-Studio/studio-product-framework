@@ -4,9 +4,12 @@ import { useAuth } from "@clerk/nextjs";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import Markdown from "react-markdown";
+import posthog from "posthog-js";
+import { trackEvent, StudioEvents } from "@studio/observability";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { captureAppException } from "@/components/observability-provider";
 import { api } from "../../../convex/_generated/api";
 
 type ChatMessage = {
@@ -62,8 +65,20 @@ export default function ChatPage() {
           content: result.text,
         },
       ]);
+
+      trackEvent(posthog, StudioEvents.inferenceCompleted, {
+        model: result.model,
+        inputTokens: result.inputTokens,
+        outputTokens: result.outputTokens,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Inference failed");
+      const message = err instanceof Error ? err.message : "Inference failed";
+      setError(message);
+      if (message.includes("Insufficient credits")) {
+        trackEvent(posthog, StudioEvents.creditsExhausted);
+      } else {
+        captureAppException(err);
+      }
     } finally {
       setBusy(false);
     }

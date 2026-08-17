@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Typecheck & lint
+    name: Typecheck, lint & test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,3 +33,50 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+  ship-bar-checklist:
+    name: Ship-bar checklist ticked
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify Reviews checklist is ticked
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/check-pr-checklist.mjs
+
+  commit-gate:
+    name: Icarus commit gate
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check whether this PR touches the venture commit gate
+        id: changed
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          if git diff --name-only "origin/${{ github.base_ref }}...HEAD" | grep -q '^agents/context/discovery/'; then
+            echo "touched=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "touched=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.changed.outputs.touched == 'true'
+        with:
+          node-version: 22
+
+      - name: Verify commit-gate artifacts are signed
+        if: steps.changed.outputs.touched == 'true'
+        run: node scripts/check-commit-gate.mjs

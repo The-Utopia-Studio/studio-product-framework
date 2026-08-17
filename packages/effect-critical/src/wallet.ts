@@ -1,6 +1,13 @@
 import { Effect } from "effect";
 import { WalletError } from "./errors";
 
+export type WalletLedgerResult = {
+  readonly balance: number;
+  readonly transactionId: string;
+  /** False when the idempotency key already had a matching ledger row. */
+  readonly created: boolean;
+};
+
 export type WalletLedger = {
   readonly getBalance: (userId: string) => Promise<number>;
   readonly debit: (input: {
@@ -8,13 +15,13 @@ export type WalletLedger = {
     amount: number;
     reason: string;
     idempotencyKey: string;
-  }) => Promise<{ balance: number; transactionId: string }>;
+  }) => Promise<WalletLedgerResult>;
   readonly credit: (input: {
     userId: string;
     amount: number;
     reason: string;
     idempotencyKey: string;
-  }) => Promise<{ balance: number; transactionId: string }>;
+  }) => Promise<WalletLedgerResult>;
 };
 
 /**
@@ -29,7 +36,7 @@ export function debitCredits(
     reason: string;
     idempotencyKey: string;
   },
-): Effect.Effect<{ balance: number; transactionId: string }, WalletError> {
+): Effect.Effect<WalletLedgerResult, WalletError> {
   return Effect.tryPromise({
     try: async () => {
       if (input.amount <= 0) {
@@ -60,7 +67,7 @@ export function creditWallet(
     reason: string;
     idempotencyKey: string;
   },
-): Effect.Effect<{ balance: number; transactionId: string }, WalletError> {
+): Effect.Effect<WalletLedgerResult, WalletError> {
   return Effect.tryPromise({
     try: async () => {
       if (input.amount <= 0) {

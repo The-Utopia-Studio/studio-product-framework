@@ -6,6 +6,9 @@ Quick context:
 - [agents/context/principles.md](./agents/context/principles.md)
 - [docs/architecture.md](./docs/architecture.md)
 - [docs/capabilities.md](./docs/capabilities.md)
+- [docs/fellow-day-0.md](./docs/fellow-day-0.md) — venture fellow entry (env tiers → DS → build)
+- [docs/engineering-blueprint.md](./docs/engineering-blueprint.md) — 80/90 stack defaults template
+- [docs/ai-in-workflow.md](./docs/ai-in-workflow.md) — AI in jobs vs chat/workflow UIs
 - [docs/loop-engineering.md](./docs/loop-engineering.md) — bounded self-improve + research + handover
 - [docs/tooling.md](./docs/tooling.md) — Rams, Greptile, Aikido, Langfuse, Ponytail, Superpowers, Firecrawl/Parallel/Browserbase, Hivemind
 - [docs/hivemind.md](./docs/hivemind.md) — team shared agent memory (install + keep active)
@@ -13,7 +16,7 @@ Quick context:
 
 Ship: [agents/loops/ship-ready-pr.md](./agents/loops/ship-ready-pr.md) · Improve: [agents/loops/improve-framework.md](./agents/loops/improve-framework.md) · Handover: [agents/loops/operate-handover.md](./agents/loops/operate-handover.md)
 
-Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Discovery templates: [agents/context/discovery/](./agents/context/discovery/)
+Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Design system: [agents/loops/integrate-design-system.md](./agents/loops/integrate-design-system.md) · Discovery templates: [agents/context/discovery/](./agents/context/discovery/)
 
 ## Learned User Preferences
 
@@ -27,6 +30,7 @@ Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Disc
 - Be critical of framework additions—only keep loop or self-improve pieces that clearly belong.
 - Continuous improvement via loop engineering should not depend on a human owning the research/improve cycle.
 - After 1–2 Studio feedback iterations, hand operational tweaks to the customer/operator.
+- Fellows should be able to take a design system + env tiers + this framework and build without re-deciding the 80/90 stack; AI belongs in domain workflows by default, not chat-dashboard clones.
 
 ## Learned Workspace Facts
 
@@ -34,8 +38,9 @@ Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Disc
 - The monorepo is intentionally agent-native so web, packages, and agents stay in one context.
 - Client never talks to the database—Convex only; Effect fences money, inference, and delivery.
 - Builder agents live under `agents/`; runtime agents require sandboxes via `@studio/ai-runtime`.
-- Core agent loops include commit-v1 (venture gate), ship-ready-pr, improve-framework + research queue, and operate-handover.
+- Core agent loops include commit-v1 (venture gate), integrate-design-system, bootstrap-ai-product, ship-ready-pr, improve-framework + research queue, and operate-handover.
 - Discovery commit artifacts live under `agents/context/discovery/`; Icarus is the external playbook, not duplicated in-repo.
+- Fellows use `docs/fellow-day-0.md` + engineering blueprint; AI defaults to workflow-embedded jobs, not chat UI clones.
 - Hivemind (Deeplake) is the session/team memory layer; `.hivemind` pins workspace `studio-product-framework`; durable rules stay in git.
 - `site/` is the self-contained static GitHub Pages showcase; deployed via `.github/workflows/pages.yml` on push to main/master.
 - `agents/loops/compound-engineering.md` is the preferred loop for features and framework-improve (Plan → Work → Review → Compound via Every).

@@ -28,27 +28,33 @@ Playbook (read, don’t paste): https://the-utopia-studio.github.io/Icarus/
 | Problem scorecard | `agents/context/discovery/problem-scorecard.md` |
 | Evidence ladder | `agents/context/discovery/evidence-ladder.md` |
 | Eval-first spec | `agents/context/discovery/eval-first-spec.md` |
+| Engineering blueprint | `docs/engineering-blueprint.md` (copy into venture; 80/90 stack) |
 | Pilot term sheet | `agents/context/discovery/pilot-term-sheet.md` (required for launch) |
+
+Fellow entry after this gate: `docs/fellow-day-0.md`.
 
 ## Steps
 
 1. **Score the problem** — run `agents/skills/score-problem.md` (or verify existing scorecard). Stop if total < 32 unless human explicitly overrides with written reason in learnings.
 2. **Log evidence** — verify `evidence-ladder.md`. Strongest claim must be ≥ 0.5 or a dated path to paid terms.
-3. **Write eval-first spec** — job sentence, ≥5 golden cases, autonomy level, cost-per-outcome.
-4. **Human gate** — human signs invent/wedge and the commit checklist on the spec. Agents do not self-approve.
-5. **Build** — only after sign-off:
+3. **Write eval-first spec** — job sentence, ≥5 golden cases, autonomy level, cost-per-outcome, AI placement (workflow-embedded default).
+4. **Fill engineering blueprint** — accept 80/90 defaults or list hard constraints (`docs/engineering-blueprint.md`).
+5. **Human gate** — human signs invent/wedge and the commit checklist on the spec. Agents do not self-approve.
+6. **Build** — only after sign-off:
+   - Design system → `agents/loops/integrate-design-system.md`
    - New product standup → `agents/loops/bootstrap-ai-product.md`
    - Feature vertical → `agents/loops/scaffold-product-feature.md`
    - Ship → `agents/loops/ship-ready-pr.md`
-6. **Launch** — before paid pilot / public v1, complete pilot-term-sheet (all six terms + data rights).
-7. **Learning** — append one line to `agents/context/learnings.md` (pass/kill/redesign + total score).
+7. **Launch** — before paid pilot / public v1, complete pilot-term-sheet (all six terms + data rights).
+8. **Learning** — append one line to `agents/context/learnings.md` (pass/kill/redesign + total score).
 
 ## Done when
 
 - [ ] Scorecard ≥32 (or documented kill/redesign)
 - [ ] Evidence ladder signed; not opinion-only
 - [ ] Eval-first spec signed by a human
-- [ ] Next loop named (bootstrap / scaffold) — not started early
+- [ ] Engineering blueprint filled (or explicitly deferred with reason)
+- [ ] Next loop named (integrate-design-system / bootstrap / scaffold) — not started early
 - [ ] Pilot sheet ready if this commit includes customer launch
 
 ## Report
