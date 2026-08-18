@@ -27,3 +27,9 @@ packages/*/dist/
 
 # Cursor local state (keep rules)
 .cursor/hooks/state/
+
+# Claude Code local session/worktree state
+.claude/
+
+# Stray local Python env (not part of the product)
+venv/

@@ -1,5 +1,7 @@
 # Getting started
 
+**Fastest path:** `npx github:The-Utopia-Studio/studio_product_framework_setter` — a separate guided-setup wizard that clones this template into a new repo for your product and walks you through Clerk, Convex, and the optional integrations in a browser UI (~10 min). The steps below are the manual/reference version of the same process.
+
 **Venture fellows / outsourced builders:** start at [fellow-day-0.md](./fellow-day-0.md) (env tiers, design system, blueprint). This page is the engineer quick start for the monorepo.
 
 ## Prerequisites
