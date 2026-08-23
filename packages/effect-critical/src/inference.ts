@@ -17,6 +17,10 @@ export type InferenceResponse = {
   readonly inputTokens: number;
   readonly outputTokens: number;
   readonly providerRequestId?: string;
+  readonly toolCalls?: ReadonlyArray<{
+    readonly name: string;
+    readonly args: Record<string, unknown>;
+  }>;
 };
 
 export type InferenceGateway = {

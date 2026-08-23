@@ -1,21 +1,77 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { Effect } from "effect";
 import {
   debitAndInfer,
   type InferenceError,
   type WalletError,
 } from "@studio/effect-critical";
-import { createOpenRouterGateway } from "@studio/ai-runtime";
+import {
+  createOpenRouterGateway,
+  type ToolConfig,
+  type ToolDefinition,
+} from "@studio/ai-runtime";
 import {
   langfuseConfigFromEnv,
   traceGeneration,
 } from "@studio/observability/langfuse";
 import { isAutumnConfigured, autumn } from "./autumn";
+import type { ActionCtx } from "./_generated/server";
 
 const DEFAULT_CREDIT_COST = 1;
 const DEFAULT_MODEL = "openai/gpt-4o-mini";
+
+// Gives the chat model real tools to use — only the ones whose API key is
+// actually configured. Search results/scraped content are capped before
+// being fed back to the model; nothing here needs the raw multi-KB payload.
+function buildToolConfig(ctx: ActionCtx): ToolConfig | undefined {
+  const tools: ToolDefinition[] = [];
+  if (process.env.PARALLEL_API_KEY) {
+    tools.push({
+      name: "search_web",
+      description:
+        "Search the web for current information — use for anything time-sensitive or outside your own knowledge.",
+      parameters: {
+        type: "object",
+        properties: { query: { type: "string" } },
+        required: ["query"],
+      },
+    });
+  }
+  if (process.env.FIRECRAWL_API_KEY) {
+    tools.push({
+      name: "scrape_url",
+      description: "Fetch and read the content of a specific web page URL.",
+      parameters: {
+        type: "object",
+        properties: { url: { type: "string" } },
+        required: ["url"],
+      },
+    });
+  }
+  if (tools.length === 0) return undefined;
+
+  return {
+    tools,
+    executeTool: async (name, args) => {
+      if (name === "search_web") {
+        const result = await ctx.runAction(api.webTools.search, {
+          query: String(args.query ?? ""),
+          maxResults: 5,
+        });
+        return JSON.stringify(result.hits);
+      }
+      if (name === "scrape_url") {
+        const result = await ctx.runAction(api.webTools.scrape, {
+          url: String(args.url ?? ""),
+        });
+        return result.markdown.slice(0, 8000);
+      }
+      return `Unknown tool: ${name}`;
+    },
+  };
+}
 
 /**
  * Vertical: rate limit → (optional Autumn check) → Effect debit+OpenRouter → persist.
@@ -41,6 +97,7 @@ export const runMeteredInference = action({
     balance: v.number(),
     transactionId: v.string(),
     providerRequestId: v.optional(v.string()),
+    toolCalls: v.array(v.object({ name: v.string(), args: v.any() })),
   }),
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -121,12 +178,21 @@ export const runMeteredInference = action({
 
           return (await response.json()) as {
             id?: string;
-            choices: Array<{ message?: { content?: string | null } }>;
+            choices: Array<{
+              message?: {
+                content?: string | null;
+                tool_calls?: Array<{
+                  id: string;
+                  function: { name: string; arguments: string };
+                }>;
+              };
+            }>;
             usage?: { prompt_tokens?: number; completion_tokens?: number };
           };
         },
       },
       { defaultModel: model },
+      buildToolConfig(ctx),
     );
 
     const ledger = {
@@ -213,6 +279,7 @@ export const runMeteredInference = action({
         balance: result.balance,
         transactionId: result.transactionId,
         providerRequestId: result.inference.providerRequestId,
+        toolCalls: result.inference.toolCalls?.map((t) => ({ name: t.name, args: t.args })) ?? [],
       };
     } catch (error) {
       const message =

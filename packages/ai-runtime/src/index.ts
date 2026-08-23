@@ -26,6 +26,9 @@ export {
   createOpenRouterGateway,
   type OpenRouterConfig,
   type OpenRouterTransport,
+  type ToolDefinition,
+  type ToolExecutor,
+  type ToolConfig,
 } from "./gateway";
 
 export { startAgentRun } from "./run-agent";

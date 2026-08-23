@@ -16,7 +16,14 @@ type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  toolCalls?: { name: string; args: Record<string, unknown> }[];
 };
+
+function toolCallLabel(call: { name: string; args: Record<string, unknown> }) {
+  if (call.name === "search_web") return `🔍 Searched the web for “${String(call.args.query ?? "")}”`;
+  if (call.name === "scrape_url") return `📄 Read ${String(call.args.url ?? "a page")}`;
+  return `🔧 Used ${call.name}`;
+}
 
 export default function ChatPage() {
   const { isSignedIn } = useAuth();
@@ -63,6 +70,7 @@ export default function ChatPage() {
           id: `a-${Date.now()}`,
           role: "assistant",
           content: result.text,
+          toolCalls: result.toolCalls,
         },
       ]);
 
@@ -103,10 +111,17 @@ export default function ChatPage() {
           <div
             key={message.id}
             className={cn(
-              "flex",
-              message.role === "user" ? "justify-end" : "justify-start",
+              "flex flex-col gap-1",
+              message.role === "user" ? "items-end" : "items-start",
             )}
           >
+            {message.toolCalls && message.toolCalls.length > 0 ? (
+              <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
+                {message.toolCalls.map((call, i) => (
+                  <span key={i}>{toolCallLabel(call)}</span>
+                ))}
+              </div>
+            ) : null}
             <div
               className={cn(
                 "max-w-[65%] px-3 py-1.5 text-sm shadow-sm",

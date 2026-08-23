@@ -106,155 +106,185 @@ export default function PricingPage() {
     return (
       <>
         <HeroHeader loaderData={headerLoaderData} />
-        <section className="flex flex-col items-center justify-center min-h-screen px-4">
-          <div className="flex items-center gap-2">
+        <section className="py-16 md:py-32">
+          <div className="mx-auto max-w-6xl px-6 flex items-center justify-center gap-2 min-h-[40vh]">
             <Loader2 className="h-4 w-4 animate-spin" />
             <span>Loading plans...</span>
           </div>
-          {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+          {error && <p className="text-destructive text-center">{error}</p>}
         </section>
       </>
     );
   }
 
+  const hasUnlistedSubscription =
+    userSubscription &&
+    !plans.items.some((plan) =>
+      plan.prices.some((p) => p.id === userSubscription.polarPriceId),
+    );
+
   return (
     <>
       <HeroHeader loaderData={headerLoaderData} />
-      <section className="flex flex-col items-center justify-center min-h-screen px-4 pt-24">
-        <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight mb-4">
-          Simple, transparent pricing
-        </h1>
-        <p className="text-xl text-muted-foreground">
-          Choose the plan that fits your needs
-        </p>
-        {isSignedIn && !subscriptionStatus?.hasActiveSubscription && (
-          <div className="bg-primary/5 border-primary/20 mt-6 max-w-md mx-auto rounded-lg border p-4">
-            <p className="text-primary font-medium">Complete your setup</p>
-            <p className="text-muted-foreground text-sm mt-1">
-              You&apos;re signed in! Choose a plan below to access your dashboard.
-            </p>
+      <section className="py-16 md:py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mx-auto max-w-2xl space-y-6 text-center">
+            <h1 className="text-4xl font-semibold lg:text-5xl">
+              Simple, transparent pricing
+            </h1>
+            <p>Choose the plan that fits your needs.</p>
+            {isSignedIn && !subscriptionStatus?.hasActiveSubscription && (
+              <div className="bg-primary/5 border-primary/20 rounded-lg border p-4 text-left sm:text-center">
+                <p className="text-primary font-medium">Complete your setup</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  You&apos;re signed in! Choose a plan below to access your dashboard.
+                </p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      {plans.items.length === 0 && (
-        <div className="max-w-md mx-auto text-center bg-muted/50 border rounded-lg p-6">
-          <p className="font-medium">No plans configured yet</p>
-          <p className="text-muted-foreground text-sm mt-1">
-            Add products in your{" "}
-            <a
-              href="https://polar.sh/dashboard"
-              target="_blank"
-              rel="noreferrer"
-              className="underline"
-            >
-              Polar dashboard
-            </a>
-            , or re-run the setup wizard&apos;s Billing — Polar step to create
-            the default Starter/Pro/Scale plans.
-          </p>
+          {plans.items.length === 0 ? (
+            <div className="mt-8 max-w-md mx-auto text-center bg-muted/50 border rounded-lg p-6">
+              <p className="font-medium">No plans configured yet</p>
+              <p className="text-muted-foreground text-sm mt-1">
+                Add products in your{" "}
+                <a
+                  href="https://polar.sh/dashboard"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  Polar dashboard
+                </a>
+                , or re-run the setup wizard&apos;s Billing — Polar step to
+                create the default Starter/Pro/Scale plans.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-8 grid gap-6 md:mt-20 md:grid-cols-2 lg:grid-cols-3">
+              {plans.items
+                .slice()
+                .sort((a, b) => {
+                  const priceComparison = a.prices[0].amount - b.prices[0].amount;
+                  return priceComparison !== 0
+                    ? priceComparison
+                    : a.name.localeCompare(b.name);
+                })
+                .map((plan, index) => {
+                  const isPopular =
+                    plans.items.length === 2
+                      ? index === 1
+                      : index === Math.floor(plans.items.length / 2);
+                  const price = plan.prices[0];
+                  const isCurrentPlan =
+                    userSubscription?.status === "active" &&
+                    userSubscription?.amount === price.amount;
+
+                  return (
+                    <Card
+                      key={plan.id}
+                      className={`relative ${isPopular ? "border-primary" : ""}`}
+                    >
+                      {isPopular && !isCurrentPlan && (
+                        <span className="bg-primary text-primary-foreground absolute inset-x-0 -top-3 mx-auto flex h-6 w-fit items-center rounded-full px-3 py-1 text-xs font-medium">
+                          Most Popular
+                        </span>
+                      )}
+                      {isCurrentPlan && (
+                        <span className="bg-primary text-primary-foreground absolute inset-x-0 -top-3 mx-auto flex h-6 w-fit items-center rounded-full px-3 py-1 text-xs font-medium">
+                          Current Plan
+                        </span>
+                      )}
+
+                      <CardHeader>
+                        <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                        <CardDescription>{plan.description}</CardDescription>
+                        <div className="mt-4">
+                          <span className="text-4xl font-bold">
+                            ${(price.amount / 100).toFixed(0)}
+                          </span>
+                          <span className="text-muted-foreground">
+                            /{price.interval || "month"}
+                          </span>
+                        </div>
+                      </CardHeader>
+
+                      <CardContent className="space-y-4">
+                        <hr className="border-dashed" />
+                        <ul className="space-y-3 text-sm">
+                          <li className="flex items-center gap-2">
+                            <Check className="size-4 text-primary" />
+                            All features included
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <Check className="size-4 text-primary" />
+                            Priority support
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <Check className="size-4 text-primary" />
+                            Cancel anytime
+                          </li>
+                          {plan.isRecurring && (
+                            <li className="flex items-center gap-2">
+                              <Check className="size-4 text-primary" />
+                              Recurring billing
+                            </li>
+                          )}
+                        </ul>
+                      </CardContent>
+
+                      <CardFooter>
+                        <Button
+                          className="w-full"
+                          onClick={() => handleSubscribe(price.id)}
+                          disabled={loadingPriceId === price.id}
+                          variant={isCurrentPlan ? "secondary" : isPopular ? "default" : "outline"}
+                        >
+                          {loadingPriceId === price.id ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Setting up checkout...
+                            </>
+                          ) : isCurrentPlan ? (
+                            "✓ Current Plan"
+                          ) : userSubscription?.status === "active" ? (
+                            (() => {
+                              const currentAmount = userSubscription.amount || 0;
+                              const newAmount = price.amount;
+                              if (newAmount > currentAmount) {
+                                return `Upgrade (+$${((newAmount - currentAmount) / 100).toFixed(0)}/mo)`;
+                              }
+                              if (newAmount < currentAmount) {
+                                return `Downgrade (-$${((currentAmount - newAmount) / 100).toFixed(0)}/mo)`;
+                              }
+                              return "Manage Plan";
+                            })()
+                          ) : (
+                            "Get Started"
+                          )}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
+            </div>
+          )}
+
+          {error && (
+            <div className="mt-8 p-4 bg-destructive/10 border border-destructive/20 rounded-md max-w-md mx-auto">
+              <p className="text-destructive text-center">{error}</p>
+            </div>
+          )}
+
+          {hasUnlistedSubscription && (
+            <div className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-md max-w-md mx-auto">
+              <p className="text-amber-800 text-center text-sm">
+                You have an active subscription that&apos;s not shown above.
+                Contact support for assistance.
+              </p>
+            </div>
+          )}
         </div>
-      )}
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full">
-        {plans.items
-          .slice()
-          .sort((a, b) => {
-            const priceComparison = a.prices[0].amount - b.prices[0].amount;
-            return priceComparison !== 0
-              ? priceComparison
-              : a.name.localeCompare(b.name);
-          })
-          .map((plan, index) => {
-            const isPopular =
-              plans.items.length === 2
-                ? index === 1
-                : index === Math.floor(plans.items.length / 2);
-            const price = plan.prices[0];
-            const isCurrentPlan =
-              userSubscription?.status === "active" &&
-              userSubscription?.amount === price.amount;
-
-            return (
-              <Card
-                key={plan.id}
-                className={`relative h-fit ${
-                  isPopular ? "border-primary" : ""
-                } ${isCurrentPlan ? "border-green-500 bg-green-50/50" : ""}`}
-              >
-                {isPopular && !isCurrentPlan && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                {isCurrentPlan && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Current Plan
-                    </span>
-                  </div>
-                )}
-
-                <CardHeader>
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold">
-                      ${(price.amount / 100).toFixed(0)}
-                    </span>
-                    <span className="text-muted-foreground">
-                      /{price.interval || "month"}
-                    </span>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>All features included</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Priority support</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span>Cancel anytime</span>
-                  </div>
-                </CardContent>
-
-                <CardFooter>
-                  <Button
-                    className="w-full"
-                    onClick={() => handleSubscribe(price.id)}
-                    disabled={loadingPriceId === price.id}
-                    variant={isCurrentPlan ? "secondary" : "default"}
-                  >
-                    {loadingPriceId === price.id ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Setting up checkout...
-                      </>
-                    ) : isCurrentPlan ? (
-                      "Current Plan"
-                    ) : (
-                      "Get Started"
-                    )}
-                  </Button>
-                </CardFooter>
-              </Card>
-            );
-          })}
-      </div>
-
-      {error && (
-        <div className="mt-8 p-4 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-800 text-center">{error}</p>
-        </div>
-      )}
       </section>
     </>
   );
