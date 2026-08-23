@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { api } from "../../convex/_generated/api";
+import { HeroHeader } from "@/components/header";
 
 type PlanPrice = { id: string; amount: number; interval?: string };
 type PlanItem = {
@@ -96,21 +97,31 @@ export default function PricingPage() {
     }
   };
 
+  const headerLoaderData = {
+    isSignedIn: !!isSignedIn,
+    hasActiveSubscription: !!subscriptionStatus?.hasActiveSubscription,
+  };
+
   if (!plans) {
     return (
-      <section className="flex flex-col items-center justify-center min-h-screen px-4">
-        <div className="flex items-center gap-2">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <span>Loading plans...</span>
-        </div>
-        {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
-      </section>
+      <>
+        <HeroHeader loaderData={headerLoaderData} />
+        <section className="flex flex-col items-center justify-center min-h-screen px-4">
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span>Loading plans...</span>
+          </div>
+          {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+        </section>
+      </>
     );
   }
 
   return (
-    <section className="flex flex-col items-center justify-center min-h-screen px-4">
-      <div className="text-center mb-12">
+    <>
+      <HeroHeader loaderData={headerLoaderData} />
+      <section className="flex flex-col items-center justify-center min-h-screen px-4 pt-24">
+        <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight mb-4">
           Simple, transparent pricing
         </h1>
@@ -118,9 +129,9 @@ export default function PricingPage() {
           Choose the plan that fits your needs
         </p>
         {isSignedIn && !subscriptionStatus?.hasActiveSubscription && (
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-md mx-auto">
-            <p className="text-blue-800 font-medium">Complete your setup</p>
-            <p className="text-blue-700 text-sm mt-1">
+          <div className="bg-primary/5 border-primary/20 mt-6 max-w-md mx-auto rounded-lg border p-4">
+            <p className="text-primary font-medium">Complete your setup</p>
+            <p className="text-muted-foreground text-sm mt-1">
               You&apos;re signed in! Choose a plan below to access your dashboard.
             </p>
           </div>
@@ -225,6 +236,7 @@ export default function PricingPage() {
           <p className="text-red-800 text-center">{error}</p>
         </div>
       )}
-    </section>
+      </section>
+    </>
   );
 }

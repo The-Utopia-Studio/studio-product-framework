@@ -24,18 +24,18 @@ export const metadata: Metadata = {
     title: "Studio Product Framework",
     description:
       "Composable, AI-native product framework for SaaS and credit-metered agents.",
-    url: "https://github.com/The-Utopia-Studio/studio-product-framework",
     siteName: "Studio Product Framework",
-    images: [{ url: "/favicon.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Studio Product Framework",
     description:
       "Composable, AI-native product framework for SaaS and credit-metered agents.",
-    images: ["/favicon.png"],
   },
-  icons: { icon: "/favicon.png" },
+  // Favicon and social preview image are generated (see app/icon.tsx,
+  // app/opengraph-image.tsx) from the actual applied brand color and
+  // PRODUCT_NAME — not hardcoded here — so every venture gets its own
+  // instead of the template's own placeholder art.
 };
 
 export default function RootLayout({

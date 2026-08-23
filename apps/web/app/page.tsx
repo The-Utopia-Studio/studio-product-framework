@@ -1,10 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { fetchAction, fetchQuery } from "convex/nextjs";
-import ContentSection from "@/components/homepage/content";
 import Footer from "@/components/homepage/footer";
-import Integrations from "@/components/homepage/integrations";
+import Hero from "@/components/homepage/hero";
 import Pricing from "@/components/homepage/pricing";
-import Team from "@/components/homepage/team";
 import { api } from "../convex/_generated/api";
 import { getConvexToken } from "@/lib/convex-server";
 
@@ -31,9 +29,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Integrations loaderData={loaderData} />
-      <ContentSection />
-      <Team />
+      <Hero loaderData={loaderData} />
       <Pricing loaderData={loaderData} />
       <Footer />
     </>
