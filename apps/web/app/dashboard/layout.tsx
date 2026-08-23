@@ -46,7 +46,11 @@ export default async function DashboardLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" user={user} />
+      <AppSidebar
+        variant="inset"
+        user={user}
+        hasChat={Boolean(process.env.OPENROUTER_API_KEY)}
+      />
       <SidebarInset>
         <SiteHeader />
         {children}

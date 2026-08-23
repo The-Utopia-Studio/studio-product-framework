@@ -15,27 +15,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: IconDashboard,
-    },
-    {
-      title: "Chat",
-      url: "/dashboard/chat",
-      icon: MessageCircle,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "/dashboard/settings",
-      icon: IconSettings,
-    },
-  ],
-};
+const navSecondary = [
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: IconSettings,
+  },
+];
 
 type SidebarUser = {
   firstName: string | null;
@@ -47,10 +33,26 @@ type SidebarUser = {
 export function AppSidebar({
   variant,
   user,
+  hasChat,
 }: {
   variant: "sidebar" | "floating" | "inset";
   user: SidebarUser;
+  hasChat: boolean;
 }) {
+  const navMain = [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: IconDashboard,
+    },
+    // Only a real feature once OPENROUTER_API_KEY is configured — Convex's
+    // runMeteredInference throws without it, so linking to it otherwise
+    // would just be a dead end.
+    ...(hasChat
+      ? [{ title: "Chat", url: "/dashboard/chat", icon: MessageCircle }]
+      : []),
+  ];
+
   return (
     <Sidebar collapsible="offcanvas" variant={variant}>
       <SidebarHeader>
@@ -63,8 +65,8 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMain} />
+        <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>{user && <NavUser user={user} />}</SidebarFooter>
     </Sidebar>
