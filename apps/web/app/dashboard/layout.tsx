@@ -27,7 +27,13 @@ export default async function DashboardLayout({
     (await clerkClient()).users.getUser(userId),
   ]);
 
-  if (!subscriptionStatus?.hasActiveSubscription) {
+  // Only gate on billing once Polar is actually configured — otherwise every
+  // venture that hasn't set up billing yet locks itself out of its own
+  // dashboard with no way to reach /pricing and no plans to buy there anyway.
+  const billingConfigured = Boolean(
+    process.env.POLAR_ACCESS_TOKEN && process.env.POLAR_ORGANIZATION_ID,
+  );
+  if (billingConfigured && !subscriptionStatus?.hasActiveSubscription) {
     redirect("/subscription-required");
   }
 

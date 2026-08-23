@@ -138,6 +138,25 @@ export default function PricingPage() {
         )}
       </div>
 
+      {plans.items.length === 0 && (
+        <div className="max-w-md mx-auto text-center bg-muted/50 border rounded-lg p-6">
+          <p className="font-medium">No plans configured yet</p>
+          <p className="text-muted-foreground text-sm mt-1">
+            Add products in your{" "}
+            <a
+              href="https://polar.sh/dashboard"
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              Polar dashboard
+            </a>
+            , or re-run the setup wizard&apos;s Billing — Polar step to create
+            the default Starter/Pro/Scale plans.
+          </p>
+        </div>
+      )}
+
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full">
         {plans.items
           .slice()
