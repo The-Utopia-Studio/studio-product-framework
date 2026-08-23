@@ -4,7 +4,7 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { Logo } from "./logo";
 import { Menu, X } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@utopia-studio-design/design-system/Button";
 import React from "react";
 import { cn } from "../lib/utils";
 

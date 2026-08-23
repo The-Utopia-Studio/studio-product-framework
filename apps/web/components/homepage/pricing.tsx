@@ -3,14 +3,14 @@ import { useAuth } from "@clerk/nextjs";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@utopia-studio-design/design-system/Button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@utopia-studio-design/design-system/Card";
 import { api } from "../../convex/_generated/api";
 
 export default function Pricing({ loaderData }: { loaderData: any }) {

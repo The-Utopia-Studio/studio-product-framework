@@ -5,7 +5,7 @@ import { useAction, useMutation, useQuery } from "convex/react";
 import { Check, Loader2 } from "lucide-react";
 import * as React from "react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@utopia-studio-design/design-system/Button";
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@utopia-studio-design/design-system/Card";
 import { api } from "../../convex/_generated/api";
 import { HeroHeader } from "@/components/header";
 

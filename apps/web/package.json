@@ -40,9 +40,11 @@
     "@studio/observability": "workspace:*",
     "@studio/ratelimit": "workspace:*",
     "@studio/storage": "workspace:*",
+    "@studio/web-tools": "workspace:*",
     "@tabler/icons-react": "^3.33.0",
     "@tanstack/react-table": "^8.21.3",
     "@useautumn/convex": "^0.0.23",
+    "@utopia-studio-design/design-system": "^0.8.2",
     "@vercel/analytics": "^1.5.0",
     "ai": "^4.3.16",
     "autumn-js": "^0.1.85",
@@ -62,8 +64,7 @@
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.3.0",
     "vaul": "^1.1.2",
-    "zod": "^3.25.39",
-    "@studio/web-tools": "workspace:*"
+    "zod": "^3.25.39"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.4",
