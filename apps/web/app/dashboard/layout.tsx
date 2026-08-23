@@ -48,7 +48,20 @@ export default async function DashboardLayout({
     >
       <AppSidebar
         variant="inset"
-        user={user}
+        // Clerk's User is a class instance — passing it straight into a
+        // "use client" component violates React Server Components'
+        // "plain objects only" rule across that boundary and 500s the
+        // whole page (confirmed live: "Only plain objects, and a few
+        // built-ins, can be passed to Client Components from Server
+        // Components"). Only the fields AppSidebar actually renders.
+        user={{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          imageUrl: user.imageUrl,
+          emailAddresses: user.emailAddresses.map((e) => ({
+            emailAddress: e.emailAddress,
+          })),
+        }}
         hasChat={Boolean(process.env.OPENROUTER_API_KEY)}
       />
       <SidebarInset>
