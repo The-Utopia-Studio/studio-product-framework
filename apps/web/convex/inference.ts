@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { action, query } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import { Effect } from "effect";
@@ -21,6 +21,32 @@ import type { ActionCtx } from "./_generated/server";
 
 const DEFAULT_CREDIT_COST = 1;
 const DEFAULT_MODEL = "openai/gpt-4o-mini";
+
+// The raw message (OpenRouter's JSON error body, Autumn's internal string,
+// etc.) is what gets recorded to inferenceRuns/Langfuse/Sentry for debugging
+// — this only rewrites what actually reaches the end user, who has no way
+// to act on "OpenRouter error: 402 {\"error\":{...}}" anyway.
+function humanizeInferenceError(message: string): string {
+  if (message.includes("Insufficient credits")) {
+    return "AI chat is temporarily unavailable — the account powering it has run out of credits. Please try again later.";
+  }
+  if (message.includes("OPENROUTER_API_KEY is not configured")) {
+    return "AI chat isn't set up for this app yet.";
+  }
+  if (/OpenRouter error: 401/.test(message)) {
+    return "AI chat is temporarily unavailable — please try again later.";
+  }
+  if (/OpenRouter error: 429/.test(message)) {
+    return "AI chat is getting a lot of requests right now — please try again in a moment.";
+  }
+  if (message.startsWith("Autumn: no access")) {
+    return "You've used all of your included AI credits for this plan.";
+  }
+  if (message === "Idempotency key already used for a debit") {
+    return "That message was already sent — please try a new one.";
+  }
+  return "Something went wrong answering that. Please try again.";
+}
 
 // Gives the chat model real tools to use — only the ones whose API key is
 // actually configured. Search results/scraped content are capped before
@@ -311,7 +337,7 @@ export const runMeteredInference = action({
         tags: { userId, path: "runMeteredInference" },
       });
 
-      throw new Error(message);
+      throw new ConvexError(humanizeInferenceError(message));
     }
   },
 });

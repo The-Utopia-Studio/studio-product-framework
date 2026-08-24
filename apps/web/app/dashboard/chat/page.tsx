@@ -2,6 +2,7 @@
 
 import { useAuth } from "@clerk/nextjs";
 import { useAction, useMutation, useQuery } from "convex/react";
+import { ConvexError } from "convex/values";
 import { Globe, FileText, SendHorizontal, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
@@ -134,9 +135,14 @@ export default function ChatPage() {
         outputTokens: result.outputTokens,
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Inference failed";
+      const message =
+        err instanceof ConvexError
+          ? String(err.data)
+          : err instanceof Error
+            ? err.message
+            : "Something went wrong answering that. Please try again.";
       setError(message);
-      if (message.includes("Insufficient credits")) {
+      if (message.includes("run out of credits")) {
         trackEvent(posthog, StudioEvents.creditsExhausted);
       } else {
         captureAppException(err);
