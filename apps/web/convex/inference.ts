@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { action } from "./_generated/server";
+import { action, query } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import { Effect } from "effect";
 import {
@@ -314,4 +314,18 @@ export const runMeteredInference = action({
       throw new Error(message);
     }
   },
+});
+
+// Lets the chat UI show which tools are actually live — booleans only, no
+// secrets cross this boundary.
+export const getEnabledTools = query({
+  args: {},
+  returns: v.object({
+    webSearch: v.boolean(),
+    pageReader: v.boolean(),
+  }),
+  handler: async () => ({
+    webSearch: Boolean(process.env.PARALLEL_API_KEY),
+    pageReader: Boolean(process.env.FIRECRAWL_API_KEY),
+  }),
 });
