@@ -347,10 +347,12 @@ export const runMeteredInference = action({
 export const getEnabledTools = query({
   args: {},
   returns: v.object({
+    chatEnabled: v.boolean(),
     webSearch: v.boolean(),
     pageReader: v.boolean(),
   }),
   handler: async () => ({
+    chatEnabled: Boolean(process.env.OPENROUTER_API_KEY),
     webSearch: Boolean(process.env.PARALLEL_API_KEY),
     pageReader: Boolean(process.env.FIRECRAWL_API_KEY),
   }),
