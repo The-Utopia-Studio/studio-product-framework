@@ -15,7 +15,7 @@ export default function SubscriptionRequiredPage() {
       <Card className="max-w-lg w-full text-center">
         <CardHeader className="pb-6">
           <div className="mx-auto mb-4">
-            <Lock className="h-16 w-16 text-orange-500" />
+            <Lock className="h-16 w-16 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold">
             Subscription Required
