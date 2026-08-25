@@ -69,3 +69,127 @@
         @apply font-medium tracking-tight;
     }
 }
+
+
+/* Ceramic custom theme — {"brandColor":"#22B8CF","typography":"modern-sans","shape":"soft","motion":"swift"} */
+:root {
+  color-scheme: dark;
+  --background: color-mix(in srgb, #22B8CF 4%, #0B0B0C 96%);
+  --foreground: #F5F5F4;
+  --primary: #1CA2B7;
+  --primary-foreground: #FAFAFA;
+  --primary-hover: #17899B;
+  --primary-active: #146B78;
+  --success: #4ADE80;
+  --success-foreground: #171717;
+  --success-surface: color-mix(in srgb, var(--success) 12%, transparent);
+  --success-border: color-mix(in srgb, var(--success) 40%, transparent);
+  --success-text: var(--success);
+  --warning: #FBBF24;
+  --warning-foreground: #171717;
+  --warning-surface: color-mix(in srgb, var(--warning) 12%, transparent);
+  --warning-border: color-mix(in srgb, var(--warning) 40%, transparent);
+  --warning-text: var(--warning);
+  --destructive: #F87171;
+  --destructive-foreground: #171717;
+  --destructive-hover: color-mix(in srgb, var(--destructive) 88%, var(--foreground) 12%);
+  --destructive-active: color-mix(in srgb, var(--destructive) 78%, var(--background) 22%);
+  --destructive-surface: color-mix(in srgb, var(--destructive) 12%, transparent);
+  --destructive-border: color-mix(in srgb, var(--destructive) 40%, transparent);
+  --destructive-text: var(--destructive);
+  --foreground-muted: color-mix(in srgb, var(--foreground) 68%, var(--background) 32%);
+  --foreground-subtle: color-mix(in srgb, var(--foreground) 45%, var(--background) 55%);
+  --card: color-mix(in srgb, var(--foreground) 4%, var(--background) 96%);
+  --card-foreground: var(--foreground);
+  --popover: color-mix(in srgb, var(--foreground) 9%, var(--background) 91%);
+  --popover-foreground: var(--foreground);
+  --secondary: color-mix(in srgb, var(--foreground) 8%, var(--background) 92%);
+  --secondary-foreground: var(--foreground);
+  --secondary-hover: color-mix(in srgb, var(--secondary) 88%, var(--foreground) 12%);
+  --secondary-active: color-mix(in srgb, var(--secondary) 78%, var(--foreground) 22%);
+  --muted: color-mix(in srgb, var(--foreground) 10%, var(--background) 90%);
+  --muted-foreground: color-mix(in srgb, var(--foreground) 62%, var(--background) 38%);
+  --accent: color-mix(in srgb, var(--foreground) 10%, var(--background) 90%);
+  --accent-foreground: var(--foreground);
+  --border: color-mix(in srgb, var(--foreground) 16%, var(--background) 84%);
+  --input: color-mix(in srgb, var(--foreground) 22%, var(--background) 78%);
+  --ring: var(--primary);
+  --surface: color-mix(in srgb, var(--foreground) 4.5%, var(--background) 95.5%);
+  --surface-strong: color-mix(in srgb, var(--foreground) 8%, var(--background) 92%);
+  --surface-elevated: color-mix(in srgb, var(--foreground) 9%, var(--background) 91%);
+  --surface-hover: var(--surface-strong);
+  --surface-inverse: var(--foreground);
+  --overlay: color-mix(in srgb, var(--background) 78%, transparent);
+  --modal-surface: var(--popover);
+  --popover-surface: var(--popover);
+  --ghost-hover: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --ghost-active: color-mix(in srgb, var(--foreground) 14%, transparent);
+  --outline-hover: var(--surface-strong);
+  --outline-active: var(--muted);
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: color-mix(in srgb, var(--primary) 12%, transparent);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--primary);
+  --radius: 8px;
+  --radius-control: 8px;
+  --radius-surface: 12px;
+  --radius-chat-bubble: var(--radius-surface);
+  --radius-chat-composer: var(--radius-surface);
+  --radius-chat-token: var(--radius-control);
+  --shadow-control: 0 1px 2px rgb(0 0 0 / 8%);
+  --shadow-surface: 0 1px 3px rgb(0 0 0 / 6%);
+  --shadow-popover: 0 8px 24px rgb(0 0 0 / 16%);
+  --motion-duration-press: 80ms;
+  --motion-duration-page: 140ms;
+  --motion-duration-expand: 160ms;
+  --motion-duration-reveal: 140ms;
+  --motion-duration-icon: 240ms;
+  --motion-duration-fast: var(--motion-duration-press);
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-icon: var(--motion-ease-emphasized);
+  --motion-press-scale: 0.97;
+  --motion-distance-page: 0.5rem;
+  --motion-distance-reveal: 0.5rem;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica Neue, Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica Neue, Arial, sans-serif;
+  --font-ui-support: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica Neue, Arial, sans-serif;
+  --font-marketing-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica Neue, Arial, sans-serif;
+  --font-arabic: "IBM Plex Sans Arabic", "Noto Sans Arabic", "Tajawal", "Cairo", Arial, sans-serif;
+  --font-arabic-body: var(--font-arabic);
+  --font-arabic-display: var(--font-arabic);
+  --icon-system: lucide;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --background: color-mix(in srgb, #22B8CF 2%, #FDFDFC 98%);
+    --foreground: #171717;
+    --primary: #17899B;
+    --primary-foreground: #FAFAFA;
+    --primary-hover: #146B78;
+    --primary-active: #0E4B55;
+    --success: #16A34A;
+    --success-foreground: #FFFFFF;
+    --success-surface: color-mix(in srgb, var(--success) 12%, transparent);
+    --success-border: color-mix(in srgb, var(--success) 40%, transparent);
+    --success-text: var(--success);
+    --warning: #B45309;
+    --warning-foreground: #FFFFFF;
+    --warning-surface: color-mix(in srgb, var(--warning) 12%, transparent);
+    --warning-border: color-mix(in srgb, var(--warning) 40%, transparent);
+    --warning-text: var(--warning);
+    --destructive: #DC2626;
+    --destructive-foreground: #FFFFFF;
+    --destructive-hover: color-mix(in srgb, var(--destructive) 88%, var(--foreground) 12%);
+    --destructive-active: color-mix(in srgb, var(--destructive) 78%, var(--background) 22%);
+    --destructive-surface: color-mix(in srgb, var(--destructive) 12%, transparent);
+    --destructive-border: color-mix(in srgb, var(--destructive) 40%, transparent);
+    --destructive-text: var(--destructive);
+  }
+}
