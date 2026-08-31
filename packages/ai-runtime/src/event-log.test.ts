@@ -235,6 +235,66 @@ describe("appendAgentEvent", () => {
     }
   });
 
+  // Greptile P1 on this PR: JSON.stringify throws on a bigint and renders an
+  // ArrayBuffer as "{}", so the old size check either escaped the Result
+  // contract or let a multi-megabyte byte payload through.
+  it("measures a bigint payload instead of throwing on it", async () => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_result",
+      payload: { tokens: 9_007_199_254_740_993n },
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  // A raw ArrayBuffer is the real bypass: JSON.stringify renders it "{}", so the
+  // old check measured a 70KB buffer as 11 bytes. (A typed-array view expands to
+  // indexed keys instead, so it happened to trip the limit by accident.)
+  it.each([
+    ["ArrayBuffer", new ArrayBuffer(70_000)],
+    ["Uint8Array", new Uint8Array(70_000)],
+  ])("refuses an oversized %s payload", async (_label, blob) => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_result",
+      payload: { blob },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.code).toBe("VALIDATION");
+      expect(result.error.message).toContain("max");
+    }
+  });
+
+  it("rejects a cyclic payload as unstorable rather than throwing", async () => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    const cyclic: Record<string, unknown> = { name: "loop" };
+    cyclic.self = cyclic;
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "error",
+      payload: cyclic,
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.code).toBe("VALIDATION");
+      expect(result.error.message).toContain("cycle");
+    }
+  });
+
+  it("accepts a payload that repeats a value without calling it a cycle", async () => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    const shared = { id: "tool-1" };
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_called",
+      payload: { first: shared, second: shared },
+    });
+    expect(result.ok).toBe(true);
+  });
+
   it("stamps createdAt from the injected clock", async () => {
     const { log } = memoryLog({ runId: "r1", status: "running" });
     const result = await appendAgentEvent(
@@ -371,5 +431,22 @@ describe("the Convex adapter is append-only", () => {
     // The only patch in the adapter is on agentRuns (the mutable run index).
     const patches = source.match(/ctx\.db\.patch\([^)]*\)/g) ?? [];
     expect(patches.length).toBeLessThanOrEqual(1);
+  });
+
+  // Greptile P1 on this PR: the read path used to .take(500) with no cursor, so
+  // a long run's history was silently truncated for audit and eval consumers.
+  it("paginates the event read path instead of silently truncating it", () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const source = readFileSync(
+      resolve(here, "../../../apps/web/convex/agentRuns.ts"),
+      "utf8",
+    );
+
+    expect(source).toContain("afterSeq");
+    expect(source).toContain("hasMore");
+    // Over-fetch by one is what makes hasMore truthful.
+    expect(source).toMatch(/take\(limit \+ 1\)/);
+    // No unbounded-looking fixed take on the query path.
+    expect(source).not.toMatch(/\.take\(500\)/);
   });
 });

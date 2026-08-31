@@ -152,21 +152,44 @@ export const updateAgentRunStatus = internalMutation({
   },
 });
 
-/** A run's event log in `seq` order, for the owner of the run only. */
+const MAX_EVENT_PAGE = 500;
+
+/**
+ * One page of a run's event log in `seq` order, for the owner of the run only.
+ *
+ * Paginated rather than capped. A long-horizon run is expected to exceed any
+ * single page, and returning the first N with no signal would hand audit and
+ * eval consumers a partial history that looks complete — the precise failure
+ * this table exists to prevent. Callers walk pages with `afterSeq` until
+ * `hasMore` is false.
+ */
 export const listRunEvents = query({
-  args: { runId: v.string() },
-  returns: v.array(
-    v.object({
-      seq: v.number(),
-      kind: agentEventKindValidator,
-      payload: v.any(),
-      createdAt: v.number(),
-    }),
-  ),
+  args: {
+    runId: v.string(),
+    /** Exclusive lower bound: pass the previous page's `lastSeq`. */
+    afterSeq: v.optional(v.number()),
+    limit: v.optional(v.number()),
+  },
+  returns: v.object({
+    events: v.array(
+      v.object({
+        seq: v.number(),
+        kind: agentEventKindValidator,
+        payload: v.any(),
+        createdAt: v.number(),
+      }),
+    ),
+    hasMore: v.boolean(),
+    /** `seq` of the last event returned, or the given `afterSeq` when empty. */
+    lastSeq: v.number(),
+  }),
   handler: async (ctx, args) => {
+    const afterSeq = args.afterSeq ?? 0;
+    const empty = { events: [], hasMore: false, lastSeq: afterSeq };
+
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      return [];
+      return empty;
     }
 
     const run = await ctx.db
@@ -174,20 +197,37 @@ export const listRunEvents = query({
       .withIndex("by_run", (q) => q.eq("runId", args.runId))
       .unique();
     if (run === null || run.userId !== identity.subject) {
-      return [];
+      return empty;
     }
 
-    const events = await ctx.db
-      .query("agentEvents")
-      .withIndex("by_run_seq", (q) => q.eq("runId", args.runId))
-      .order("asc")
-      .take(500);
+    const limit = Math.min(
+      Math.max(args.limit ?? MAX_EVENT_PAGE, 1),
+      MAX_EVENT_PAGE,
+    );
 
-    return events.map((event) => ({
-      seq: event.seq,
-      kind: event.kind,
-      payload: event.payload,
-      createdAt: event.createdAt,
-    }));
+    // Over-fetch by one: if the extra row exists there is another page. Keeps
+    // `hasMore` honest without a second count query.
+    const rows = await ctx.db
+      .query("agentEvents")
+      .withIndex("by_run_seq", (q) =>
+        q.eq("runId", args.runId).gt("seq", afterSeq),
+      )
+      .order("asc")
+      .take(limit + 1);
+
+    const hasMore = rows.length > limit;
+    const page = hasMore ? rows.slice(0, limit) : rows;
+    const last = page[page.length - 1];
+
+    return {
+      events: page.map((event) => ({
+        seq: event.seq,
+        kind: event.kind,
+        payload: event.payload,
+        createdAt: event.createdAt,
+      })),
+      hasMore,
+      lastSeq: last === undefined ? afterSeq : last.seq,
+    };
   },
 });

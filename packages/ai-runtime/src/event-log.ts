@@ -134,6 +134,68 @@ function isBlank(s: string): boolean {
 }
 
 /**
+ * Approximate stored size of a payload.
+ *
+ * Deliberately not `JSON.stringify(...).length`. Convex accepts values JSON does
+ * not: `stringify` *throws* on a bigint (Convex Int64), and renders an
+ * ArrayBuffer as `{}` — so a 10MB byte payload would measure as two bytes and
+ * walk straight past the cap. Cycles throw as well.
+ *
+ * Returns null when the payload cannot be measured — a cycle, or a value with no
+ * Convex representation — so the caller rejects it as invalid rather than letting
+ * a throw escape the Result contract.
+ */
+function measurePayloadBytes(
+  value: unknown,
+  seen: Set<object> = new Set(),
+): number | null {
+  if (value === null || value === undefined) return 1;
+
+  switch (typeof value) {
+    case "boolean":
+      return 1;
+    case "number":
+      return 8;
+    case "bigint":
+      return 8; // Convex Int64
+    case "string":
+      return new TextEncoder().encode(value).length;
+    case "function":
+    case "symbol":
+      return null; // no Convex representation
+  }
+
+  if (value instanceof ArrayBuffer) return value.byteLength;
+  if (ArrayBuffer.isView(value)) return value.byteLength;
+
+  if (typeof value === "object") {
+    const asObject = value as object;
+    if (seen.has(asObject)) return null; // cycle
+    seen.add(asObject);
+
+    let total = 2; // enclosing braces or brackets
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        const size = measurePayloadBytes(item, seen);
+        if (size === null) return null;
+        total += size + 1;
+      }
+    } else {
+      for (const [key, item] of Object.entries(asObject)) {
+        const size = measurePayloadBytes(item, seen);
+        if (size === null) return null;
+        total += new TextEncoder().encode(key).length + size + 2;
+      }
+    }
+
+    seen.delete(asObject);
+    return total;
+  }
+
+  return null;
+}
+
+/**
  * Open a run. Refuses a duplicate `runId` rather than overwriting: the run index
  * is canonical for audit, and a silent overwrite loses the earlier run.
  */
@@ -191,7 +253,15 @@ export async function appendAgentEvent(
   }
 
   const payload = input.payload ?? {};
-  const payloadBytes = new TextEncoder().encode(JSON.stringify(payload)).length;
+  const payloadBytes = measurePayloadBytes(payload);
+  if (payloadBytes === null) {
+    return err(
+      studioError(
+        "VALIDATION",
+        "event payload is not storable: it contains a cycle or a value with no Convex representation",
+      ),
+    );
+  }
   if (payloadBytes > MAX_PAYLOAD_BYTES) {
     return err(
       studioError(
