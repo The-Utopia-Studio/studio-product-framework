@@ -165,34 +165,42 @@ function measurePayloadBytes(
       return null; // no Convex representation
   }
 
+  // Convex's byte type is ArrayBuffer. A typed-array view is NOT accepted, and
+  // neither is a Date, Map, Set, or class instance — none of those survive the
+  // Convex boundary, and each has no enumerable own properties, so walking them
+  // would score a finite size and wave an unstorable value through to fail at
+  // write time instead of here.
   if (value instanceof ArrayBuffer) return value.byteLength;
-  if (ArrayBuffer.isView(value)) return value.byteLength;
 
-  if (typeof value === "object") {
-    const asObject = value as object;
-    if (seen.has(asObject)) return null; // cycle
-    seen.add(asObject);
+  const asObject = value as object;
+  if (!Array.isArray(value) && !isPlainObject(asObject)) return null;
 
-    let total = 2; // enclosing braces or brackets
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        const size = measurePayloadBytes(item, seen);
-        if (size === null) return null;
-        total += size + 1;
-      }
-    } else {
-      for (const [key, item] of Object.entries(asObject)) {
-        const size = measurePayloadBytes(item, seen);
-        if (size === null) return null;
-        total += new TextEncoder().encode(key).length + size + 2;
-      }
+  if (seen.has(asObject)) return null; // cycle
+  seen.add(asObject);
+
+  let total = 2; // enclosing braces or brackets
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const size = measurePayloadBytes(item, seen);
+      if (size === null) return null;
+      total += size + 1;
     }
-
-    seen.delete(asObject);
-    return total;
+  } else {
+    for (const [key, item] of Object.entries(asObject)) {
+      const size = measurePayloadBytes(item, seen);
+      if (size === null) return null;
+      total += new TextEncoder().encode(key).length + size + 2;
+    }
   }
 
-  return null;
+  seen.delete(asObject);
+  return total;
+}
+
+/** A `{}` literal or `Object.create(null)` — not a Date, Map, Set, or class instance. */
+function isPlainObject(value: object): boolean {
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
 }
 
 /**

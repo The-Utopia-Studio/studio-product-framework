@@ -249,12 +249,32 @@ describe("appendAgentEvent", () => {
   });
 
   // A raw ArrayBuffer is the real bypass: JSON.stringify renders it "{}", so the
-  // old check measured a 70KB buffer as 11 bytes. (A typed-array view expands to
+  // old check measured a 70KB buffer as 11 bytes. (A typed-array view expanded to
   // indexed keys instead, so it happened to trip the limit by accident.)
+  it("refuses an oversized ArrayBuffer payload", async () => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_result",
+      payload: { blob: new ArrayBuffer(70_000) },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.code).toBe("VALIDATION");
+      expect(result.error.message).toContain("max");
+    }
+  });
+
+  // Second Greptile P1: these have no enumerable own properties, so walking them
+  // scored a finite size and let an unstorable value through to fail at write
+  // time. Convex's byte type is ArrayBuffer; a view is not accepted either.
   it.each([
-    ["ArrayBuffer", new ArrayBuffer(70_000)],
-    ["Uint8Array", new Uint8Array(70_000)],
-  ])("refuses an oversized %s payload", async (_label, blob) => {
+    ["a Date", new Date()],
+    ["a Map", new Map([["k", "v"]])],
+    ["a Set", new Set([1, 2])],
+    ["a class instance", new (class Thing { x = 1 })()],
+    ["a typed-array view", new Uint8Array(8)],
+  ])("refuses %s as unstorable rather than failing at write time", async (_label, blob) => {
     const { log } = memoryLog({ runId: "r1", status: "running" });
     const result = await appendAgentEvent(log, {
       runId: "r1",
@@ -264,8 +284,20 @@ describe("appendAgentEvent", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.code).toBe("VALIDATION");
-      expect(result.error.message).toContain("max");
+      expect(result.error.message).toContain("not storable");
     }
+  });
+
+  it("still accepts an Object.create(null) payload", async () => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    const bare = Object.create(null) as Record<string, unknown>;
+    bare.tool = "search";
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_called",
+      payload: bare,
+    });
+    expect(result.ok).toBe(true);
   });
 
   it("rejects a cyclic payload as unstorable rather than throwing", async () => {
