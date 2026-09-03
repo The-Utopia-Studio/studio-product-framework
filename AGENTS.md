@@ -18,6 +18,32 @@ Ship: [agents/loops/ship-ready-pr.md](./agents/loops/ship-ready-pr.md) · Improv
 
 Venture commit: [agents/loops/commit-v1.md](./agents/loops/commit-v1.md) · Design system: [agents/loops/integrate-design-system.md](./agents/loops/integrate-design-system.md) · Discovery templates: [agents/context/discovery/](./agents/context/discovery/)
 
+## Agent vocabulary (read before adding a field)
+
+The words for what an agent *is* are owned by the **AgentManifest** —
+`schemas/agent-manifest.schema.json` in
+[studio-agent-framework](https://github.com/The-Utopia-Studio/studio-agent-framework).
+That framework is planned to move into this repo, so the manifest becomes this
+repo's own vocabulary. **Do not define a field here that the manifest already
+declares** — carry it through verbatim.
+
+Three repos independently invented this vocabulary, and the word "status" now
+means three unrelated things, all three of which carry a terminal
+`failed`-style value:
+
+| Concept | Field | Owner |
+|---|---|---|
+| How one run went | `AgentRunStatus` in `packages/ai-runtime` | here |
+| Whether the agent is healthy | `operations.health_statuses` | AgentManifest |
+| Where a listing sits in the directory | `agents.status` | Agent Inventory |
+
+`AgentRunStatus` keeps its name: it is the only one genuinely about a run. Its
+`awaiting_tool` member is still to be renamed `awaiting_human` per the standard
+— three files move together (`packages/ai-runtime/src/types.ts`,
+`event-log.ts`, and the Convex validator in `apps/web/convex/agentRunsShape.ts`),
+and the bidirectional `Infer` assertion in that third file fails the build if
+one is missed.
+
 ## Learned User Preferences
 
 - Optimize for lift-and-use: production-grade, composable, and easy for both humans and coding agents.
