@@ -5,7 +5,7 @@ import {
   updateAgentRunStatus as guardedUpdateStatus,
   type AgentEventLog,
 } from "@studio/ai-runtime";
-import { internalMutation, query } from "./_generated/server";
+import { internalMutation, internalQuery, query } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import {
   agentEventKindValidator,
@@ -221,6 +221,94 @@ export const listRunEvents = query({
 
     return {
       events: page.map((event) => ({
+        seq: event.seq,
+        kind: event.kind,
+        payload: event.payload,
+        createdAt: event.createdAt,
+      })),
+      hasMore,
+      lastSeq: last === undefined ? afterSeq : last.seq,
+    };
+  },
+});
+
+/**
+ * Internal read path for resume workers (Convex actions / cron).
+ * Paginate with `afterSeq` until `hasMore` is false, then pass events into
+ * `resumeDurableLoop`. Auth is the caller's responsibility — only schedule
+ * this from trusted backend code (STACK scheduler rule).
+ */
+export const getRunInternal = internalQuery({
+  args: { runId: v.string() },
+  returns: v.union(
+    v.object({
+      runId: v.string(),
+      userId: v.string(),
+      agentSlug: v.string(),
+      goal: v.string(),
+      status: agentRunStatusValidator,
+      lastSeq: v.number(),
+    }),
+    v.null(),
+  ),
+  handler: async (ctx, args) => {
+    const row = await ctx.db
+      .query("agentRuns")
+      .withIndex("by_run", (q) => q.eq("runId", args.runId))
+      .unique();
+    if (row === null) return null;
+    return {
+      runId: row.runId,
+      userId: row.userId,
+      agentSlug: row.agentSlug,
+      goal: row.goal,
+      status: row.status,
+      lastSeq: row.lastSeq,
+    };
+  },
+});
+
+export const listRunEventsInternal = internalQuery({
+  args: {
+    runId: v.string(),
+    afterSeq: v.optional(v.number()),
+    limit: v.optional(v.number()),
+  },
+  returns: v.object({
+    events: v.array(
+      v.object({
+        runId: v.string(),
+        seq: v.number(),
+        kind: agentEventKindValidator,
+        payload: v.any(),
+        createdAt: v.number(),
+      }),
+    ),
+    hasMore: v.boolean(),
+    lastSeq: v.number(),
+  }),
+  handler: async (ctx, args) => {
+    const afterSeq = args.afterSeq ?? 0;
+    const limit = Math.min(
+      Math.max(args.limit ?? MAX_EVENT_PAGE, 1),
+      MAX_EVENT_PAGE,
+    );
+
+    const rows = await ctx.db
+      .query("agentEvents")
+      .withIndex("by_run_seq", (q) =>
+        q.eq("runId", args.runId).gt("seq", afterSeq),
+      )
+      .order("asc")
+      .take(limit + 1);
+
+    const hasMore = rows.length > limit;
+    const page = hasMore ? rows.slice(0, limit) : rows;
+    const last = page[page.length - 1];
+
+    return {
+      events: page.map((event) => ({
+        runId: event.runId,
         seq: event.seq,
         kind: event.kind,
         payload: event.payload,

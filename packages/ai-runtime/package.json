@@ -12,6 +12,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "probe:background": "vitest run src/background-probe.test.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {
