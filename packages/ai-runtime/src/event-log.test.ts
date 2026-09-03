@@ -415,7 +415,7 @@ describe("status and kind constants", () => {
     const fromType: Record<AgentRunStatus, true> = {
       queued: true,
       running: true,
-      awaiting_tool: true,
+      awaiting_human: true,
       succeeded: true,
       failed: true,
       cancelled: true,

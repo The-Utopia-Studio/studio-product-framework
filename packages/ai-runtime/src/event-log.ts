@@ -26,7 +26,7 @@ import type { AgentRunStatus } from "./types";
 export const AGENT_RUN_STATUSES = [
   "queued",
   "running",
-  "awaiting_tool",
+  "awaiting_human",
   "succeeded",
   "failed",
   "cancelled",

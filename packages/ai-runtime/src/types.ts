@@ -31,10 +31,22 @@ export type AgentRunRequest = {
   readonly maxSpendCredits: number;
 };
 
+/**
+ * `awaiting_human` is the only non-terminal pause. Per LOOP-5 a human decision
+ * is a structured tool call that suspends the loop and resumes from the log —
+ * not a special case in the orchestrator — so the loop does not fork on it.
+ * The status exists because operations must: a run waiting on a person needs a
+ * notification and its compute released, and may sit for days.
+ *
+ * There is deliberately no separate "waiting on a non-human tool" status. The
+ * previous `awaiting_tool` was never assigned anywhere, and a union member
+ * nothing can set is one the Convex validator has to keep accepting forever.
+ * Add one when something assigns it.
+ */
 export type AgentRunStatus =
   | "queued"
   | "running"
-  | "awaiting_tool"
+  | "awaiting_human"
   | "succeeded"
   | "failed"
   | "cancelled";

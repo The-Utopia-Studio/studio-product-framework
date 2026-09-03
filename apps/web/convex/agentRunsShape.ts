@@ -18,7 +18,7 @@ import type { AgentEventKind, AgentRunStatus } from "@studio/ai-runtime";
 export const agentRunStatusValidator = v.union(
   v.literal("queued"),
   v.literal("running"),
-  v.literal("awaiting_tool"),
+  v.literal("awaiting_human"),
   v.literal("succeeded"),
   v.literal("failed"),
   v.literal("cancelled"),
