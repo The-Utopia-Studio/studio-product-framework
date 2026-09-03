@@ -129,27 +129,85 @@ export type AgentEventLog = {
 
 const MAX_PAYLOAD_BYTES = 64 * 1024;
 
+/**
+ * Convex's own limits, mirrored from `convex/values` (1.42.3) so an unstorable
+ * payload is refused here with a reason rather than aborting `ctx.db.insert`
+ * halfway through a mutation.
+ *
+ * Read out of the package, not from documentation:
+ *   - `MIN_INT64` / `MAX_INT64` — a bigint outside signed 64-bit throws
+ *     "does not fit into a 64-bit signed integer"
+ *   - `validateObjectField` — a field name over `MAX_IDENTIFIER_LEN`, starting
+ *     with `$`, or holding a control/non-ASCII character throws
+ *
+ * `MAX_PAYLOAD_DEPTH` is ours, not Convex's — the client enforces no nesting
+ * limit. It exists so this walk cannot recurse deep enough to throw a
+ * `RangeError`, which would escape the `Result` contract the same way
+ * `JSON.stringify` used to. Bounding the depth makes that structurally
+ * impossible instead of caught after the fact.
+ */
+// Written as BigInt(...) rather than a literal: `apps/web` typechecks this
+// package's source and its tsconfig targets below ES2020, where `0n` is a
+// syntax error. Convex's own values module spells them the same way.
+const MIN_CONVEX_INT64 = BigInt("-9223372036854775808");
+const MAX_CONVEX_INT64 = BigInt("9223372036854775807");
+const MAX_CONVEX_FIELD_NAME_LENGTH = 1024;
+const MAX_PAYLOAD_DEPTH = 64;
+
 function isBlank(s: string): boolean {
   return s.trim() === "";
 }
 
+/** Mirrors `validateObjectField` in `convex/values`. */
+function isStorableFieldName(key: string): boolean {
+  if (key.length > MAX_CONVEX_FIELD_NAME_LENGTH) return false;
+  if (key.startsWith("$")) return false;
+  for (let i = 0; i < key.length; i += 1) {
+    const code = key.charCodeAt(i);
+    if (code < 32 || code >= 127) return false;
+  }
+  return true;
+}
+
 /**
- * Approximate stored size of a payload.
+ * Approximate stored size of a payload, and a storability check in the same
+ * walk. Returns null when the payload cannot be stored at all.
  *
  * Deliberately not `JSON.stringify(...).length`. Convex accepts values JSON does
  * not: `stringify` *throws* on a bigint (Convex Int64), and renders an
  * ArrayBuffer as `{}` — so a 10MB byte payload would measure as two bytes and
  * walk straight past the cap. Cycles throw as well.
  *
- * Returns null when the payload cannot be measured — a cycle, or a value with no
- * Convex representation — so the caller rejects it as invalid rather than letting
- * a throw escape the Result contract.
+ * Measuring a size is not the same as proving the value is storable, which is
+ * how two rounds of review found holes here. A finite size was being returned
+ * for values Convex refuses — so the size check passed and the *write* failed,
+ * which is the outcome this function exists to prevent. It now rejects, rather
+ * than sizes, every value Convex will not take: out-of-range bigints, illegal
+ * field names, `undefined` where `undefined` is illegal, and anything nested
+ * past the depth bound.
+ *
+ * `undefined` is positional, and this is the one case where being blunt would
+ * be wrong. `convexToJson` *drops* an object property whose value is
+ * `undefined`, but *throws* on `undefined` anywhere else. Rejecting it outright
+ * would refuse `{ retryAfter: undefined }` — an ordinary optional TypeScript
+ * field — so a property holding `undefined` is skipped and contributes nothing,
+ * exactly as Convex will store it, while an `undefined` array element is
+ * refused.
+ *
+ * Bounded work as well as bounded depth: measurement stops as soon as the total
+ * passes the cap, so a pathologically wide payload cannot spend unbounded time
+ * here before being rejected for being too large anyway.
  */
 function measurePayloadBytes(
   value: unknown,
   seen: Set<object> = new Set(),
+  depth: number = 0,
 ): number | null {
-  if (value === null || value === undefined) return 1;
+  if (depth > MAX_PAYLOAD_DEPTH) return null;
+  if (value === null) return 1;
+  // Reached only in a position where Convex throws; an object property holding
+  // `undefined` is skipped by the caller below and never arrives here.
+  if (value === undefined) return null;
 
   switch (typeof value) {
     case "boolean":
@@ -157,7 +215,8 @@ function measurePayloadBytes(
     case "number":
       return 8;
     case "bigint":
-      return 8; // Convex Int64
+      // Convex Int64 is signed 64-bit. A wider bigint throws at the boundary.
+      return value < MIN_CONVEX_INT64 || value > MAX_CONVEX_INT64 ? null : 8;
     case "string":
       return new TextEncoder().encode(value).length;
     case "function":
@@ -181,15 +240,30 @@ function measurePayloadBytes(
   let total = 2; // enclosing braces or brackets
   if (Array.isArray(value)) {
     for (const item of value) {
-      const size = measurePayloadBytes(item, seen);
-      if (size === null) return null;
+      const size = measurePayloadBytes(item, seen, depth + 1);
+      if (size === null) {
+        seen.delete(asObject);
+        return null;
+      }
       total += size + 1;
+      if (total > MAX_PAYLOAD_BYTES) break;
     }
   } else {
     for (const [key, item] of Object.entries(asObject)) {
-      const size = measurePayloadBytes(item, seen);
-      if (size === null) return null;
+      // Convex drops an undefined property rather than rejecting it, so this
+      // contributes nothing — matching what actually gets stored.
+      if (item === undefined) continue;
+      if (!isStorableFieldName(key)) {
+        seen.delete(asObject);
+        return null;
+      }
+      const size = measurePayloadBytes(item, seen, depth + 1);
+      if (size === null) {
+        seen.delete(asObject);
+        return null;
+      }
       total += new TextEncoder().encode(key).length + size + 2;
+      if (total > MAX_PAYLOAD_BYTES) break;
     }
   }
 
@@ -266,7 +340,9 @@ export async function appendAgentEvent(
     return err(
       studioError(
         "VALIDATION",
-        "event payload is not storable: it contains a cycle or a value with no Convex representation",
+        "event payload is not storable: it contains a cycle, a value with no " +
+          "Convex representation, an out-of-range Int64, an illegal field name, " +
+          "or nesting past the depth limit",
       ),
     );
   }

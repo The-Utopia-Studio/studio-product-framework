@@ -235,6 +235,120 @@ describe("appendAgentEvent", () => {
     }
   });
 
+  // Greptile P1s, third round: measuring a size is not proving storability.
+  // Every case below returned a *finite size* before, so validation passed and
+  // ctx.db.insert aborted instead — the exact outcome the check exists to stop.
+  // Limits mirrored from convex/values 1.42.3, not from documentation.
+  it("refuses a bigint that does not fit Convex's signed 64-bit Int64", async () => {
+    const { log, events } = memoryLog({ runId: "r1", status: "running" });
+    for (const tooWide of [2n ** 63n, -(2n ** 63n) - 1n]) {
+      const result = await appendAgentEvent(log, {
+        runId: "r1",
+        kind: "tool_result",
+        payload: { count: tooWide },
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.error.code).toBe("VALIDATION");
+    }
+    expect(events).toHaveLength(0);
+  });
+
+  it("accepts a bigint exactly on the Int64 boundary", async () => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    for (const edge of [2n ** 63n - 1n, -(2n ** 63n)]) {
+      const result = await appendAgentEvent(log, {
+        runId: "r1",
+        kind: "tool_result",
+        payload: { count: edge },
+      });
+      expect(result.ok).toBe(true);
+    }
+  });
+
+  it.each([
+    ["a reserved $ prefix", "$set"],
+    ["a control character", "bad\u0001key"],
+    ["a non-ASCII character", "naïve"],
+    ["a name over 1024 characters", "k".repeat(1025)],
+  ])("refuses a field name Convex rejects: %s", async (_label, key) => {
+    const { log, events } = memoryLog({ runId: "r1", status: "running" });
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_result",
+      payload: { [key]: "value" },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe("VALIDATION");
+    expect(events).toHaveLength(0);
+  });
+
+  it("accepts a field name of exactly the maximum length", async () => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_result",
+      payload: { ["k".repeat(1024)]: "value" },
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  // undefined is positional in Convex and this is where being blunt would be
+  // wrong: convexToJson DROPS an undefined object property but THROWS on
+  // undefined anywhere else. Rejecting it outright would refuse an ordinary
+  // optional TypeScript field.
+  it("accepts an undefined object property, as Convex drops it", async () => {
+    const { log, events } = memoryLog({ runId: "r1", status: "running" });
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "retry_scheduled",
+      payload: { attempt: 2, retryAfter: undefined },
+    });
+    expect(result.ok).toBe(true);
+    expect(events).toHaveLength(1);
+  });
+
+  it("refuses an undefined array element, which Convex throws on", async () => {
+    const { log, events } = memoryLog({ runId: "r1", status: "running" });
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_result",
+      payload: { items: [1, undefined, 3] },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe("VALIDATION");
+    expect(events).toHaveLength(0);
+  });
+
+  it("refuses a payload nested past the depth bound", async () => {
+    const { log, events } = memoryLog({ runId: "r1", status: "running" });
+    let deep: unknown = "leaf";
+    for (let i = 0; i < 200; i += 1) deep = { next: deep };
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_result",
+      payload: { deep },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe("VALIDATION");
+    expect(events).toHaveLength(0);
+  });
+
+  // The depth bound is what makes this safe. Unbounded recursion threw a raw
+  // RangeError out of appendAgentEvent, escaping the Result contract exactly as
+  // JSON.stringify used to — so this asserts a returned error, not a throw.
+  it("returns a Result rather than a RangeError on a pathologically deep payload", async () => {
+    const { log } = memoryLog({ runId: "r1", status: "running" });
+    let deep: unknown = "leaf";
+    for (let i = 0; i < 200_000; i += 1) deep = [deep];
+    const result = await appendAgentEvent(log, {
+      runId: "r1",
+      kind: "tool_result",
+      payload: { deep },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe("VALIDATION");
+  });
+
   // Greptile P1 on this PR: JSON.stringify throws on a bigint and renders an
   // ArrayBuffer as "{}", so the old size check either escaped the Result
   // contract or let a multi-megabyte byte payload through.
