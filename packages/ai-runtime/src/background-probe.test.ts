@@ -39,7 +39,7 @@ const backgroundStep = async ({
         suspendPayload: { findings: [...state.findings, "source-b"] },
       };
     case "awaiting_review":
-      if (resumeData?.approved !== true) {
+      if (resumeData?.decision !== "approved") {
         return {
           status: "fail",
           state,
@@ -87,7 +87,7 @@ describe("probe:background", () => {
       events,
       step: backgroundStep,
       budget,
-      resumeData: { approved: true },
+      resumeData: { decision: "approved" },
     });
 
     expect(resumed.ok).toBe(true);

@@ -30,6 +30,8 @@ export type DurableStepResult<TState> = {
   readonly suspendReason?: string;
   readonly suspendPayload?: Record<string, unknown>;
   readonly errorMessage?: string;
+  /** Credits incurred by this step (inference, tools, etc.). Defaults to 0. */
+  readonly creditsSpent?: number;
 };
 
 export type DurableStep<TState> = (input: {
@@ -75,6 +77,15 @@ export type DurableLoopResumeInput<TState> = {
 };
 
 const STATE_PAYLOAD_KEY = "loopState";
+const CREDITS_PAYLOAD_KEY = "creditsSpent";
+
+const CHECKPOINT_KINDS = new Set([
+  "stage_entered",
+  "human_gate_opened",
+  "human_gate_resolved",
+  "tool_result",
+  "run_finished",
+]);
 
 export async function startDurableLoop<TState>(
   config: DurableLoopConfig<TState>,
@@ -111,6 +122,7 @@ export async function startDurableLoop<TState>(
     lastStateHash: hashState(config.initialState),
     maxStallIterations: config.maxStallIterations ?? 3,
     isSuccess: config.isSuccess,
+    creditsSpent: 0,
   });
 }
 
@@ -121,6 +133,12 @@ export async function resumeDurableLoop<TState>(
   if (!run) {
     return err(studioError("NOT_FOUND", `Run ${input.runId} not found`));
   }
+
+  const ordered = [...input.events].sort((a, b) => a.seq - b.seq);
+  const state = restoreState<TState>(ordered);
+  const iteration = restoreIteration(ordered);
+  const creditsSpent = restoreCreditsSpent(ordered);
+
   if (
     run.status === "succeeded" ||
     run.status === "failed" ||
@@ -129,58 +147,94 @@ export async function resumeDurableLoop<TState>(
     return ok({
       runId: input.runId,
       status: run.status,
-      state: {} as TState,
-      iterations: 0,
+      state,
+      iterations: iteration,
       summary: `Run already terminal: ${run.status}`,
     });
   }
 
-  const ordered = [...input.events].sort((a, b) => a.seq - b.seq);
-  const lastWithState = [...ordered]
-    .reverse()
-    .find(
-      (event) =>
-        event.kind === "stage_entered" ||
-        event.kind === "human_gate_opened" ||
-        event.kind === "human_gate_resolved" ||
-        event.kind === "tool_result",
+  // Refuse duplicate resume deliveries while a worker already holds the run.
+  if (run.status === "running") {
+    return err(
+      studioError(
+        "VALIDATION",
+        `Run ${input.runId} is already running; refuse duplicate resume`,
+        { retryable: true },
+      ),
     );
-  const state =
-    (lastWithState?.payload[STATE_PAYLOAD_KEY] as TState | undefined) ??
-    ({} as TState);
-  const iteration = ordered.filter((event) => event.kind === "stage_entered").length;
-
-  if (run.status === "awaiting_human") {
-    const resolved = await appendAgentEvent(input.eventLog, {
-      runId: input.runId,
-      kind: "human_gate_resolved",
-      payload: {
-        ...(input.resumeData ?? {}),
-        [STATE_PAYLOAD_KEY]: state,
-      },
-    });
-    if (!resolved.ok) return resolved;
   }
 
-  const running = await updateAgentRunStatus(input.eventLog, {
-    runId: input.runId,
-    status: "running",
-  });
-  if (!running.ok) return running;
+  if (run.status === "awaiting_human") {
+    const priorResolve = [...ordered]
+      .reverse()
+      .find((event) => event.kind === "human_gate_resolved");
+    const decisionFromEvent = priorResolve?.payload.decision;
+    const decisionFromInput = input.resumeData?.decision;
+    const decision =
+      decisionFromInput === "approved" || decisionFromInput === "rejected"
+        ? decisionFromInput
+        : decisionFromEvent === "approved" || decisionFromEvent === "rejected"
+          ? decisionFromEvent
+          : undefined;
 
-  return executeLoop({
-    runId: input.runId,
-    state,
-    step: input.step,
-    eventLog: input.eventLog,
-    budget: input.budget,
-    iteration,
-    stallCount: 0,
-    lastStateHash: hashState(state),
-    maxStallIterations: input.maxStallIterations ?? 3,
-    isSuccess: input.isSuccess,
-    resumeData: input.resumeData,
-  });
+    if (decision === undefined) {
+      return err(
+        studioError(
+          "VALIDATION",
+          `Run ${input.runId} is awaiting_human; resume requires decision "approved"|"rejected" (resumeData or prior human_gate_resolved)`,
+          { retryable: false },
+        ),
+      );
+    }
+
+    const resumeData: Record<string, unknown> = {
+      ...(priorResolve?.payload ?? {}),
+      ...(input.resumeData ?? {}),
+      decision,
+    };
+
+    if (!priorResolve) {
+      const resolved = await appendAgentEvent(input.eventLog, {
+        runId: input.runId,
+        kind: "human_gate_resolved",
+        payload: {
+          ...resumeData,
+          [STATE_PAYLOAD_KEY]: state,
+          [CREDITS_PAYLOAD_KEY]: creditsSpent,
+        },
+      });
+      if (!resolved.ok) return resolved;
+    }
+
+    const claimed = await updateAgentRunStatus(input.eventLog, {
+      runId: input.runId,
+      status: "running",
+    });
+    if (!claimed.ok) return claimed;
+
+    return executeLoop({
+      runId: input.runId,
+      state,
+      step: input.step,
+      eventLog: input.eventLog,
+      budget: input.budget,
+      iteration,
+      stallCount: 0,
+      lastStateHash: hashState(state),
+      maxStallIterations: input.maxStallIterations ?? 3,
+      isSuccess: input.isSuccess,
+      resumeData,
+      creditsSpent,
+    });
+  }
+
+  return err(
+    studioError(
+      "VALIDATION",
+      `Run ${input.runId} has status ${run.status}; resume only accepts awaiting_human`,
+      { retryable: false },
+    ),
+  );
 }
 
 type LoopContext<TState> = {
@@ -195,6 +249,7 @@ type LoopContext<TState> = {
   readonly maxStallIterations: number;
   readonly isSuccess?: (state: TState) => boolean;
   resumeData?: Record<string, unknown>;
+  creditsSpent: number;
 };
 
 async function executeLoop<TState>(
@@ -203,26 +258,12 @@ async function executeLoop<TState>(
   while (true) {
     const budgetCheck = assertWithinBudget(ctx.budget, {
       turnsUsed: ctx.iteration,
-      creditsSpent: 0,
+      creditsSpent: ctx.creditsSpent,
     });
     if (!budgetCheck.ok) {
-      await appendAgentEvent(ctx.eventLog, {
-        runId: ctx.runId,
-        kind: "error",
-        payload: { reason: "budget_exceeded", message: budgetCheck.error.message },
-      });
-      await updateAgentRunStatus(ctx.eventLog, {
-        runId: ctx.runId,
-        status: "failed",
-        errorMessage: budgetCheck.error.message,
-      });
-      return ok({
-        runId: ctx.runId,
-        status: "failed",
-        state: ctx.state,
-        iterations: ctx.iteration,
-        summary: budgetCheck.error.message,
-        errorMessage: budgetCheck.error.message,
+      return failRun(ctx, budgetCheck.error.message, {
+        reason: "budget_exceeded",
+        message: budgetCheck.error.message,
       });
     }
 
@@ -240,28 +281,12 @@ async function executeLoop<TState>(
       });
     } catch (cause) {
       const message = cause instanceof Error ? cause.message : "Step threw";
-      await appendAgentEvent(ctx.eventLog, {
-        runId: ctx.runId,
-        kind: "error",
-        payload: { iteration: ctx.iteration, message },
-      });
-      await updateAgentRunStatus(ctx.eventLog, {
-        runId: ctx.runId,
-        status: "failed",
-        errorMessage: message,
-      });
-      return ok({
-        runId: ctx.runId,
-        status: "failed",
-        state: ctx.state,
-        iterations: ctx.iteration,
-        summary: message,
-        errorMessage: message,
-      });
+      return failRun(ctx, message, { iteration: ctx.iteration, message });
     }
 
     ctx.state = stepResult.state;
     ctx.iteration += 1;
+    ctx.creditsSpent += stepResult.creditsSpent ?? 0;
     // Clear resume data after the first post-resume step (HORIZON-2).
     ctx.resumeData = undefined;
 
@@ -271,8 +296,10 @@ async function executeLoop<TState>(
         kind: "human_gate_opened",
         payload: {
           reason: stepResult.suspendReason ?? "human approval required",
+          iteration: ctx.iteration,
           ...(stepResult.suspendPayload ?? {}),
           [STATE_PAYLOAD_KEY]: ctx.state,
+          [CREDITS_PAYLOAD_KEY]: ctx.creditsSpent,
         },
       });
       if (!gate.ok) return gate;
@@ -294,24 +321,7 @@ async function executeLoop<TState>(
 
     if (stepResult.status === "fail") {
       const message = stepResult.errorMessage ?? "Step failed";
-      await appendAgentEvent(ctx.eventLog, {
-        runId: ctx.runId,
-        kind: "error",
-        payload: { iteration: ctx.iteration, message },
-      });
-      await updateAgentRunStatus(ctx.eventLog, {
-        runId: ctx.runId,
-        status: "failed",
-        errorMessage: message,
-      });
-      return ok({
-        runId: ctx.runId,
-        status: "failed",
-        state: ctx.state,
-        iterations: ctx.iteration,
-        summary: message,
-        errorMessage: message,
-      });
+      return failRun(ctx, message, { iteration: ctx.iteration, message });
     }
 
     const staged = await appendAgentEvent(ctx.eventLog, {
@@ -321,6 +331,7 @@ async function executeLoop<TState>(
         iteration: ctx.iteration,
         summary: stepResult.summary,
         [STATE_PAYLOAD_KEY]: ctx.state,
+        [CREDITS_PAYLOAD_KEY]: ctx.creditsSpent,
       },
     });
     if (!staged.ok) return staged;
@@ -334,23 +345,9 @@ async function executeLoop<TState>(
       ctx.stallCount += 1;
       if (ctx.stallCount >= ctx.maxStallIterations) {
         const message = `Stalled: no state change across ${ctx.stallCount} iterations`;
-        await appendAgentEvent(ctx.eventLog, {
-          runId: ctx.runId,
-          kind: "error",
-          payload: { reason: "stall", stallCount: ctx.stallCount },
-        });
-        await updateAgentRunStatus(ctx.eventLog, {
-          runId: ctx.runId,
-          status: "failed",
-          errorMessage: message,
-        });
-        return ok({
-          runId: ctx.runId,
-          status: "failed",
-          state: ctx.state,
-          iterations: ctx.iteration,
-          summary: message,
-          errorMessage: message,
+        return failRun(ctx, message, {
+          reason: "stall",
+          stallCount: ctx.stallCount,
         });
       }
     } else {
@@ -360,6 +357,35 @@ async function executeLoop<TState>(
   }
 }
 
+async function failRun<TState>(
+  ctx: LoopContext<TState>,
+  message: string,
+  payload: Record<string, unknown>,
+): Promise<Result<DurableLoopResult<TState>, StudioError>> {
+  const logged = await appendAgentEvent(ctx.eventLog, {
+    runId: ctx.runId,
+    kind: "error",
+    payload,
+  });
+  if (!logged.ok) return logged;
+
+  const status = await updateAgentRunStatus(ctx.eventLog, {
+    runId: ctx.runId,
+    status: "failed",
+    errorMessage: message,
+  });
+  if (!status.ok) return status;
+
+  return ok({
+    runId: ctx.runId,
+    status: "failed",
+    state: ctx.state,
+    iterations: ctx.iteration,
+    summary: message,
+    errorMessage: message,
+  });
+}
+
 async function finishSuccess<TState>(
   ctx: LoopContext<TState>,
   summary: string,
@@ -367,7 +393,12 @@ async function finishSuccess<TState>(
   const finished = await appendAgentEvent(ctx.eventLog, {
     runId: ctx.runId,
     kind: "run_finished",
-    payload: { iteration: ctx.iteration, summary },
+    payload: {
+      iteration: ctx.iteration,
+      summary,
+      [STATE_PAYLOAD_KEY]: ctx.state,
+      [CREDITS_PAYLOAD_KEY]: ctx.creditsSpent,
+    },
   });
   if (!finished.ok) return finished;
 
@@ -386,6 +417,44 @@ async function finishSuccess<TState>(
   });
 }
 
+function restoreState<TState>(events: ReadonlyArray<AgentEvent>): TState {
+  const lastWithState = [...events]
+    .reverse()
+    .find(
+      (event) =>
+        CHECKPOINT_KINDS.has(event.kind) &&
+        event.payload[STATE_PAYLOAD_KEY] !== undefined,
+    );
+  return (lastWithState?.payload[STATE_PAYLOAD_KEY] as TState | undefined) ?? ({} as TState);
+}
+
+function restoreIteration(events: ReadonlyArray<AgentEvent>): number {
+  // Suspended iterations emit human_gate_opened (not stage_entered). Count both
+  // so resume does not reuse iteration numbers after a gate.
+  return events.filter(
+    (event) => event.kind === "stage_entered" || event.kind === "human_gate_opened",
+  ).length;
+}
+
+function restoreCreditsSpent(events: ReadonlyArray<AgentEvent>): number {
+  const lastWithCredits = [...events]
+    .reverse()
+    .find((event) => typeof event.payload[CREDITS_PAYLOAD_KEY] === "number");
+  const value = lastWithCredits?.payload[CREDITS_PAYLOAD_KEY];
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+/**
+ * Stable hash for stall detection. Avoids throwing on bigint / cycles the way
+ * bare `JSON.stringify` does for Convex-storable state shapes.
+ */
 function hashState(state: unknown): string {
-  return JSON.stringify(state);
+  try {
+    return JSON.stringify(state, (_key, value: unknown) => {
+      if (typeof value === "bigint") return { __bigint: value.toString() };
+      return value;
+    });
+  } catch {
+    return `unhashable:${typeof state}`;
+  }
 }

@@ -22,10 +22,14 @@ describe("human-gate", () => {
 
     const resolved = await resolveHumanGate(log, {
       runId: "r1",
-      decision: { approved: true },
+      decision: { decision: "approved" },
+      loopState: { step: 1 },
     });
     expect(resolved.ok).toBe(true);
-    expect((await log.getRun("r1"))?.status).toBe("running");
+    expect((await log.getRun("r1"))?.status).toBe("awaiting_human");
+    const events = await log.listEvents("r1");
+    const resolveEvent = events.find((e) => e.kind === "human_gate_resolved");
+    expect(resolveEvent?.payload.loopState).toEqual({ step: 1 });
   });
 
   it("refuses resolve when not awaiting_human", async () => {
@@ -39,6 +43,23 @@ describe("human-gate", () => {
 
     const resolved = await resolveHumanGate(log, {
       runId: "r2",
+      decision: { decision: "approved" },
+    });
+    expect(resolved.ok).toBe(false);
+  });
+
+  it("refuses resolve without an explicit decision", async () => {
+    const log = createInMemoryEventLog();
+    await createAgentRun(log, {
+      runId: "r3",
+      userId: "u1",
+      agentSlug: "a",
+      goal: "g",
+    });
+    await openHumanGate(log, { runId: "r3", reason: "need approval" });
+
+    const resolved = await resolveHumanGate(log, {
+      runId: "r3",
       decision: { approved: true },
     });
     expect(resolved.ok).toBe(false);

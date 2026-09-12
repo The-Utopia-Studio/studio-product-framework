@@ -65,7 +65,7 @@ describe("durable-loop", () => {
           suspendPayload: { target: "file.txt" },
         };
       }
-      if (resumeData?.approved === true) {
+      if (resumeData?.decision === "approved") {
         return { status: "complete", state: { ...state, approved: true } };
       }
       return { status: "continue", state };
@@ -88,15 +88,25 @@ describe("durable-loop", () => {
     }
     expect((await log.getRun("run-2"))?.status).toBe("awaiting_human");
 
-    // Fresh "process": only runId + events from the log.
+    // Accidental resume without a decision must not advance the gate.
     const events = await log.listEvents("run-2");
+    const refused = await resumeDurableLoop<TestState>({
+      runId: "run-2",
+      eventLog: log,
+      events,
+      step,
+      budget: { maxTurns: 10, maxSpendCredits: 100 },
+    });
+    expect(refused.ok).toBe(false);
+
+    // Fresh "process": only runId + events from the log.
     const resumed = await resumeDurableLoop<TestState>({
       runId: "run-2",
       eventLog: log,
       events,
       step,
       budget: { maxTurns: 10, maxSpendCredits: 100 },
-      resumeData: { approved: true },
+      resumeData: { decision: "approved" },
     });
 
     expect(resumed.ok).toBe(true);
