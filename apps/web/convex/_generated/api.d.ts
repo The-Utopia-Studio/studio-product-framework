@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as agentRuns from "../agentRuns.js";
+import type * as agentRunsShape from "../agentRunsShape.js";
 import type * as autumn from "../autumn.js";
 import type * as http from "../http.js";
 import type * as inference from "../inference.js";
@@ -29,6 +31,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  agentRuns: typeof agentRuns;
+  agentRunsShape: typeof agentRunsShape;
   autumn: typeof autumn;
   http: typeof http;
   inference: typeof inference;

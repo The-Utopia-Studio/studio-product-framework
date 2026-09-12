@@ -32,3 +32,20 @@ export {
 } from "./gateway";
 
 export { startAgentRun } from "./run-agent";
+
+export {
+  AGENT_RUN_STATUSES,
+  AGENT_EVENT_KINDS,
+  TERMINAL_RUN_STATUSES,
+  isTerminalRunStatus,
+  createAgentRun,
+  appendAgentEvent,
+  updateAgentRunStatus,
+  type AgentEventKind,
+  type AgentRunRecord,
+  type AgentEvent,
+  type AgentEventLog,
+  type CreateRunInput,
+  type AppendEventInput,
+  type UpdateRunStatusInput,
+} from "./event-log";

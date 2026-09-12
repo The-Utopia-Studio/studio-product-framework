@@ -1,5 +1,9 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import {
+  agentEventKindValidator,
+  agentRunStatusValidator,
+} from "./agentRunsShape";
 
 export default defineSchema({
   users: defineTable({
@@ -78,4 +82,45 @@ export default defineSchema({
     errorMessage: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_user", ["userId"]),
+
+  /**
+   * Run index for long-horizon agent runs — canonical for audit (STATE-1).
+   * One row per run, updated in place as the run progresses. The narrative of
+   * what happened lives in `agentEvents`, not here.
+   */
+  agentRuns: defineTable({
+    runId: v.string(),
+    userId: v.string(),
+    agentSlug: v.string(),
+    goal: v.string(),
+    status: agentRunStatusValidator,
+    /** Highest seq written to agentEvents for this run. 0 before the first event. */
+    lastSeq: v.number(),
+    errorMessage: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_run", ["runId"])
+    .index("by_user", ["userId"])
+    .index("by_status", ["status"]),
+
+  /**
+   * Append-only event log — canonical for evals and the trace archive
+   * (STACK-3). Rows are only ever inserted: nothing may patch, replace, or
+   * delete one, and `agentRuns.test.ts` asserts that against the source.
+   *
+   * Ordered by `seq`, not `createdAt` — two events written in the same
+   * millisecond are indistinguishable by timestamp. `by_run_seq` is unique by
+   * construction because seq is assigned from `agentRuns.lastSeq` in the
+   * mutation, never accepted from the caller.
+   */
+  agentEvents: defineTable({
+    runId: v.string(),
+    seq: v.number(),
+    kind: agentEventKindValidator,
+    payload: v.any(),
+    createdAt: v.number(),
+  })
+    .index("by_run_seq", ["runId", "seq"])
+    .index("by_run_kind", ["runId", "kind"]),
 });
