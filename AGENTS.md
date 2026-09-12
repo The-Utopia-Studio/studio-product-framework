@@ -37,12 +37,13 @@ means three unrelated things, all three of which carry a terminal
 | Whether the agent is healthy | `operations.health_statuses` | AgentManifest |
 | Where a listing sits in the directory | `agents.status` | Agent Inventory |
 
-`AgentRunStatus` keeps its name: it is the only one genuinely about a run. Its
-`awaiting_tool` member is still to be renamed `awaiting_human` per the standard
-— three files move together (`packages/ai-runtime/src/types.ts`,
-`event-log.ts`, and the Convex validator in `apps/web/convex/agentRunsShape.ts`),
-and the bidirectional `Infer` assertion in that third file fails the build if
-one is missed.
+`AgentRunStatus` keeps its name: it is the only one genuinely about a run.
+`awaiting_human` is the only non-terminal pause (LOOP-5 / TUS-2760).
+
+Long-horizon runtime: `@studio/ai-runtime` owns `startDurableLoop` /
+`resumeDurableLoop` over the append-only `AgentEventLog` (TUS-2759). Prefer
+that loop over Mastra `createInngestAgent()` until upstream resume completion
+is fixed (studio-agent-framework `long-horizon/INNGEST.md`, 6/7).
 
 ## Learned User Preferences
 

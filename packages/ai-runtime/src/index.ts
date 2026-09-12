@@ -31,7 +31,7 @@ export {
   type ToolConfig,
 } from "./gateway";
 
-export { startAgentRun } from "./run-agent";
+export { startAgentRun, type StartAgentRunOptions } from "./run-agent";
 
 export {
   AGENT_RUN_STATUSES,
@@ -49,3 +49,21 @@ export {
   type AppendEventInput,
   type UpdateRunStatusInput,
 } from "./event-log";
+
+export {
+  createInMemoryEventLog,
+  type InMemoryEventLog,
+} from "./in-memory-event-log";
+
+export {
+  startDurableLoop,
+  resumeDurableLoop,
+  type DurableStep,
+  type DurableStepResult,
+  type DurableStepStatus,
+  type DurableLoopConfig,
+  type DurableLoopResult,
+  type DurableLoopResumeInput,
+} from "./durable-loop";
+
+export { openHumanGate, resolveHumanGate } from "./human-gate";
